@@ -1,0 +1,115 @@
+@import 'tailwindcss';
+
+/* Optional: tiện xài container đồng nhất max-width + padding */
+@utility container {
+  max-width: var(--container-7xl);
+  margin-inline: auto;
+  padding-inline: calc(var(--spacing) * 4);
+}
+
+/* Reset tối giản, tránh center toàn trang */
+:root {
+  color-scheme: light;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+/* Ảnh block để tránh khoảng trắng dưới ảnh */
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ---------------------------------------------
+   Brand Color System (derived from ProductList)
+   - Primary: Neutral brand (zinc/near-black) for CTA, links
+   - Secondary: Soft neutral backgrounds
+   - Accent: Blue for highlights, Amber for ratings/badges
+---------------------------------------------- */
+:root {
+  /* Primary (brand) */
+  --color-primary-900: #0a0a0a; /* zinc-900 */
+  --color-primary-800: #18181b; /* zinc-800 */
+  --color-primary-700: #27272a; /* zinc-700 */
+  --color-primary-600: #3f3f46; /* zinc-600 */
+
+  /* Secondary (backgrounds) */
+  --color-secondary-50: #fafafa; /* zinc-50 */
+  --color-secondary-100: #f4f4f5; /* zinc-100 */
+  --color-secondary-200: #e4e4e7; /* zinc-200 */
+
+  /* Accent (highlights) */
+  --color-accent-600: #2563eb; /* blue-600 */
+  --color-accent-700: #1d4ed8; /* blue-700 */
+  --color-accent-amber-500: #f59e0b; /* amber-500 */
+  --color-accent-amber-600: #d97706; /* amber-600 */
+}
+
+/* ---------------------------------------------
+   Shared UI Utilities for consistency
+---------------------------------------------- */
+.card {
+  @apply rounded-2xl border border-zinc-200 bg-white shadow-sm;
+}
+
+.btn-primary {
+  @apply rounded-xl px-4 py-3 font-semibold text-white transition-colors;
+  background-color: var(--color-primary-900);
+}
+.btn-primary:hover {
+  background-color: var(--color-primary-800);
+}
+
+.btn-accent {
+  @apply rounded-xl px-4 py-3 font-semibold text-white transition-colors;
+  background-color: var(--color-accent-600);
+}
+.btn-accent:hover {
+  background-color: var(--color-accent-700);
+}
+
+.link-primary {
+  @apply font-medium transition-colors;
+  color: var(--color-primary-900);
+}
+.link-primary:hover {
+  color: var(--color-primary-700);
+}
+
+.badge {
+  @apply inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium;
+  background-color: var(--color-secondary-100);
+  color: var(--color-primary-700);
+}
+.badge-accent {
+  background-color: color-mix(in srgb, var(--color-accent-600) 15%, white);
+  color: var(--color-accent-700);
+}
+.badge-rating {
+  background-color: color-mix(in srgb, var(--color-accent-amber-500) 20%, white);
+  color: var(--color-accent-amber-600);
+}
+
+.input-base {
+  @apply w-full rounded-xl border bg-white px-4 py-3 text-sm outline-none transition-shadow;
+  border-color: var(--color-secondary-200);
+}
+.input-base:focus {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-900) 20%, transparent);
+  border-color: var(--color-primary-700);
+}
+
+.section-title {
+  @apply text-3xl font-bold;
+  background-image: linear-gradient(90deg, var(--color-primary-900), var(--color-accent-600));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
