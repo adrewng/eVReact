@@ -1,10 +1,62 @@
-import { Link } from 'react-router-dom'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useMutation } from '@tanstack/react-query'
+import { useContext } from 'react'
+import { useForm } from 'react-hook-form'
+import { Link, useNavigate } from 'react-router-dom'
+import { authApi } from '~/apis/auth.api'
 import AuthHeader from '~/components/AuthHeader'
 import Button from '~/components/Button'
 import Input from '~/components/Input'
 import { path } from '~/constants/path'
+import { AppContext } from '~/contexts/app.context'
+import { type ErrorResponse } from '~/types/util.type'
+import { schema, type Schema } from '~/utils/rule'
+import { isUnprocessableEntityError } from '~/utils/util'
+
+type FormData = Pick<Schema, 'password' | 'email'>
+const loginSchema = schema.pick(['password', 'email'])
 
 const LoginPage = () => {
+  const {
+    register,
+    reset,
+    handleSubmit,
+    setError,
+    formState: { errors }
+  } = useForm<FormData>({
+    resolver: yupResolver(loginSchema)
+  })
+  const navigate = useNavigate()
+  const { setIsAuthenticated } = useContext(AppContext)
+
+  const loginMutation = useMutation({
+    mutationFn: (body: { email: string; password: string }) => authApi.loginAccount(body)
+  })
+
+  const onSubmit = handleSubmit((body) => {
+    loginMutation.mutate(body, {
+      onSuccess: () => {
+        reset()
+        setIsAuthenticated(true)
+        navigate('/')
+      },
+
+      onError: (error) => {
+        if (isUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
+          const formError = error.response?.data.data
+          if (formError) {
+            Object.keys(formError).forEach((key) => {
+              setError(key as keyof FormData, {
+                message: formError[key as keyof FormData],
+                type: 'Server'
+              })
+            })
+          }
+        }
+      }
+    })
+  })
+
   return (
     <div className='min-h-screen bg-gradient-to-br from-zinc-200 via-blue-200 to-indigo-300 text-zinc-900 relative'>
       {/* Background decorations */}
@@ -30,11 +82,25 @@ const LoginPage = () => {
             <p className='text-zinc-600'>Chào mừng bạn quay trở lại!</p>
           </div>
 
-          <form className='space-y-6'>
+          <form className='space-y-6' onSubmit={onSubmit}>
             {/* Email Input */}
-            <Input label='Email' name='email' type='email' placeholder='Nhập email của bạn' />
+            <Input
+              label='Email'
+              name='email'
+              type='email'
+              placeholder='Nhập email của bạn'
+              errorMsg={errors.email?.message}
+              register={register}
+            />
             {/* Password Input */}
-            <Input label='Mật khẩu' name='password' type='password' placeholder='Nhập mật khẩu' />
+            <Input
+              label='Mật khẩu'
+              name='password'
+              type='password'
+              placeholder='Nhập mật khẩu'
+              errorMsg={errors.password?.message}
+              register={register}
+            />
             {/* Login Button */}
             <Button
               type='submit'

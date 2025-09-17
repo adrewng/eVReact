@@ -1,10 +1,61 @@
-import { Link } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import { Link, useNavigate } from 'react-router-dom'
+
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useMutation } from '@tanstack/react-query'
+import { omit } from 'lodash'
+import { useContext } from 'react'
+import { authApi } from '~/apis/auth.api'
 import AuthHeader from '~/components/AuthHeader'
 import Button from '~/components/Button'
 import Input from '~/components/Input'
 import { path } from '~/constants/path'
+import { AppContext } from '~/contexts/app.context'
+import type { ErrorResponse } from '~/types/util.type'
+import { schema, type Schema } from '~/utils/rule'
+import { isUnprocessableEntityError } from '~/utils/util'
 
+type FormData = Pick<Schema, 'confirm_password' | 'fullName' | 'password' | 'email'>
+const registerSchema = schema.pick(['confirm_password', 'password', 'email', 'fullName'])
 const RegisterPage = () => {
+  const {
+    register,
+    reset,
+    handleSubmit,
+    setError,
+    formState: { errors }
+  } = useForm<FormData>({
+    resolver: yupResolver(registerSchema)
+  })
+  const navigate = useNavigate()
+  const { setIsAuthenticated } = useContext(AppContext)
+  const registerMutation = useMutation({
+    mutationFn: (body: { email: string; password: string }) => authApi.registerAccount(body)
+  })
+
+  const onSubmit = handleSubmit((data) => {
+    const body = omit(data, ['confirm_password', 'fullName'])
+    registerMutation.mutate(body, {
+      onSuccess: () => {
+        reset()
+        setIsAuthenticated(true)
+        navigate('/')
+      },
+      onError: (error) => {
+        if (isUnprocessableEntityError<ErrorResponse<Omit<FormData, 'confirm_password' | 'fullName'>>>(error)) {
+          const formError = error.response?.data.data
+          if (formError) {
+            Object.keys(formError).forEach((key) => {
+              setError(key as keyof Omit<FormData, 'confirm_password' | 'fullName'>, {
+                message: formError[key as keyof Omit<FormData, 'confirm_password' | 'fullName'>],
+                type: 'Server'
+              })
+            })
+          }
+        }
+      }
+    })
+  })
   return (
     <div className='min-h-screen bg-gradient-to-br from-zinc-200 via-emerald-200 to-teal-300 text-zinc-900 relative'>
       {/* Background decorations */}
@@ -30,18 +81,46 @@ const RegisterPage = () => {
             <p className='text-zinc-600'>Tạo tài khoản mới để bắt đầu</p>
           </div>
 
-          <form className='space-y-6'>
+          <form className='space-y-6' onSubmit={onSubmit}>
             {/* Họ tên Input */}
-            <Input label='Họ và tên' name='fullName' type='text' placeholder='Nhập họ và tên' />
+            <Input
+              label='Họ và tên' //
+              name='fullName'
+              type='text'
+              placeholder='Nhập họ và tên'
+              errorMsg={errors.fullName?.message}
+              register={register}
+            />
 
             {/* Số điện thoại Input */}
-            <Input label='Số điện thoại' name='phone' type='tel' placeholder='Nhập số điện thoại' />
+            <Input
+              label='Email' //
+              name='email'
+              type='text'
+              placeholder='Nhập email'
+              errorMsg={errors.email?.message}
+              register={register}
+            />
 
             {/* Password Input */}
-            <Input label='Mật khẩu' name='password' type='password' placeholder='Nhập mật khẩu' />
+            <Input
+              label='Mật khẩu' //
+              name='password'
+              type='password'
+              placeholder='Nhập mật khẩu'
+              errorMsg={errors.password?.message}
+              register={register}
+            />
 
             {/* Confirm Password Input */}
-            <Input label='Xác nhận mật khẩu' name='confirmPassword' type='password' placeholder='Nhập lại mật khẩu' />
+            <Input
+              label='Xác nhận mật khẩu'
+              name='confirm_password'
+              type='password'
+              placeholder='Nhập lại mật khẩu'
+              errorMsg={errors.confirm_password?.message}
+              register={register}
+            />
 
             {/* Register Button */}
             <Button
