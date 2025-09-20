@@ -1,5 +1,7 @@
 export const path = {
   home: '/',
+  vehicle: '/vehicle',
+  battery: '/battery',
   login: '/login',
   register: '/register',
   profile: '/profile',
