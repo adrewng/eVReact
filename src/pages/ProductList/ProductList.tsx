@@ -1,237 +1,120 @@
-import { BsCalendar } from 'react-icons/bs'
-import { FaCar, FaChevronDown, FaCog, FaHeart, FaStar, FaUsers } from 'react-icons/fa'
-import { MdOutlineLocationOn } from 'react-icons/md'
+import { FaCog, FaHeart, FaUsers } from 'react-icons/fa'
+import NavHeader from '~/components/NavHeader'
+import Search from '~/components/Search'
 
-// Tailwind v4 rewrite — full file with correct container + layout
-
-const Header = () => (
-  <header className='sticky top-0 z-20 flex items-center justify-between bg-white/80 backdrop-blur border-b border-zinc-200 px-4 md:px-8 h-16'>
-    <div className='font-black tracking-wide text-lg'>OPTIMUM</div>
-    <nav className='hidden md:flex gap-6 text-sm'>
-      <a href='#' className='font-medium text-zinc-900'>
-        Booking
-      </a>
-      <a href='#' className='text-zinc-600 hover:text-zinc-900'>
-        About Us
-      </a>
-      <a href='#' className='text-zinc-600 hover:text-zinc-900'>
-        Support
-      </a>
-      <a href='#' className='text-zinc-600 hover:text-zinc-900'>
-        Terms & Conditions
-      </a>
-    </nav>
-    <div className='flex items-center gap-4'>
-      <FaHeart className='text-zinc-700' />
-      <div className='size-8 rounded-full overflow-hidden ring-1 ring-zinc-200'>
-        <img src='https://picsum.photos/32' alt='User' className='size-full object-cover' />
-      </div>
-    </div>
-  </header>
-)
-
-const BookingSection = () => (
-  <section className='container pt-10 md:pt-16'>
-    <div className='grid lg:grid-cols-2 gap-10 items-start'>
-      <div>
-        <h1 className='text-3xl md:text-5xl font-extrabold leading-tight'>Book car in easy steps</h1>
-        <p className='mt-4 text-zinc-600 max-w-prose'>
-          Renting a car brings you freedom, and we'll help you find the best car for you at a great price.
-        </p>
-        <div className='mt-6 flex flex-wrap items-center gap-6'>
-          <div className='flex -space-x-2 items-center'>
-            {[0, 1, 2].map((i) => (
-              <img
-                key={i}
-                src='https://randomuser.me/api/portraits/men/3{i}.jpg'
-                alt='Avatar'
-                className='size-9 rounded-full ring-2 ring-white'
-              />
-            ))}
-            <span className='ml-3 text-sm text-zinc-700'>+24</span>
-          </div>
-          <div className='flex items-center gap-2 text-amber-500'>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <FaStar key={i} className='shrink-0' />
-            ))}
-            <span className='ml-2 text-sm text-zinc-700'>Trust by 10 million customers</span>
-          </div>
-        </div>
-      </div>
-
-      <div className='rounded-2xl bg-white shadow-sm ring-1 ring-zinc-200 p-4 md:p-6'>
-        <div className='grid md:grid-cols-2 gap-4'>
-          {/* Row 1 */}
-          <div className='space-y-1'>
-            <label className='text-sm font-medium text-zinc-700 flex items-center gap-2'>
-              <MdOutlineLocationOn /> Pick-up
-            </label>
-            <div className='relative'>
-              <input
-                type='text'
-                placeholder='London (LHR - Heathrow)'
-                className='w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 pr-10 text-sm outline-none focus:ring-2 focus:ring-zinc-900'
-              />
-              <FaChevronDown className='absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500' />
-            </div>
-          </div>
-          <div className='space-y-1'>
-            <label className='text-sm font-medium text-zinc-700 flex items-center gap-2'>
-              <MdOutlineLocationOn /> Drop-off
-            </label>
-            <div className='relative'>
-              <input
-                type='text'
-                placeholder='London (LGW - Gatwick)'
-                className='w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 pr-10 text-sm outline-none focus:ring-2 focus:ring-zinc-900'
-              />
-              <FaChevronDown className='absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500' />
-            </div>
-          </div>
-
-          {/* Row 2 */}
-          <div className='space-y-1'>
-            <label className='text-sm font-medium text-zinc-700 flex items-center gap-2'>
-              <BsCalendar /> Pick-up Date
-            </label>
-            <div className='relative'>
-              <input
-                type='text'
-                placeholder='18 December'
-                className='w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 pr-10 text-sm outline-none focus:ring-2 focus:ring-zinc-900'
-              />
-              <FaChevronDown className='absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500' />
-            </div>
-          </div>
-          <div className='space-y-1'>
-            <label className='text-sm font-medium text-zinc-700 flex items-center gap-2'>
-              <BsCalendar /> Drop-off Date
-            </label>
-            <div className='relative'>
-              <input
-                type='text'
-                placeholder='19 December'
-                className='w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 pr-10 text-sm outline-none focus:ring-2 focus:ring-zinc-900'
-              />
-              <FaChevronDown className='absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500' />
-            </div>
-          </div>
-
-          {/* Row 3 */}
-          <div className='space-y-1'>
-            <label className='text-sm font-medium text-zinc-700'>Pick-up Time</label>
-            <div className='relative'>
-              <input
-                type='text'
-                placeholder='10:00'
-                className='w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 pr-10 text-sm outline-none focus:ring-2 focus:ring-zinc-900'
-              />
-              <FaChevronDown className='absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500' />
-            </div>
-          </div>
-          <div className='space-y-1'>
-            <label className='text-sm font-medium text-zinc-700'>Drop-off Time</label>
-            <div className='relative'>
-              <input
-                type='text'
-                placeholder='10:00'
-                className='w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 pr-10 text-sm outline-none focus:ring-2 focus:ring-zinc-900'
-              />
-              <FaChevronDown className='absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500' />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-)
+/* ========================= FILTER SIDEBAR ========================= */
 
 const FilterSidebar = () => (
-  <aside className='hidden lg:block w-72 shrink-0 space-y-6'>
-    <h2 className='text-lg font-semibold'>Filter By ❤️</h2>
+  <div className='hidden lg:block w-full shrink-0'>
+    <div className='sticky top-24'>
+      {/* Card container */}
+      <div className='rounded-[22px] border border-zinc-200 bg-white shadow-sm p-6'>
+        {/* Header */}
+        <div className='text-2xl font-bold'>Get alerts for new arrivals</div>
+        <div className='mt-2 text-zinc-600 leading-relaxed'>Add some filters and get notified about new arrivals!</div>
 
-    {/* Car Type */}
-    <div className='rounded-2xl border border-zinc-200 p-4'>
-      <div className='flex items-center justify-between'>
-        <h3 className='font-semibold'>Car Type</h3>
-        <span className='text-xl leading-none'>-</span>
-      </div>
-      <ul className='mt-3 space-y-3 text-sm text-zinc-700'>
-        {['Coupe (24)', 'Hatchback (12)', 'Sedan (16)', 'MPV (28)', 'SUV (20)'].map((label) => (
-          <li key={label} className='flex items-center gap-2'>
-            <FaCar className='shrink-0' />
-            <label className='flex items-center gap-2'>
-              <input type='checkbox' className='size-4' /> {label}
-            </label>
-          </li>
-        ))}
-      </ul>
-    </div>
+        {/* Disabled CTA */}
+        <div className='mt-5'>
+          <div className='select-none rounded-2xl bg-zinc-100 text-zinc-400/90 px-5 py-3 font-medium flex items-center gap-2'>
+            <div className='size-5 rounded-full border border-zinc-300' />
+            Get notifications
+          </div>
+        </div>
 
-    {/* Capacity */}
-    <div className='rounded-2xl border border-zinc-200 p-4'>
-      <div className='flex items-center justify-between'>
-        <h3 className='font-semibold'>Capacity</h3>
-        <span className='text-xl leading-none'>-</span>
-      </div>
-      <ul className='mt-3 space-y-3 text-sm text-zinc-700'>
-        {['2-5 (100)', '6 or more (4)'].map((label) => (
-          <li key={label} className='flex items-center gap-2'>
-            <label className='flex items-center gap-2'>
-              <input type='checkbox' className='size-4' /> {label}
-            </label>
-          </li>
-        ))}
-      </ul>
-    </div>
+        {/* Divider */}
+        <div className='my-6 h-px bg-zinc-100' />
 
-    {/* Recommendation */}
-    <div className='rounded-2xl border border-zinc-200 p-4'>
-      <div className='flex items-center justify-between'>
-        <h3 className='font-semibold'>Customer Recommendation</h3>
-        <span className='text-xl leading-none'>-</span>
-      </div>
-      <ul className='mt-3 space-y-3 text-sm text-zinc-700'>
-        {['70% & up (72)', '40% & up (28)'].map((label) => (
-          <li key={label} className='flex items-center gap-2'>
-            <label className='flex items-center gap-2'>
-              <input type='checkbox' className='size-4' /> {label}
-            </label>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </aside>
-)
+        {/* Rows */}
+        <div className='space-y-6'>
+          {/* Make */}
+          <div className='flex items-center justify-between'>
+            <div className='text-lg font-semibold'>Make</div>
+            <div className='i-chevron-down' />
+          </div>
+          <div className='h-px bg-zinc-100' />
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CarCard = ({ car }: { car: any }) => (
-  <div className='group rounded-2xl border border-zinc-200 overflow-hidden bg-white hover:shadow-lg transition-shadow'>
-    <div className='flex items-start justify-between p-4'>
-      <div>
-        <h3 className='font-semibold'>{car.name}</h3>
-        <p className='text-sm text-zinc-600'>{car.type}</p>
+          {/* Tax credit */}
+          <div className='flex items-center justify-between'>
+            <div className='text-lg font-semibold'>Tax credit</div>
+            <div className='i-chevron-down' />
+          </div>
+          <div className='h-px bg-zinc-100' />
+
+          {/* Price */}
+          <div className='flex items-center justify-between'>
+            <div className='text-lg font-semibold'>Price</div>
+            <div className='i-chevron-down' />
+          </div>
+          <div className='h-px bg-zinc-100' />
+
+          {/* Mileage with select */}
+          <div className='flex items-center justify-between'>
+            <div className='text-lg font-semibold'>Mileage</div>
+            <div className='i-chevron-up' />
+          </div>
+          <div className='mt-3 rounded-2xl bg-zinc-100 px-5 py-3 text-zinc-900 font-medium flex items-center justify-between'>
+            <div>All</div>
+            <div className='i-chevron-down' />
+          </div>
+          <div className='h-px bg-zinc-100' />
+
+          {/* Battery range with select */}
+          <div className='flex items-center justify-between'>
+            <div className='text-lg font-semibold'>Battery range</div>
+            <div className='i-chevron-up' />
+          </div>
+          <div className='mt-3 rounded-2xl bg-zinc-100 px-5 py-3 text-zinc-900 font-medium flex items-center justify-between'>
+            <div>All</div>
+            <div className='i-chevron-down' />
+          </div>
+          <div className='h-px bg-zinc-100' />
+        </div>
       </div>
-      <FaHeart className='text-zinc-500' />
-    </div>
-    <div className='aspect-[3/1] w-full overflow-hidden'>
-      <img src={car.image} alt={car.name} className='size-full object-cover' />
-    </div>
-    <div className='p-4 flex items-center justify-between'>
-      <div className='flex items-center gap-4 text-sm text-zinc-700'>
-        <span className='inline-flex items-center gap-1'>
-          <FaUsers /> {car.passengers}
-        </span>
-        <span className='inline-flex items-center gap-1'>
-          <FaCog /> {car.transmission}
-        </span>
-      </div>
-      <div className='font-semibold'>{car.price}</div>
     </div>
   </div>
 )
 
+/* ========================= CARD ========================= */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CarCard = ({ car }: { car: any }) => (
+  <div className='group flex flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white transition-shadow hover:shadow-lg'>
+    {/* Image on top */}
+    <div className='aspect-[4/3] w-full overflow-hidden bg-zinc-100'>
+      <img src={car.image} alt={car.name} className='size-full object-cover transition-transform duration-300' />
+    </div>
+
+    {/* Content */}
+    <div className='flex flex-col flex-1'>
+      <div className='flex items-start justify-between p-4'>
+        <div>
+          <div className='font-semibold leading-tight'>{car.name}</div>
+          <div className='text-sm text-zinc-600'>{car.type}</div>
+        </div>
+        <div className='rounded-full p-2 text-zinc-500 hover:bg-zinc-100 cursor-pointer' aria-label='Save'>
+          <FaHeart />
+        </div>
+      </div>
+
+      <div className='mt-auto flex items-center justify-between p-4'>
+        <div className='flex items-center gap-4 text-sm text-zinc-700'>
+          <div className='inline-flex items-center gap-1'>
+            <FaUsers /> {car.passengers}
+          </div>
+          <div className='inline-flex items-center gap-1'>
+            <FaCog /> {car.transmission}
+          </div>
+        </div>
+        <div className='font-semibold'>{car.price}</div>
+      </div>
+    </div>
+  </div>
+)
+
+/* ========================= LIST ========================= */
 const CarList = () => {
+  const placeholderImg =
+    'https://images.unsplash.com/photo-1620891549027-942fdc95d3f5?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+
   const cars = [
     {
       name: 'Porsche 718 Cayman S',
@@ -239,8 +122,7 @@ const CarList = () => {
       passengers: 2,
       transmission: 'Manual',
       price: '$400/d',
-      image:
-        'https://images.unsplash.com/photo-1620246473111-e1e79601362e?q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=600&h=300&fit=crop&ixlib=rb-4.0.3'
+      image: placeholderImg
     },
     {
       name: 'Mini Cooper 5-DOOR',
@@ -248,8 +130,7 @@ const CarList = () => {
       passengers: 4,
       transmission: 'Matic',
       price: '$364/d',
-      image:
-        'https://images.unsplash.com/photo-1605330310235-97e3c9a17441?q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=600&h=300&fit=crop&ixlib=rb-4.0.3'
+      image: placeholderImg
     },
     {
       name: 'Toyota GR Supra',
@@ -257,8 +138,7 @@ const CarList = () => {
       passengers: 2,
       transmission: 'Manual',
       price: '$360/d',
-      image:
-        'https://images.unsplash.com/photo-1607599026771-337d10c0e527?q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=600&h=300&fit=crop&ixlib=rb-4.0.3'
+      image: placeholderImg
     },
     {
       name: 'Porsche 911 Turbo',
@@ -266,8 +146,7 @@ const CarList = () => {
       passengers: 2,
       transmission: 'Manual',
       price: '$468/d',
-      image:
-        'https://images.unsplash.com/photo-1596489397666-e8224749622d?q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=600&h=300&fit=crop&ixlib=rb-4.0.3'
+      image: placeholderImg
     },
     {
       name: 'Porsche Taycan 4S',
@@ -275,8 +154,7 @@ const CarList = () => {
       passengers: 2,
       transmission: 'Manual',
       price: '$424/d',
-      image:
-        'https://images.unsplash.com/photo-1626241285072-520e03e5c7a2?q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=600&h=300&fit=crop&ixlib=rb-4.0.3'
+      image: placeholderImg
     },
     {
       name: 'Mini Cooper Works',
@@ -284,28 +162,32 @@ const CarList = () => {
       passengers: 4,
       transmission: 'Matic',
       price: '$360/d',
-      image:
-        'https://images.unsplash.com/photo-1616790937812-70b13501a350?q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=600&h=300&fit=crop&ixlib=rb-4.0.3'
+      image: placeholderImg
     }
   ]
+
   return (
-    <div className='min-w-0 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6'>
-      {cars.map((car, index) => (
-        <CarCard key={index} car={car} />
-      ))}
+    <div>
+      <Search />
+      <div className='min-w-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-6'>
+        {cars.map((car, index) => (
+          <CarCard key={index} car={car} />
+        ))}
+      </div>
     </div>
   )
 }
 
+/* ========================= PAGE ========================= */
 const ProductList = () => (
   <div className='min-h-screen bg-zinc-50 text-zinc-900'>
-    <Header />
-    <main className='container'>
-      <BookingSection />
-      <section className='py-10 md:py-14 grid grid-cols-1 lg:[grid-template-columns:18rem_minmax(0,1fr)] gap-6 lg:gap-10'>
+    <NavHeader />
+
+    <main className='mx-auto max-w-screen-2xl px-4 md:px-6'>
+      <div className='py-8 md:py-10 grid grid-cols-1 lg:grid-cols-[22rem_minmax(0,1fr)] gap-6 lg:gap-8'>
         <FilterSidebar />
         <CarList />
-      </section>
+      </div>
     </main>
   </div>
 )

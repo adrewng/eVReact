@@ -6,6 +6,12 @@
   padding-inline: calc(var(--spacing) * 4);
 }
 
+@theme {
+  --breakpoint-tablet: 886px;
+  --breakpoint-notification: 1038px;
+  --breakpoint-heart: 946px;
+}
+
 :root {
   color-scheme: light;
 }

@@ -2,7 +2,7 @@ import axios, { AxiosError, HttpStatusCode, type AxiosInstance } from 'axios'
 import { toast } from 'react-toastify'
 import { URL_LOGIN, URL_LOGOUT, URL_REGISTER } from '~/apis/auth.api'
 import type { AuthResponse } from '~/types/auth.type'
-import { clearLS, setAccessTokenToLS, setProfileToLS } from './auth'
+import { clearLS, getAccessTokenFromLS, setAccessTokenToLS, setProfileToLS } from './auth'
 class Http {
   instance: AxiosInstance
   private accessToken: string
@@ -12,7 +12,7 @@ class Http {
       timeout: 10 * 1000,
       headers: { 'Content-Type': 'application/json' }
     })
-    this.accessToken = ''
+    this.accessToken = getAccessTokenFromLS()
     this.instance.interceptors.request.use(
       (config) => {
         if (this.accessToken && config.headers) {
