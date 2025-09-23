@@ -13,4 +13,4 @@ export const path = {
   adminTransactions: '/admin/transactions',
   adminReports: '/admin/reports',
   adminSettings: '/admin/settings'
-}
+} as const

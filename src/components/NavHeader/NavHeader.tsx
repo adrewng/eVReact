@@ -44,7 +44,7 @@ export default function NavHeader() {
             <Link to={path.home} className='inline-flex items-center gap-2'>
               <img
                 src={logoUrl}
-                alt='ECOVOLT'
+                alt='EViest'
                 className='
       block w-auto h-14 md:h-16 lg:h-20
       shrink-0 select-none
@@ -56,7 +56,7 @@ export default function NavHeader() {
 
           {/* CENTER: main nav (luôn đúng giữa ở >=md) */}
           <div className='hidden md:flex min-w-0 justify-self-center gap-4 lg:gap-6 text-sm md:text-base font-medium'>
-            <NavPillLink to={path.home}>Ecovolt</NavPillLink>
+            <NavPillLink to={path.home}>EViest</NavPillLink>
             <NavPillLink to={path.vehicle}>Vehicles</NavPillLink>
             <NavPillLink to={path.battery}>Battery</NavPillLink>
           </div>

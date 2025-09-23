@@ -1,14 +1,16 @@
-type Role = 'User' | 'Admin'
-
 export interface User {
-  _id: string
-  roles: Role[]
+  id: number
   email: string
-  name?: string
-  date_of_birth?: string
-  avatar?: string
-  address?: string
+  fullName: string
+  role: string
+  reputation: number
+  totalCredit: string
+  status?: string
   phone?: string
+  avatar?: string
+  date_Of_birth?: string
+  address?: string
+  cccd?: string
   createdAt?: string
-  updatedAt?: string
+  updateAt?: string
 }

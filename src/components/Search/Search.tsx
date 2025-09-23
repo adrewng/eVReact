@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useState } from 'react'
 
 export default function Search() {
   const [query, setQuery] = useState('')
@@ -7,27 +8,21 @@ export default function Search() {
 
   const options = ['Recommended', 'Price: Low to High', 'Price: High to Low', 'Newest']
 
-  const sortRef = useRef<HTMLDivElement>(null)
-  React.useEffect(() => {
-    function onDocClick(e: MouseEvent) {
-      if (!sortRef.current) return
-      if (!sortRef.current.contains(e.target as Node)) setSortOpen(false)
-    }
-    document.addEventListener('mousedown', onDocClick)
-    return () => document.removeEventListener('mousedown', onDocClick)
-  }, [])
-
   function onSearch() {
-    // plug your search handler here
     console.log({ query, sort })
+  }
+
+  const panel = {
+    hidden: { opacity: 0, y: -8, scale: 0.98 }, // âm để chạy từ trên xuống
+    show: { opacity: 1, y: 0, scale: 1 },
+    exit: { opacity: 0, y: -8, scale: 0.98 }
   }
 
   return (
     <div className='sticky top-24 w-full mb-8'>
       <div className='flex items-center gap-4 rounded-[28px] border border-zinc-200 bg-white px-3 sm:px-5 py-3 sm:py-4 shadow-[0_1px_2px_rgba(16,24,40,0.06),0_12px_28px_-12px_rgba(16,24,40,0.18)]'>
-        {/* Inner pill search */}
+        {/* Search input */}
         <div className='flex min-w-0 flex-1 items-center rounded-full border border-zinc-200 bg-white px-4 sm:px-5 py-2 sm:py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_1px_2px_rgba(16,24,40,0.06)]'>
-          {/* Icon (sparkle/ai search) */}
           <svg aria-hidden viewBox='0 0 24 24' className='mr-3 h-6 w-6 shrink-0 text-zinc-500'>
             <path
               fill='currentColor'
@@ -48,8 +43,8 @@ export default function Search() {
           />
         </div>
 
-        {/* Sort on the right */}
-        <div ref={sortRef} className='relative shrink-0'>
+        {/* Sort with framer-motion */}
+        <div className='relative shrink-0'>
           <button
             onClick={() => setSortOpen((s) => !s)}
             className='inline-flex items-center gap-2 px-1 py-1 text-[18px] sm:text-[20px]'
@@ -58,38 +53,62 @@ export default function Search() {
           >
             <span className='font-semibold'>Sort:</span>
             <span>{sort}</span>
-            <svg viewBox='0 0 24 24' className='h-4 w-4'>
+            <motion.svg
+              viewBox='0 0 24 24'
+              className='h-6 w-6'
+              animate={{ rotate: sortOpen ? 180 : 0 }}
+              transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
+              aria-hidden
+            >
               <path fill='currentColor' d='M7 10l5 5 5-5z' />
-            </svg>
+            </motion.svg>
           </button>
 
-          {sortOpen && (
-            <ul
-              role='listbox'
-              className='absolute right-0 z-10 mt-2 w-56 overflow-hidden rounded-2xl border border-zinc-200 bg-white p-1 shadow-lg'
-            >
-              {options.map((opt) => (
-                <li key={opt}>
-                  <button
-                    role='option'
-                    aria-selected={opt === sort}
-                    onClick={() => {
-                      setSort(opt)
-                      setSortOpen(false)
-                    }}
-                    className='flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm hover:bg-zinc-100'
-                  >
-                    <span>{opt}</span>
-                    {opt === sort && (
-                      <svg viewBox='0 0 24 24' className='h-4 w-4'>
-                        <path fill='currentColor' d='M9 16.2l-3.5-3.5 1.4-1.4L9 13.4l7.1-7.1 1.4 1.4z' />
-                      </svg>
-                    )}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+          <AnimatePresence initial={false}>
+            {sortOpen && (
+              <motion.ul
+                role='listbox'
+                aria-label='Sort options'
+                key='sort-panel'
+                variants={panel}
+                initial='hidden'
+                animate='show'
+                exit='exit'
+                transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
+                className='absolute right-0 z-10 mt-2 w-56 overflow-hidden rounded-2xl border border-zinc-200 bg-white p-1 shadow-lg'
+              >
+                {options.map((opt) => (
+                  <li key={opt}>
+                    <button
+                      role='option'
+                      aria-selected={opt === sort}
+                      onClick={() => {
+                        setSort(opt)
+                        setSortOpen(false)
+                      }}
+                      className='flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm hover:bg-zinc-100'
+                    >
+                      <span>{opt}</span>
+                      <AnimatePresence initial={false}>
+                        {opt === sort && (
+                          <motion.svg
+                            viewBox='0 0 24 24'
+                            className='h-4 w-4'
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            transition={{ duration: 0.18 }}
+                          >
+                            <path fill='currentColor' d='M9 16.2l-3.5-3.5 1.4-1.4L9 13.4l7.1-7.1 1.4 1.4z' />
+                          </motion.svg>
+                        )}
+                      </AnimatePresence>
+                    </button>
+                  </li>
+                ))}
+              </motion.ul>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>

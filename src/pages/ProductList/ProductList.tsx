@@ -1,78 +1,9 @@
 import { FaCog, FaHeart, FaUsers } from 'react-icons/fa'
+import FilterSidebar from '~/components/FilterSidebar'
 import NavHeader from '~/components/NavHeader'
+import Pagination from '~/components/Pagination'
 import Search from '~/components/Search'
-
-/* ========================= FILTER SIDEBAR ========================= */
-
-const FilterSidebar = () => (
-  <div className='hidden lg:block w-full shrink-0'>
-    <div className='sticky top-24'>
-      {/* Card container */}
-      <div className='rounded-[22px] border border-zinc-200 bg-white shadow-sm p-6'>
-        {/* Header */}
-        <div className='text-2xl font-bold'>Get alerts for new arrivals</div>
-        <div className='mt-2 text-zinc-600 leading-relaxed'>Add some filters and get notified about new arrivals!</div>
-
-        {/* Disabled CTA */}
-        <div className='mt-5'>
-          <div className='select-none rounded-2xl bg-zinc-100 text-zinc-400/90 px-5 py-3 font-medium flex items-center gap-2'>
-            <div className='size-5 rounded-full border border-zinc-300' />
-            Get notifications
-          </div>
-        </div>
-
-        {/* Divider */}
-        <div className='my-6 h-px bg-zinc-100' />
-
-        {/* Rows */}
-        <div className='space-y-6'>
-          {/* Make */}
-          <div className='flex items-center justify-between'>
-            <div className='text-lg font-semibold'>Make</div>
-            <div className='i-chevron-down' />
-          </div>
-          <div className='h-px bg-zinc-100' />
-
-          {/* Tax credit */}
-          <div className='flex items-center justify-between'>
-            <div className='text-lg font-semibold'>Tax credit</div>
-            <div className='i-chevron-down' />
-          </div>
-          <div className='h-px bg-zinc-100' />
-
-          {/* Price */}
-          <div className='flex items-center justify-between'>
-            <div className='text-lg font-semibold'>Price</div>
-            <div className='i-chevron-down' />
-          </div>
-          <div className='h-px bg-zinc-100' />
-
-          {/* Mileage with select */}
-          <div className='flex items-center justify-between'>
-            <div className='text-lg font-semibold'>Mileage</div>
-            <div className='i-chevron-up' />
-          </div>
-          <div className='mt-3 rounded-2xl bg-zinc-100 px-5 py-3 text-zinc-900 font-medium flex items-center justify-between'>
-            <div>All</div>
-            <div className='i-chevron-down' />
-          </div>
-          <div className='h-px bg-zinc-100' />
-
-          {/* Battery range with select */}
-          <div className='flex items-center justify-between'>
-            <div className='text-lg font-semibold'>Battery range</div>
-            <div className='i-chevron-up' />
-          </div>
-          <div className='mt-3 rounded-2xl bg-zinc-100 px-5 py-3 text-zinc-900 font-medium flex items-center justify-between'>
-            <div>All</div>
-            <div className='i-chevron-down' />
-          </div>
-          <div className='h-px bg-zinc-100' />
-        </div>
-      </div>
-    </div>
-  </div>
-)
+import useQueryConfig from '~/hooks/useQueryConfig'
 
 /* ========================= CARD ========================= */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -163,13 +94,60 @@ const CarList = () => {
       transmission: 'Matic',
       price: '$360/d',
       image: placeholderImg
+    },
+    {
+      name: 'Mini Cooper Works',
+      type: 'Coupe',
+      passengers: 4,
+      transmission: 'Matic',
+      price: '$360/d',
+      image: placeholderImg
+    },
+    {
+      name: 'Mini Cooper Works',
+      type: 'Coupe',
+      passengers: 4,
+      transmission: 'Matic',
+      price: '$360/d',
+      image: placeholderImg
+    },
+    {
+      name: 'Mini Cooper Works',
+      type: 'Coupe',
+      passengers: 4,
+      transmission: 'Matic',
+      price: '$360/d',
+      image: placeholderImg
+    },
+    {
+      name: 'Mini Cooper Works',
+      type: 'Coupe',
+      passengers: 4,
+      transmission: 'Matic',
+      price: '$360/d',
+      image: placeholderImg
+    },
+    {
+      name: 'Mini Cooper Works',
+      type: 'Coupe',
+      passengers: 4,
+      transmission: 'Matic',
+      price: '$360/d',
+      image: placeholderImg
+    },
+    {
+      name: 'Mini Cooper Works',
+      type: 'Coupe',
+      passengers: 4,
+      transmission: 'Matic',
+      price: '$360/d',
+      image: placeholderImg
     }
   ]
 
   return (
     <div>
-      <Search />
-      <div className='min-w-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-6'>
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-6'>
         {cars.map((car, index) => (
           <CarCard key={index} car={car} />
         ))}
@@ -179,17 +157,24 @@ const CarList = () => {
 }
 
 /* ========================= PAGE ========================= */
-const ProductList = () => (
-  <div className='min-h-screen bg-zinc-50 text-zinc-900'>
-    <NavHeader />
+const ProductList = () => {
+  const queyConfig = useQueryConfig()
+  return (
+    <div className='min-h-screen bg-zinc-50 text-zinc-900'>
+      <NavHeader />
 
-    <main className='mx-auto max-w-screen-2xl px-4 md:px-6'>
-      <div className='py-8 md:py-10 grid grid-cols-1 lg:grid-cols-[22rem_minmax(0,1fr)] gap-6 lg:gap-8'>
-        <FilterSidebar />
-        <CarList />
-      </div>
-    </main>
-  </div>
-)
+      <main className='mx-auto max-w-screen-2xl px-4 md:px-6'>
+        <div className='py-8 md:py-10 grid grid-cols-1 lg:grid-cols-[22rem_minmax(0,1fr)] gap-6 lg:gap-8'>
+          <FilterSidebar />
+          <div className='min-w-0'>
+            <Search />
+            <CarList />
+            <Pagination queryConfig={queyConfig} pageSize={12} />
+          </div>
+        </div>
+      </main>
+    </div>
+  )
+}
 
 export default ProductList
