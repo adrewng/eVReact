@@ -57,7 +57,7 @@ export default function NavHeader() {
           {/* CENTER: main nav (luôn đúng giữa ở >=md) */}
           <div className='hidden md:flex min-w-0 justify-self-center gap-4 lg:gap-6 text-sm md:text-base font-medium'>
             <NavPillLink to={path.home}>EViest</NavPillLink>
-            <NavPillLink to={path.vehicle}>Vehicles</NavPillLink>
+            <NavPillLink to={path.vehicle}>Vehicle</NavPillLink>
             <NavPillLink to={path.battery}>Battery</NavPillLink>
           </div>
 

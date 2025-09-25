@@ -1,0 +1,43 @@
+import { FaCog, FaHeart, FaUsers } from 'react-icons/fa'
+
+interface ProductItemProps {
+  product: ProductType
+}
+export default function ProductItem({ product }: ProductItemProps) {
+  return (
+    <div className='group flex flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white transition-shadow hover:shadow-lg'>
+      <div className='aspect-[4/3] w-full overflow-hidden bg-zinc-100'>
+        <img
+          src={product.image}
+          alt={product.name}
+          className='size-full object-cover transition-transform duration-300'
+        />
+      </div>
+
+      {/* Content */}
+      <div className='flex flex-col flex-1'>
+        <div className='flex items-start justify-between p-4'>
+          <div>
+            <div className='font-semibold leading-tight'>{product.name}</div>
+            <div className='text-sm text-zinc-600'>{product.type}</div>
+          </div>
+          <div className='rounded-full p-2 text-zinc-500 hover:bg-zinc-100 cursor-pointer' aria-label='Save'>
+            <FaHeart />
+          </div>
+        </div>
+
+        <div className='mt-auto flex items-center justify-between p-4'>
+          <div className='flex items-center gap-4 text-sm text-zinc-700'>
+            <div className='inline-flex items-center gap-1'>
+              <FaUsers /> {product.passengers}
+            </div>
+            <div className='inline-flex items-center gap-1'>
+              <FaCog /> {product.transmission}
+            </div>
+          </div>
+          <div className='font-semibold'>{product.price}</div>
+        </div>
+      </div>
+    </div>
+  )
+}

@@ -30,8 +30,8 @@ export default function FilterOptionLink<K extends FilterKey>({
 
   const search = createSearchParams({
     ...queryConfig,
-    [param]: value, // single-select
-    page: '1' // tuỳ chọn reset trang
+    [param]: value,
+    page: '1'
   }).toString()
 
   return (

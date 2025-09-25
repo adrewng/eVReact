@@ -7,7 +7,15 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    port: 8080
+    port: 8080,
+    proxy: {
+      '/api': {
+        target: 'https://user1758696037954.requestly.tech',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (p) => p.replace(/^\/api/, '')
+      }
+    }
   },
   css: {
     devSourcemap: true

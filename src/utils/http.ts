@@ -8,7 +8,7 @@ class Http {
   private accessToken: string
   constructor() {
     this.instance = axios.create({
-      baseURL: 'https://api-ecom.duthanhduoc.com/',
+      baseURL: '/api/',
       timeout: 10 * 1000,
       headers: { 'Content-Type': 'application/json' }
     })

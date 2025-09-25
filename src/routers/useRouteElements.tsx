@@ -3,8 +3,12 @@ import { useContext } from 'react'
 import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 import { path } from '~/constants/path'
 import { AppContext } from '~/contexts/app.context'
+import MainLayout from '~/layouts/MainLayout'
 import Login from '~/pages/Login'
 import ProductList from '~/pages/ProductList'
+import BatteryFilter from '~/pages/ProductList/components/BatteryFilter'
+import FilterSidebar from '~/pages/ProductList/components/FilterSidebar'
+import VehicleFilter from '~/pages/ProductList/components/VehicleFilter'
 import Profile from '~/pages/Profile'
 import Register from '~/pages/Register'
 
@@ -44,8 +48,12 @@ export default function useRouteElements() {
     },
     {
       path: path.home,
-      index: true,
-      element: <ProductList />
+      element: <MainLayout />,
+      children: [
+        { path: path.vehicle, element: <ProductList Filter={VehicleFilter} /> },
+        { path: path.battery, element: <ProductList Filter={BatteryFilter} /> },
+        { path: path.home, index: true, element: <ProductList Filter={FilterSidebar} /> }
+      ]
     }
   ])
   return element

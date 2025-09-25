@@ -1,5 +1,5 @@
 import { isUndefined, omitBy } from 'lodash'
-import type { ProductListConfig } from '~/types/product.type'
+import type { ProductListConfig } from '~/types/post.type'
 import useQueryParam from './useQueryParam'
 
 export type QueryConfig = {
@@ -18,7 +18,8 @@ export default function useQueryConfig() {
       price_max: queryParam.price_max,
       price_min: queryParam.price_min,
       rating_filter: queryParam.rating_filter,
-      category: queryParam.category
+      category: queryParam.category,
+      category_detail_id: queryParam.category_detail_id
     },
     isUndefined
   )
