@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { Link, createSearchParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { path } from '~/constants/path'
 import type { QueryConfig } from '~/hooks/useQueryConfig'
 
@@ -25,30 +25,68 @@ export default function FilterOptionLink<K extends FilterKey>({
   rightBadge,
   className
 }: Props<K>) {
+  const navigate = useNavigate()
   const current = new URLSearchParams(queryConfig)
   const isActive = current.getAll(param as string).includes(value)
 
-  const search = createSearchParams({
-    ...queryConfig,
-    [param]: value,
-    page: '1'
-  }).toString()
+  const handleToggle = (e: React.MouseEvent) => {
+    e.preventDefault()
+
+    const newQueryConfig: QueryConfig = {
+      ...queryConfig,
+      page: '1'
+    }
+
+    if (!isActive) {
+      newQueryConfig[param] = value
+    }
+
+    if (isActive) {
+      delete newQueryConfig[param]
+    }
+
+    const search = new URLSearchParams(newQueryConfig).toString()
+    navigate({ pathname: pathName, search })
+  }
 
   return (
-    <Link
-      to={{ pathname: pathName, search }}
+    <button
+      onClick={handleToggle}
       aria-pressed={isActive}
-      role='button'
       className={classNames(
-        'flex items-center justify-between py-1 transition-colors',
-        isActive
-          ? 'font-semibold underline underline-offset-4 decoration-2'
-          : 'hover:underline underline-offset-4 decoration-2',
+        'flex items-center gap-3 py-2 px-1 transition-colors hover:bg-gray-50 rounded-md w-full text-left',
         className
       )}
     >
-      <span>{label}</span>
-      {rightBadge && <span className='ml-2 px-2 py-0.5 text-xs rounded-full bg-gray-100'>{rightBadge}</span>}
-    </Link>
+      {/* Custom Checkbox */}
+      <div
+        className={classNames(
+          'w-5 h-5 rounded border-2 flex items-center justify-center transition-all duration-200',
+          isActive ? 'bg-black border-black' : 'border-gray-300 bg-white hover:border-gray-400'
+        )}
+      >
+        {isActive && (
+          <svg
+            className='w-3 h-3 text-white'
+            fill='none'
+            stroke='currentColor'
+            viewBox='0 0 24 24'
+            xmlns='http://www.w3.org/2000/svg'
+          >
+            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={3} d='M5 13l4 4L19 7' />
+          </svg>
+        )}
+      </div>
+
+      {/* Label */}
+      <span className={classNames('flex-1 text-sm font-medium', isActive ? 'text-black' : 'text-gray-700')}>
+        {label}
+      </span>
+
+      {/* Right Badge */}
+      {rightBadge && (
+        <span className='px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full'>{rightBadge}</span>
+      )}
+    </button>
   )
 }

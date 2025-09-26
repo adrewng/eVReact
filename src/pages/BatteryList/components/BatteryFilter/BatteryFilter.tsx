@@ -4,20 +4,17 @@ import CollapseItem from '~/components/CollapseItem'
 import FilterOptionLink from '~/components/FilterOptionLink'
 import { path } from '~/constants/path'
 import { type QueryConfig } from '~/hooks/useQueryConfig'
-import { CategoryName, type CategoryParent } from '~/types/category.type'
-import { getIDBypathName } from '~/utils/category'
 
 interface BatterFilterProps {
   queryConfig: QueryConfig
-  categories: CategoryParent[]
+  categoryID: number
 }
-export default function BatterFilter({ queryConfig, categories }: BatterFilterProps) {
-  const categoryId = getIDBypathName(categories, CategoryName.battery) // dùng cho mỗi lần query trang này
+export default function BatterFilter({ queryConfig, categoryID }: BatterFilterProps) {
   const { data: categoryData } = useQuery({
-    queryKey: ['category', categoryId],
-    queryFn: () => categoryApi.getCategoryById(categoryId),
+    queryKey: ['category', categoryID],
+    queryFn: () => categoryApi.getCategoryById(categoryID),
     staleTime: 3 * 60 * 1000,
-    enabled: categoryId !== -1
+    enabled: categoryID !== -1
   })
   return (
     <div className='sticky top-24'>
@@ -51,7 +48,7 @@ export default function BatterFilter({ queryConfig, categories }: BatterFilterPr
                   <FilterOptionLink
                     key={item.id}
                     queryConfig={queryConfig}
-                    pathName={path.vehicle}
+                    pathName={path.battery}
                     param='category_detail_id'
                     value={item.id.toString()}
                     label={item.name} // chữ hiển thị bên trái

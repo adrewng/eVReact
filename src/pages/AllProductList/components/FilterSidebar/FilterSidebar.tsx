@@ -1,30 +1,18 @@
-import { useQuery } from '@tanstack/react-query'
-import categoryApi from '~/apis/categories.api'
 import CollapseItem from '~/components/CollapseItem'
 import FilterOptionLink from '~/components/FilterOptionLink'
 import { path } from '~/constants/path'
 import { type QueryConfig } from '~/hooks/useQueryConfig'
-import { CategoryName, type CategoryParent } from '~/types/category.type'
-import { getIDBypathName } from '~/utils/category'
+import type { CategoryParent } from '~/types/category.type'
 
-interface VehicleFilterProps {
+interface FilterSidebarProps {
   queryConfig: QueryConfig
   categories: CategoryParent[]
 }
-export default function VehicleFilter({ queryConfig, categories }: VehicleFilterProps) {
-  const categoryId = getIDBypathName(categories, CategoryName.vehicle) // dùng cho mỗi lần query trang này
-
-  const { data: categoryData } = useQuery({
-    queryKey: ['category', categoryId],
-    queryFn: () => categoryApi.getCategoryById(categoryId),
-    staleTime: 3 * 60 * 1000,
-    enabled: categoryId !== -1
-  })
-
+export default function FilterSidebar({ queryConfig, categories }: FilterSidebarProps) {
   return (
-    <div className='sticky top-24'>
+    <div className='sticky top-0 z-10'>
       {/* Card container */}
-      <div className='rounded-[22px] border border-zinc-200 bg-white shadow-sm p-6'>
+      <div className='rounded-[22px] border border-zinc-200 bg-white shadow-sm p-6 max-h-screen overflow-y-auto'>
         {/* Header */}
         <div className='flex items-center gap-3'>
           <svg width='1em' height='1.5em' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -46,24 +34,21 @@ export default function VehicleFilter({ queryConfig, categories }: VehicleFilter
         <div className='space-y-6'>
           {/* Sản phẩm cần là gì */}
           <CollapseItem
-            renderProp={
-              categoryData?.data.data.children &&
-              categoryData.data.data.children.map((item) => {
-                return (
-                  <FilterOptionLink
-                    key={item.id}
-                    queryConfig={queryConfig}
-                    pathName={path.vehicle}
-                    param='category_detail_id'
-                    value={item.id.toString()}
-                    label={item.name} // chữ hiển thị bên trái
-                    rightBadge={item.count ?? 0} // số bên phải (component sẽ tự bọc badge)
-                  />
-                )
-              })
-            }
+            renderProp={categories.map((item) => {
+              return (
+                <FilterOptionLink
+                  key={item.id}
+                  queryConfig={queryConfig}
+                  pathName={item.name === 'Xe điện' ? path.vehicle : path.battery}
+                  param='category'
+                  value={item.id.toString()}
+                  label={item.name} // chữ hiển thị bên trái
+                  rightBadge={item.count ?? 0} // số bên phải (component sẽ tự bọc badge)
+                />
+              )
+            })}
           >
-            <div className='text-lg font-semibold'>Loại sản phẩm</div>
+            <div className='text-lg font-semibold'>Bạn đang cần sản phẩm nào</div>
           </CollapseItem>
 
           <div className='h-px bg-zinc-100' />

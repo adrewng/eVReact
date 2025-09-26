@@ -1,6 +1,7 @@
 export const CategoryName = {
   vehicle: 'Xe điện',
-  battery: 'Pin'
+  battery: 'Pin',
+  all: 'Tất cả'
 } as const
 
 export type CategoryName = (typeof CategoryName)[keyof typeof CategoryName]

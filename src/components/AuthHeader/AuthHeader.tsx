@@ -6,18 +6,16 @@ import NavPillLink from '../NavPillLink'
 export default function AuthHeader() {
   return (
     <div className='grid grid-cols-3 items-center px-4 md:px-8 h-16'>
-      {/* Logo bên trái */}
-      <Link to={path.home} className='font-black tracking-wide text-xl md:text-2xl'>
-        <img
-          src={logoUrl}
-          alt='EViest'
-          className='
-      block w-auto h-14 md:h-16 lg:h-20
-      shrink-0 select-none
-      [transform:scale(2.5)] [transform-origin:left_center]
-    '
-        />
-      </Link>
+      <div className='flex-shrink-0 justify-self-start w-[120px] h-[60px]'>
+        <Link to={path.home} className='inline-flex items-center gap-2'>
+          <img
+            src={logoUrl}
+            alt='EViest'
+            className='block select-none object-contain'
+            style={{ width: '120px', height: '60px' }}
+          />
+        </Link>
+      </div>
 
       {/* Navigation giữa màn hình */}
       <div className='hidden md:flex justify-center gap-6 text-sm md:text-base font-medium'>

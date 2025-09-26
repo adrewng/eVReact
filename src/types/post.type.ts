@@ -42,7 +42,7 @@ export interface BatteryType {
 }
 
 export interface PostListType {
-  products: PostType[]
+  posts: PostType[]
   pagination: {
     page: number
     limit: number

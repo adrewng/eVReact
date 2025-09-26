@@ -6,10 +6,11 @@ import type { QueryConfig } from '~/hooks/useQueryConfig'
 interface Props {
   queryConfig: QueryConfig
   pageSize: number
+  pathName: (typeof path)['vehicle' | 'battery' | 'home']
 }
 
 const RANGE = 2
-export default function Pagination({ queryConfig, pageSize }: Props) {
+export default function Pagination({ queryConfig, pageSize, pathName }: Props) {
   const page = Number(queryConfig.page)
 
   const renderPagination = () => {
@@ -58,7 +59,7 @@ export default function Pagination({ queryConfig, pageSize }: Props) {
         return (
           <Link
             to={{
-              pathname: path.home,
+              pathname: pathName,
               search: createSearchParams({
                 ...queryConfig,
                 page: pageNumber.toString()
