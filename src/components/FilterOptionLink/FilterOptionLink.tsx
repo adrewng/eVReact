@@ -11,6 +11,7 @@ interface Props<K extends FilterKey = FilterKey> {
   pathName: PathValue
   param: K
   value: string
+  hide?: boolean
   label: React.ReactNode
   rightBadge?: React.ReactNode
   className?: string
@@ -22,6 +23,7 @@ export default function FilterOptionLink<K extends FilterKey>({
   param,
   value,
   label,
+  hide,
   rightBadge,
   className
 }: Props<K>) {
@@ -45,7 +47,7 @@ export default function FilterOptionLink<K extends FilterKey>({
       delete newQueryConfig[param]
     }
 
-    const search = new URLSearchParams(newQueryConfig).toString()
+    const search = hide ? '' : new URLSearchParams(newQueryConfig).toString()
     navigate({ pathname: pathName, search })
   }
 

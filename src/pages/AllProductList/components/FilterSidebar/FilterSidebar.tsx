@@ -3,6 +3,7 @@ import FilterOptionLink from '~/components/FilterOptionLink'
 import { path } from '~/constants/path'
 import { type QueryConfig } from '~/hooks/useQueryConfig'
 import type { CategoryParent } from '~/types/category.type'
+import { PageName } from '~/types/page.type'
 
 interface FilterSidebarProps {
   queryConfig: QueryConfig
@@ -39,11 +40,12 @@ export default function FilterSidebar({ queryConfig, categories }: FilterSidebar
                 <FilterOptionLink
                   key={item.id}
                   queryConfig={queryConfig}
-                  pathName={item.name === 'Xe điện' ? path.vehicle : path.battery}
+                  pathName={item.code === PageName.vehicle ? path.vehicle : path.battery}
                   param='category'
                   value={item.id.toString()}
                   label={item.name} // chữ hiển thị bên trái
                   rightBadge={item.count ?? 0} // số bên phải (component sẽ tự bọc badge)
+                  hide={true}
                 />
               )
             })}
