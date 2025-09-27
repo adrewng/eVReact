@@ -7,6 +7,7 @@ import MainLayout from '~/layouts/MainLayout'
 import AllProductList from '~/pages/AllProductList'
 import BatteryList from '~/pages/BatteryList'
 import Login from '~/pages/Login'
+import Post from '~/pages/Post'
 import Profile from '~/pages/Profile'
 import Register from '~/pages/Register'
 import VehicleList from '~/pages/VehicleList'
@@ -50,6 +51,7 @@ export default function useRouteElements() {
       element: <MainLayout />,
       children: [
         { path: path.vehicle, element: <VehicleList /> },
+        { path: path.post, element: <Post /> },
         { path: path.battery, element: <BatteryList /> },
         { path: path.home, index: true, element: <AllProductList /> }
       ]
