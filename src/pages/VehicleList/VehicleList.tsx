@@ -49,7 +49,7 @@ export default function VehicleList() {
               <div className='max-h-[calc(100vh-6rem)] overflow-y-auto'>
                 {/* Khi width=0, chặn tương tác */}
                 <div className={classNames('w-[22rem]', !isFilterOpen && 'pointer-events-none')}>
-                  <VehicleFilter queryConfig={queryConfig} categoryID={categoryID as number} />
+                  <VehicleFilter queryConfig={queryConfig} categoryID={categoryID} />
                 </div>
               </div>
             </div>

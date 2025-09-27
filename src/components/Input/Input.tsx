@@ -14,7 +14,7 @@ interface PropsInput<T extends FieldValues> extends InputHTMLAttributes<HTMLInpu
 
 export default function Input<T extends FieldValues = FieldValues>({
   className = '',
-  errorClassName = 'overflow-hidden transition-all duration-200 mt-1 text-xs text-red-600',
+  errorClassName = 'overflow-hidden transition-all duration-200 mt-1 text-xs text-red-600 min-h-[1.25rem]',
   inputClassName = '',
   labelClassName = '',
   errorMsg,
@@ -64,7 +64,7 @@ export default function Input<T extends FieldValues = FieldValues>({
       </label>
 
       {/* ERROR */}
-      <div className={`${errorClassName} ${hasError ? ' max-h-10 opacity-100' : ' max-h-0 opacity-0'}`}>{errorMsg}</div>
+      <div className={`${errorClassName} ${hasError ? '  opacity-100' : 'opacity-0'}`}>{errorMsg}</div>
     </div>
   )
 }

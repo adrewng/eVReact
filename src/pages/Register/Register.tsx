@@ -16,8 +16,8 @@ import type { ErrorResponse } from '~/types/util.type'
 import { schema, type Schema } from '~/utils/rule'
 import { isUnprocessableEntityError } from '~/utils/util'
 
-type FormData = Pick<Schema, 'confirm_password' | 'fullName' | 'password' | 'email'>
-const registerSchema = schema.pick(['confirm_password', 'password', 'email', 'fullName'])
+type FormData = Pick<Schema, 'confirm_password' | 'full_name' | 'password' | 'email'>
+const registerSchema = schema.pick(['confirm_password', 'password', 'email', 'full_name'])
 
 const RegisterPage = () => {
   const {
@@ -39,6 +39,7 @@ const RegisterPage = () => {
 
   const onSubmit = handleSubmit((data) => {
     const body = omit(data, ['confirm_password', 'fullName'])
+    console.log('body:', body)
     registerMutation.mutate(body as { email: string; password: string }, {
       onSuccess: () => {
         reset()
@@ -46,6 +47,7 @@ const RegisterPage = () => {
         navigate('/')
       },
       onError: (error) => {
+        console.log('error:', error)
         if (isUnprocessableEntityError<ErrorResponse<Omit<FormData, 'confirm_password' | 'fullName'>>>(error)) {
           const formError = error.response?.data.data
           if (formError) {
@@ -86,10 +88,10 @@ const RegisterPage = () => {
               <form className='space-y-5' onSubmit={onSubmit} noValidate>
                 <Input
                   label='Họ và tên'
-                  name='fullName'
+                  name='full_name'
                   type='text'
                   placeholder='Nhập họ và tên'
-                  errorMsg={errors.fullName?.message}
+                  errorMsg={errors.full_name?.message}
                   register={register}
                 />
 

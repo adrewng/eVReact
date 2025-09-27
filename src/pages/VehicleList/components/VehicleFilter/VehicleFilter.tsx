@@ -14,7 +14,7 @@ export default function VehicleFilter({ queryConfig, categoryID }: VehicleFilter
     queryKey: ['category', categoryID],
     queryFn: () => categoryApi.getCategoryById(categoryID),
     staleTime: 3 * 60 * 1000,
-    enabled: categoryID !== -1
+    enabled: categoryID !== -1 && typeof categoryID === 'number'
   })
 
   return (

@@ -22,8 +22,8 @@ export function useListQueries({ page }: Props) {
   })
 
   const categoryID = useMemo(() => {
-    if (isAll) return undefined
-    return categories.data?.data?.data.find((c) => c.code === page)?.id
+    if (isAll) return -1
+    return categories.data?.data?.data.find((c) => c.code === page)?.id ?? -1
   }, [isAll, categories.data?.data?.data, page])
 
   const queryConfig = useMemo<QueryConfig>(() => {
@@ -35,7 +35,7 @@ export function useListQueries({ page }: Props) {
     return base
   }, [rawQueryConfig, isAll])
 
-  const keyPart = isAll ? 'all' : typeof categoryID === 'number' ? `${page} category_id:${categoryID}` : 'pending'
+  const keyPart = isAll ? 'all' : typeof categoryID === 'number' ? `${page}` : 'pending'
 
   const posts = useQuery({
     queryKey: ['posts', keyPart, queryConfig],

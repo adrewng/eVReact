@@ -15,7 +15,7 @@ export default function AllProductList() {
   const categories = categoriesData.data?.data.data ?? []
   const pageLoading = postsData.isLoading
   const pageData = postsData.data?.data?.data
-  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(true)
   const toggleFilter = () => {
     setIsFilterOpen((s) => !s)
   }

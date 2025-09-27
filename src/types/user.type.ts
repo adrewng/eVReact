@@ -1,7 +1,7 @@
 export interface User {
   id: number
   email: string
-  fullName: string
+  full_name: string
   role: string
   reputation: number
   totalCredit: string
