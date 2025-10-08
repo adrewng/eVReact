@@ -30,7 +30,7 @@ const LoginPage = () => {
   const { setIsAuthenticated } = useContext(AppContext)
 
   const loginMutation = useMutation({
-    mutationFn: (body: { email: string; password: string }) => authApi.loginAccount(body)
+    mutationFn: (body: FormData) => authApi.loginAccount(body)
   })
 
   const onSubmit = handleSubmit((body) => {

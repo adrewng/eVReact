@@ -4,17 +4,18 @@ import CollapseItem from '~/components/CollapseItem'
 import FilterOptionLink from '~/components/FilterOptionLink'
 import { path } from '~/constants/path'
 import { type QueryConfig } from '~/hooks/useQueryConfig'
+import { CategoryType } from '~/types/category.type'
 
 interface VehicleFilterProps {
   queryConfig: QueryConfig
-  categoryID: number
+  categorySlug: CategoryType
 }
-export default function VehicleFilter({ queryConfig, categoryID }: VehicleFilterProps) {
+export default function VehicleFilter({ queryConfig, categorySlug }: VehicleFilterProps) {
   const { data: categoryData } = useQuery({
-    queryKey: ['category', categoryID],
-    queryFn: () => categoryApi.getCategoryById(categoryID),
+    queryKey: ['category', categorySlug],
+    queryFn: () => categoryApi.getCategoryBySlug(categorySlug),
     staleTime: 3 * 60 * 1000,
-    enabled: categoryID !== -1 && typeof categoryID === 'number'
+    enabled: categorySlug !== CategoryType.notFound
   })
 
   return (
@@ -41,14 +42,14 @@ export default function VehicleFilter({ queryConfig, categoryID }: VehicleFilter
         {/* Sản phẩm cần là gì */}
         <CollapseItem
           renderProp={
-            categoryData?.data.data.children &&
-            categoryData.data.data.children.map((item) => {
+            categoryData?.data.data.childrens &&
+            categoryData.data.data.childrens.map((item) => {
               return (
                 <FilterOptionLink
                   key={item.id}
                   queryConfig={queryConfig}
                   pathName={path.vehicle}
-                  param='category_detail_id'
+                  param='category_id'
                   value={item.id.toString()}
                   label={item.name} // chữ hiển thị bên trái
                   rightBadge={item.count ?? 0} // số bên phải (component sẽ tự bọc badge)

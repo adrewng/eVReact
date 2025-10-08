@@ -4,17 +4,18 @@ import CollapseItem from '~/components/CollapseItem'
 import FilterOptionLink from '~/components/FilterOptionLink'
 import { path } from '~/constants/path'
 import { type QueryConfig } from '~/hooks/useQueryConfig'
+import { CategoryType } from '~/types/category.type'
 
 interface BatterFilterProps {
   queryConfig: QueryConfig
-  categoryID: number
+  categorySlug: CategoryType
 }
-export default function BatterFilter({ queryConfig, categoryID }: BatterFilterProps) {
+export default function BatterFilter({ queryConfig, categorySlug }: BatterFilterProps) {
   const { data: categoryData } = useQuery({
-    queryKey: ['category', categoryID],
-    queryFn: () => categoryApi.getCategoryById(categoryID),
+    queryKey: ['category', categorySlug],
+    queryFn: () => categoryApi.getCategoryBySlug(categorySlug),
     staleTime: 3 * 60 * 1000,
-    enabled: categoryID !== -1
+    enabled: categorySlug !== CategoryType.notFound
   })
   return (
     <div className='sticky top-24'>
@@ -42,14 +43,14 @@ export default function BatterFilter({ queryConfig, categoryID }: BatterFilterPr
           {/* Sản phẩm cần là gì */}
           <CollapseItem
             renderProp={
-              categoryData?.data.data.children &&
-              categoryData.data.data.children.map((item) => {
+              categoryData?.data.data.childrens &&
+              categoryData.data.data.childrens.map((item) => {
                 return (
                   <FilterOptionLink
                     key={item.id}
                     queryConfig={queryConfig}
                     pathName={path.battery}
-                    param='category_detail_id'
+                    param='category_id'
                     value={item.id.toString()}
                     label={item.name} // chữ hiển thị bên trái
                     rightBadge={item.count ?? 0} // số bên phải (component sẽ tự bọc badge)

@@ -20,7 +20,7 @@ export default function PostCard({ post }: PropType) {
         <div className='flex items-start justify-between p-4'>
           <div>
             <div className='font-semibold leading-tight'>{post.title}</div>
-            <div className='text-sm text-zinc-600'>{post.product.category.name}</div>
+            <div className='text-sm text-zinc-600'>{post.product.category.type}</div>
           </div>
           <div className='rounded-full p-2 text-zinc-500 hover:bg-zinc-100 cursor-pointer' aria-label='Save'>
             <FaHeart />
@@ -33,7 +33,7 @@ export default function PostCard({ post }: PropType) {
               <FaUsers /> {post.product.year}
             </div>
             <div className='inline-flex items-center gap-1'>
-              <FaCog /> {post.product.category.name}
+              <FaCog /> {post.product.category.type}
             </div>
           </div>
           <div className='font-semibold'>{post.product.price}</div>

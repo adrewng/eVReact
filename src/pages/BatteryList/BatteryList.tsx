@@ -7,12 +7,12 @@ import ProductCardSkeletonLight from '~/components/ProductCardSkeleton/ProductCa
 import SortBar from '~/components/SortBar'
 import { path } from '~/constants/path'
 import { useListQueries } from '~/hooks/useListQueries'
-import { PageName } from '~/types/page.type'
+import { CategoryType } from '~/types/category.type'
 import BatteryFilter from './components/BatteryFilter'
 
 export default function BatteryList() {
-  const { queryConfig, postsData, categoryID } = useListQueries({
-    page: PageName.battery
+  const { queryConfig, postsData, categorySlug } = useListQueries({
+    categoryType: CategoryType.battery
   })
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(true)
 
@@ -24,7 +24,7 @@ export default function BatteryList() {
   const pageData = postsData?.data?.data?.data
 
   return (
-    <div className='min-h-screen bg-zinc-50 text-zinc-900'>
+    <div className='min-h-screen text-zinc-900'>
       <div className='mb-6'>
         <SortBar
           queryConfig={queryConfig}
@@ -52,7 +52,7 @@ export default function BatteryList() {
               <div className='max-h-[calc(100vh-6rem)] overflow-y-auto'>
                 {/* Khi width=0, chặn tương tác */}
                 <div className={classNames('w-[22rem]', !isFilterOpen && 'pointer-events-none')}>
-                  <BatteryFilter queryConfig={queryConfig} categoryID={categoryID as number} />
+                  <BatteryFilter queryConfig={queryConfig} categorySlug={categorySlug} />
                 </div>
               </div>
             </div>
@@ -196,7 +196,7 @@ export default function BatteryList() {
                   transition={{ duration: 0.34, ease: [0.22, 0.61, 0.36, 1] }}
                 >
                   <div className='h-full overflow-y-auto'>
-                    <BatteryFilter queryConfig={queryConfig} categoryID={categoryID as number} />
+                    <BatteryFilter queryConfig={queryConfig} categorySlug={categorySlug} />
                   </div>
                 </motion.aside>
               </>

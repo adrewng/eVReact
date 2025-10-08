@@ -18,8 +18,8 @@ export default function useQueryConfig() {
       price_max: queryParam.price_max,
       price_min: queryParam.price_min,
       rating_filter: queryParam.rating_filter,
-      category: queryParam.category,
-      category_detail_id: queryParam.category_detail_id
+      category_id: queryParam.category_id,
+      category_type: queryParam.category_type
     },
     isUndefined
   )

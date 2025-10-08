@@ -2,18 +2,18 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import categoryApi from '~/apis/categories.api'
 import postApi from '~/apis/post.api'
-import { PageName } from '~/types/page.type'
+import { CategoryType } from '~/types/category.type'
 import type { ProductListConfig } from '~/types/post.type'
 import type { QueryConfig } from './useQueryConfig'
 import useQueryConfig from './useQueryConfig'
 
 const STALE_TIME = 3 * 60 * 1000
 
-type Props = { page: PageName }
+type Props = { categoryType: CategoryType }
 
-export function useListQueries({ page }: Props) {
+export function useListQueries({ categoryType }: Props) {
   const rawQueryConfig = useQueryConfig()
-  const isAll = page === PageName.all
+  const isAll = categoryType === CategoryType.all
 
   const categories = useQuery({
     queryKey: ['categories'],
@@ -21,33 +21,40 @@ export function useListQueries({ page }: Props) {
     staleTime: STALE_TIME
   })
 
-  const categoryID = useMemo(() => {
-    if (isAll) return -1
-    return categories.data?.data?.data.find((c) => c.code === page)?.id ?? -1
-  }, [isAll, categories.data?.data?.data, page])
+  // slug của type hoặc '' nếu không tìm thấy
+  const categorySlug = useMemo(() => {
+    if (isAll) return CategoryType.all
+    return categories.data?.data?.data.find((c) => c.slug === categoryType)?.slug ?? CategoryType.notFound
+  }, [isAll, categories.data?.data?.data, categoryType])
 
   const queryConfig = useMemo<QueryConfig>(() => {
     const base: QueryConfig = { ...rawQueryConfig }
     if (isAll) {
-      delete (base as QueryConfig).category
+      //Nếu là all thì xóa category_type vì không chuyền thì sẽ không lọc theo type
+      delete (base as QueryConfig).category_type
       return base
     }
     return base
   }, [rawQueryConfig, isAll])
 
-  const keyPart = isAll ? 'all' : typeof categoryID === 'number' ? `${page}` : 'pending'
+  const keyPart = isAll //
+    ? 'all' //
+    : categorySlug
+      ? `${categorySlug}`
+      : //Lỡ trường hợp notFound do chưa call xong hay không tìm được id thì trả về pending
+        'pending'
 
   const posts = useQuery({
     queryKey: ['posts', keyPart, queryConfig],
     queryFn: () => postApi.getPosts(queryConfig as ProductListConfig),
     staleTime: STALE_TIME,
     placeholderData: keepPreviousData,
-    enabled: isAll || typeof categoryID === 'number'
+    enabled: isAll || !!categorySlug // Nếu là all hoặc categorySlug thì mới call api
   })
 
   return {
-    categoryID,
-    queryConfig,
+    categorySlug: categorySlug as CategoryType,
+    queryConfig: queryConfig as QueryConfig,
     categoriesData: categories,
     postsData: posts
   }

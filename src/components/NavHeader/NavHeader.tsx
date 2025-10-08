@@ -1,13 +1,15 @@
 import { useMutation } from '@tanstack/react-query'
 import { useContext, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { createSearchParams, Link, useLocation } from 'react-router-dom'
 import { authApi } from '~/apis/auth.api'
 import { path } from '~/constants/path'
 import { AppContext } from '~/contexts/app.context'
 import logoUrl from '~/shared/logo.svg'
+import { CategoryType } from '~/types/category.type'
 import Popover from '../Popover'
 
 export default function NavHeader() {
+  const pathname = useLocation().pathname
   const [query, setQuery] = useState('')
   const { isAuthenticated, profile, setIsAuthenticated } = useContext(AppContext)
 
@@ -123,13 +125,30 @@ export default function NavHeader() {
             </Link>
           )}
 
-          <Link
-            to={path.post}
-            className='py-2 w-23 flex justify-center items-center rounded-full text-sm bg-black text-white font-medium hover:bg-black/80 transition cursor-pointer'
-          >
-            Đăng tin
-          </Link>
-
+          {pathname === path.home && (
+            <Link
+              to={path.post}
+              className='py-2 w-23 flex justify-center items-center rounded-full text-sm bg-black text-white font-medium hover:bg-black/80 transition cursor-pointer'
+            >
+              Đăng tin
+            </Link>
+          )}
+          {pathname === path.vehicle && (
+            <Link
+              to={`${path.post}?${createSearchParams({ category_type: CategoryType.vehicle }).toString()}`}
+              className='py-2 w-23 flex justify-center items-center rounded-full text-sm bg-black text-white font-medium hover:bg-black/80 transition cursor-pointer'
+            >
+              Bán xe
+            </Link>
+          )}
+          {pathname === path.battery && (
+            <Link
+              to={`${path.post}?${createSearchParams({ category_type: CategoryType.battery }).toString()}`}
+              className='py-2 w-23 flex justify-center items-center rounded-full text-sm bg-black text-white font-medium hover:bg-black/80 transition cursor-pointer'
+            >
+              Bán pin
+            </Link>
+          )}
           {isAuthenticated ? (
             <Popover
               className='flex items-center py-1 cursor-pointer'

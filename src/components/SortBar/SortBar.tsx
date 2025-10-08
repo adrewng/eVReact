@@ -14,7 +14,6 @@ type Props = {
 
 // ... thêm key nào bạn có
 const DISPLAY_LABEL: Partial<Record<keyof QueryConfig, string>> = {
-  category: 'Danh mục',
   price_min: 'Giá từ',
   price_max: 'Giá đến'
 }

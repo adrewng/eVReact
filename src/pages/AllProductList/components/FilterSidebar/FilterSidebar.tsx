@@ -2,8 +2,7 @@ import CollapseItem from '~/components/CollapseItem'
 import FilterOptionLink from '~/components/FilterOptionLink'
 import { path } from '~/constants/path'
 import { type QueryConfig } from '~/hooks/useQueryConfig'
-import type { CategoryParent } from '~/types/category.type'
-import { PageName } from '~/types/page.type'
+import { CategoryType, type CategoryParent } from '~/types/category.type'
 
 interface FilterSidebarProps {
   queryConfig: QueryConfig
@@ -38,12 +37,12 @@ export default function FilterSidebar({ queryConfig, categories }: FilterSidebar
             renderProp={categories.map((item) => {
               return (
                 <FilterOptionLink
-                  key={item.id}
+                  key={item.slug}
                   queryConfig={queryConfig}
-                  pathName={item.code === PageName.vehicle ? path.vehicle : path.battery}
-                  param='category'
-                  value={item.id.toString()}
-                  label={item.name} // chữ hiển thị bên trái
+                  pathName={item.slug === CategoryType.vehicle ? path.vehicle : path.battery}
+                  param='category_type'
+                  value={item.slug.toString()}
+                  label={item.type} // chữ hiển thị bên trái
                   rightBadge={item.count ?? 0} // số bên phải (component sẽ tự bọc badge)
                   hide={true}
                 />

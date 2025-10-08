@@ -7,15 +7,15 @@ import ProductCardSkeletonLight from '~/components/ProductCardSkeleton/ProductCa
 import SortBar from '~/components/SortBar'
 import { path } from '~/constants/path'
 import { useListQueries } from '~/hooks/useListQueries'
-import { PageName } from '~/types/page.type'
+import { CategoryType } from '~/types/category.type'
 import FilterSidebar from './components/FilterSidebar'
 
 export default function AllProductList() {
-  const { queryConfig, categoriesData, postsData } = useListQueries({ page: PageName.all })
+  const { queryConfig, categoriesData, postsData } = useListQueries({ categoryType: CategoryType.all })
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(true)
   const categories = categoriesData.data?.data.data ?? []
   const pageLoading = postsData.isLoading
   const pageData = postsData.data?.data?.data
-  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(true)
   const toggleFilter = () => {
     setIsFilterOpen((s) => !s)
   }

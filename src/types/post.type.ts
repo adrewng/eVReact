@@ -1,4 +1,4 @@
-import type { CategoryDetail } from './category.type'
+import type { CategoryChild, CategoryType } from './category.type'
 
 export interface PostType {
   id: number
@@ -13,32 +13,35 @@ export interface VehicleType {
   id: number
   brand: string
   model: string
-  power: number // công suất (W, kW…)
+  power: string // công suất (W, kW…)
   price: number
   address: string
   description: string
-  category: CategoryDetail
-  mileage: number // số km đã đi
+  category: CategoryChild
+  mileage: string // số km đã đi
   year: number // đời xe
   seats: number // số chỗ ngồi
   image: string // ảnh bìa
-  images: string[] // danh sách ảnh chi tiết
+  images: string[] // danh sách ảnh chi tiết,
+  warranty: string // bảo hành
+  color: string // màu sắc
 }
 
 export interface BatteryType {
   id: number
   brand: string
   model: string
-  capacity: number
+  capacity: string
   price: number
   address: string
   description: string
-  category: CategoryDetail
-  voltage: number // điện áp (V)
+  category: CategoryChild
+  voltage: string // điện áp (V)
   health: string // tình trạng pin
   year: number
   image: string
   images: string[]
+  warranty: string // bảo hành
 }
 
 export interface PostListType {
@@ -60,6 +63,6 @@ export interface ProductListConfig {
   price_max?: number | string
   price_min?: number | string
   name?: string
-  category?: string
-  category_detail_id?: string
+  category_type?: Omit<CategoryType, 'notFound'>
+  category_id?: string
 }

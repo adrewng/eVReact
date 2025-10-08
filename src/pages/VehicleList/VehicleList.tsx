@@ -7,13 +7,12 @@ import ProductCardSkeletonLight from '~/components/ProductCardSkeleton/ProductCa
 import SortBar from '~/components/SortBar'
 import { path } from '~/constants/path'
 import { useListQueries } from '~/hooks/useListQueries'
-import { PageName } from '~/types/page.type'
+import { CategoryType } from '~/types/category.type'
 import VehicleFilter from './components/VehicleFilter'
 
 export default function VehicleList() {
-  const { postsData, categoryID, queryConfig } = useListQueries({ page: PageName.vehicle })
+  const { postsData, categorySlug, queryConfig } = useListQueries({ categoryType: CategoryType.vehicle })
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(true)
-
   const toggleFilter = () => {
     setIsFilterOpen((s) => !s)
   }
@@ -22,7 +21,7 @@ export default function VehicleList() {
   const pageData = postsData?.data?.data?.data
 
   return (
-    <div className='min-h-screen bg-zinc-50 text-zinc-900'>
+    <div className='min-h-screen text-zinc-900'>
       <div className='mb-6'>
         <SortBar
           queryConfig={queryConfig}
@@ -49,7 +48,7 @@ export default function VehicleList() {
               <div className='max-h-[calc(100vh-6rem)] overflow-y-auto'>
                 {/* Khi width=0, chặn tương tác */}
                 <div className={classNames('w-[22rem]', !isFilterOpen && 'pointer-events-none')}>
-                  <VehicleFilter queryConfig={queryConfig} categoryID={categoryID} />
+                  <VehicleFilter queryConfig={queryConfig} categorySlug={categorySlug} />
                 </div>
               </div>
             </div>
@@ -193,7 +192,7 @@ export default function VehicleList() {
                   transition={{ duration: 0.34, ease: [0.22, 0.61, 0.36, 1] }}
                 >
                   <div className='h-full overflow-y-auto'>
-                    <VehicleFilter queryConfig={queryConfig} categoryID={categoryID as number} />
+                    <VehicleFilter queryConfig={queryConfig} categorySlug={categorySlug} />
                   </div>
                 </motion.aside>
               </>

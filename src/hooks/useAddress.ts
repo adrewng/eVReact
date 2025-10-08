@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { addressApi } from '~/apis/address.api'
 
 export interface Province {
@@ -32,11 +32,10 @@ export const useAddress = () => {
         setLoading(false)
       }
     }
-
     loadProvinces()
   }, [])
 
-  const loadWards = async (provinceCode: number) => {
+  const loadWards = useCallback(async (provinceCode: number) => {
     if (!provinceCode) {
       setWards([])
       return
@@ -52,7 +51,7 @@ export const useAddress = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   return {
     provinces,
