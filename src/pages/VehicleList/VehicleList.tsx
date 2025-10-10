@@ -101,7 +101,7 @@ export default function VehicleList() {
             </div>
 
             {/* pagination: only render when we have pageData (initial skeleton state hides it) */}
-            {pageData && (
+            {pageData && pageData.pagination.page_size > 0 && (
               <motion.div
                 key={pageData.pagination.page}
                 initial={{ opacity: 0, y: 6 }}

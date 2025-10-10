@@ -29,6 +29,7 @@ export default function AppProvider({
 }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(defaultValue.isAuthenticated)
   const [profile, setProfile] = useState<User | null>(defaultValue.profile)
+
   return (
     <AppContext.Provider value={{ isAuthenticated, setIsAuthenticated, profile, setProfile }}>
       {children}

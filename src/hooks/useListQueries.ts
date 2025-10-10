@@ -14,7 +14,6 @@ type Props = { categoryType: CategoryType }
 export function useListQueries({ categoryType }: Props) {
   const rawQueryConfig = useQueryConfig()
   const isAll = categoryType === CategoryType.all
-
   const categories = useQuery({
     queryKey: ['categories'],
     queryFn: categoryApi.getCategories,
@@ -33,9 +32,11 @@ export function useListQueries({ categoryType }: Props) {
       //Nếu là all thì xóa category_type vì không chuyền thì sẽ không lọc theo type
       delete (base as QueryConfig).category_type
       return base
+    } else {
+      //Nếu khác all thì chuyền category_type
+      return { ...base, category_type: categorySlug }
     }
-    return base
-  }, [rawQueryConfig, isAll])
+  }, [rawQueryConfig, isAll, categorySlug])
 
   const keyPart = isAll //
     ? 'all' //

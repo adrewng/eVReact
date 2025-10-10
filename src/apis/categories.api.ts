@@ -2,11 +2,11 @@ import type { CategoryDetail, CategoryParent, CategoryType } from '~/types/categ
 import type { SuccessResponse } from '~/types/util.type'
 import http from '~/utils/http'
 
-const URL = 'categories'
+const URL = 'api/category'
 
 const categoryApi = {
   getCategories() {
-    return http.get<SuccessResponse<CategoryParent[]>>(URL)
+    return http.get<SuccessResponse<CategoryParent[]>>(`${URL}/get-all`)
   },
   getCategoryBySlug(slug: CategoryType) {
     return http.get<SuccessResponse<CategoryDetail>>(`${URL}/${slug}`)

@@ -1,6 +1,6 @@
 import axios, { AxiosError, HttpStatusCode, type AxiosInstance } from 'axios'
 import { toast } from 'react-toastify'
-import { URL_LOGIN, URL_LOGOUT, URL_REGISTER } from '~/apis/auth.api'
+import { URL_LOGIN, URL_LOGOUT, URL_REGISTER, URL_UPDATE_PHONE } from '~/apis/auth.api'
 import type { AuthResponse } from '~/types/auth.type'
 import { clearLS, getAccessTokenFromLS, setAccessTokenToLS, setProfileToLS } from './auth'
 
@@ -10,7 +10,8 @@ class Http {
 
   constructor() {
     this.instance = axios.create({
-      baseURL: '/api/',
+      // baseURL: '/api/',
+      baseURL: 'https://electriccarmanagement-swp.up.railway.app/',
       timeout: 10 * 1000,
       headers: { 'Content-Type': 'application/json' }
     })
@@ -51,7 +52,11 @@ class Http {
     // ✅ Response Interceptor
     this.instance.interceptors.response.use(
       (response) => {
-        if (response.config.url === URL_LOGIN || response.config.url === URL_REGISTER) {
+        if (
+          response.config.url === URL_LOGIN ||
+          response.config.url === URL_REGISTER ||
+          response.config.url === URL_UPDATE_PHONE
+        ) {
           setAccessTokenToLS((response.data as AuthResponse).data.access_token)
           this.accessToken = (response.data as AuthResponse).data.access_token
           setProfileToLS((response.data as AuthResponse).data.user)

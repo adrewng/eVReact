@@ -54,7 +54,7 @@ export const baseSchema = yup.object({
     .test('file-size', '≤ 5MB', (v) => !v || v.size <= 5 * 1024 * 1024),
   warranty: yup.string().required('Vui lòng chọn bảo hành'),
   category_id: yup.number().required('Vui lòng chọn loại xe'),
-  planId: yup.number().required('Vui lòng chọn gói dịch vụ')
+  service_id: yup.number().required('Vui lòng chọn gói dịch vụ')
 })
 
 export const vehicleSchema = baseSchema.shape({

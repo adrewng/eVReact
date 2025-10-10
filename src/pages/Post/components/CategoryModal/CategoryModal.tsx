@@ -1,9 +1,7 @@
-import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
-import categoryApi from '~/apis/categories.api'
 import { path } from '~/constants/path'
 import type { CategoryChild, CategoryDetail } from '~/types/category.type'
 
@@ -13,6 +11,8 @@ interface CategoryModalProps {
   selectedCategory: CategoryChild | null
   onCloseModal: () => void
   typeSlug?: string // Optional: filter by specific type (vehicle/battery)
+  categoriesData: CategoryDetail[]
+  isLoading: boolean
 }
 
 export default function CategoryModal({
@@ -20,21 +20,16 @@ export default function CategoryModal({
   onCategorySelect,
   selectedCategory,
   onCloseModal,
+  categoriesData,
+  isLoading,
   typeSlug
 }: CategoryModalProps) {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
   const navigate = useNavigate()
-  const { data: categoriesData, isLoading } = useQuery({
-    queryKey: ['categoriesDetail'],
-    queryFn: () => categoryApi.getCategoryDetailList(),
-    staleTime: 1000 * 60 * 3,
-    enabled: showCategoryModal,
-    refetchOnWindowFocus: false
-  })
 
   // Filter categories based on typeSlug
   const filteredCategories =
-    categoriesData?.data.data?.filter((category) => {
+    categoriesData.filter((category) => {
       if (!typeSlug) return true // Show all if no typeSlug
       return category.slug === typeSlug // Show only specific type
     }) || []
@@ -180,9 +175,8 @@ export default function CategoryModal({
                                   <div className='flex items-center space-x-3'>
                                     <span className='text-xl'>•</span>
                                     <span className='font-medium text-zinc-700'>{category.name}</span>
-                                    {category.count && (
-                                      <span className='text-sm text-zinc-500'>({category.count})</span>
-                                    )}
+
+                                    <span className='text-sm text-zinc-500'>({category.count})</span>
                                   </div>
                                 </motion.button>
                               ))}

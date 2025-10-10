@@ -41,7 +41,7 @@ export default function FilterSidebar({ queryConfig, categories }: FilterSidebar
                   queryConfig={queryConfig}
                   pathName={item.slug === CategoryType.vehicle ? path.vehicle : path.battery}
                   param='category_type'
-                  value={item.slug.toString()}
+                  value={item.slug}
                   label={item.type} // chữ hiển thị bên trái
                   rightBadge={item.count ?? 0} // số bên phải (component sẽ tự bọc badge)
                   hide={true}

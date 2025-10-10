@@ -31,7 +31,7 @@ const RegisterPage = () => {
   })
 
   const navigate = useNavigate()
-  const { setIsAuthenticated } = useContext(AppContext)
+  const { setIsAuthenticated, setProfile } = useContext(AppContext)
 
   const registerMutation = useMutation({
     mutationFn: (body: { email: string; password: string }) => authApi.registerAccount(body)
@@ -39,11 +39,11 @@ const RegisterPage = () => {
 
   const onSubmit = handleSubmit((data) => {
     const body = omit(data, ['confirm_password', 'fullName'])
-    console.log('body:', body)
     registerMutation.mutate(body as { email: string; password: string }, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         reset()
         setIsAuthenticated(true)
+        setProfile(data.data.data.user)
         navigate('/')
       },
       onError: (error) => {

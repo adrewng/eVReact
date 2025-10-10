@@ -27,7 +27,7 @@ const LoginPage = () => {
   } = useForm<FormData>({ resolver: yupResolver(loginSchema) })
 
   const navigate = useNavigate()
-  const { setIsAuthenticated } = useContext(AppContext)
+  const { setIsAuthenticated, setProfile } = useContext(AppContext)
 
   const loginMutation = useMutation({
     mutationFn: (body: FormData) => authApi.loginAccount(body)
@@ -35,9 +35,10 @@ const LoginPage = () => {
 
   const onSubmit = handleSubmit((body) => {
     loginMutation.mutate(body, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         reset()
         setIsAuthenticated(true)
+        setProfile(data.data.data.user)
         navigate('/')
       },
       onError: (error) => {

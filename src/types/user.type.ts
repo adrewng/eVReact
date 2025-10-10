@@ -13,4 +13,5 @@ export interface User {
   cccd?: string
   createdAt?: string
   updateAt?: string
+  isVerify?: boolean
 }

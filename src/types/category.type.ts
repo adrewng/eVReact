@@ -27,7 +27,7 @@ export interface CategoryDetail {
   type: CategoryType | string
   slug: CategoryType
   count?: number
-  childrens?: CategoryChild[]
+  childrens: CategoryChild[]
 }
 
 // export interface CategoryParent {

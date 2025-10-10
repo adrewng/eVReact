@@ -2,6 +2,7 @@ import classNames from 'classnames'
 import { useNavigate } from 'react-router-dom'
 import { path } from '~/constants/path'
 import type { QueryConfig } from '~/hooks/useQueryConfig'
+import useQueryParam from '~/hooks/useQueryParam'
 
 type PathValue = (typeof path)['vehicle' | 'battery' | 'home']
 type FilterKey = keyof QueryConfig
@@ -28,12 +29,11 @@ export default function FilterOptionLink<K extends FilterKey>({
   className
 }: Props<K>) {
   const navigate = useNavigate()
-  const current = new URLSearchParams(queryConfig)
-  const isActive = current.getAll(param as string).includes(value)
 
+  const { [param]: paramValue } = useQueryParam()
+  const isActive = paramValue === value
   const handleToggle = (e: React.MouseEvent) => {
     e.preventDefault()
-
     const newQueryConfig: QueryConfig = {
       ...queryConfig,
       page: '1'
@@ -48,6 +48,7 @@ export default function FilterOptionLink<K extends FilterKey>({
     }
 
     const search = hide ? '' : new URLSearchParams(newQueryConfig).toString()
+    // const search = new URLSearchParams(newQueryConfig).toString()
     navigate({ pathname: pathName, search })
   }
 
@@ -86,9 +87,7 @@ export default function FilterOptionLink<K extends FilterKey>({
       </span>
 
       {/* Right Badge */}
-      {rightBadge && (
-        <span className='px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full'>{rightBadge}</span>
-      )}
+      <span className='px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full'>{rightBadge}</span>
     </button>
   )
 }

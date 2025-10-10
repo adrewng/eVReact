@@ -1,5 +1,6 @@
 import { FaCog, FaHeart, FaUsers } from 'react-icons/fa'
 import type { PostType } from '~/types/post.type'
+import { formatCurrency } from '~/utils/util'
 
 interface PropType {
   post: PostType
@@ -19,8 +20,8 @@ export default function PostCard({ post }: PropType) {
       <div className='flex flex-col flex-1'>
         <div className='flex items-start justify-between p-4'>
           <div>
-            <div className='font-semibold leading-tight'>{post.title}</div>
-            <div className='text-sm text-zinc-600'>{post.product.category.type}</div>
+            <div className='font-semibold truncate leading-tight'>{post.title}</div>
+            <div className='text-sm truncate text-zinc-600'>{post.product.address}</div>
           </div>
           <div className='rounded-full p-2 text-zinc-500 hover:bg-zinc-100 cursor-pointer' aria-label='Save'>
             <FaHeart />
@@ -33,10 +34,10 @@ export default function PostCard({ post }: PropType) {
               <FaUsers /> {post.product.year}
             </div>
             <div className='inline-flex items-center gap-1'>
-              <FaCog /> {post.product.category.type}
+              <FaCog /> {post.product.category.typeSlug}
             </div>
           </div>
-          <div className='font-semibold'>{post.product.price}</div>
+          <div className='font-semibold'>{formatCurrency(Number(post.product.price))}</div>
         </div>
       </div>
     </>

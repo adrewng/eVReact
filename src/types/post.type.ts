@@ -1,12 +1,17 @@
 import type { CategoryChild, CategoryType } from './category.type'
+import type { User } from './user.type'
 
-export interface PostType {
+export interface PostDetailType {
   id: number
   title: string
   priority: number
   created_at: string
   updated_at: string
   product: VehicleType | BatteryType
+  end_date?: string
+  seller?: User
+  reviewer?: User
+  reviewed_by?: string
 }
 
 export interface VehicleType {
@@ -14,7 +19,7 @@ export interface VehicleType {
   brand: string
   model: string
   power: string // công suất (W, kW…)
-  price: number
+  price: string
   address: string
   description: string
   category: CategoryChild
@@ -32,7 +37,7 @@ export interface BatteryType {
   brand: string
   model: string
   capacity: string
-  price: number
+  price: string
   address: string
   description: string
   category: CategoryChild
@@ -44,6 +49,24 @@ export interface BatteryType {
   warranty: string // bảo hành
 }
 
+export interface PostType {
+  id: number
+  title: string
+  description: string
+  created_at: string
+  updated_at: string
+  priority: number
+  product: {
+    brand: string
+    model: string
+    year: number
+    price: string
+    address: string
+    images: string[]
+    image: string
+    category: CategoryChild
+  }
+}
 export interface PostListType {
   posts: PostType[]
   pagination: {
@@ -63,6 +86,6 @@ export interface ProductListConfig {
   price_max?: number | string
   price_min?: number | string
   name?: string
-  category_type?: Omit<CategoryType, 'notFound'>
+  category_type?: Omit<CategoryType, 'notFound' | 'all'>
   category_id?: string
 }

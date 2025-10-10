@@ -102,6 +102,7 @@ export function useFormPersist<TForm extends FieldValues = FieldValues>(
   useEffect(() => {
     const restoreForm = async () => {
       const isDraftMode = queryParam.draft === 'true'
+
       if (!isDraftMode) {
         setIsRestored(true)
         return
@@ -110,19 +111,37 @@ export function useFormPersist<TForm extends FieldValues = FieldValues>(
       // Delay nhỏ để đảm bảo Controller đã mount
       await new Promise((resolve) => setTimeout(resolve, 50))
 
-      const raw = localStorage.getItem(jsonKey)
-      if (raw) {
-        try {
-          const parsed = JSON.parse(raw) as { data: Partial<TForm> }
-          const data = parsed?.data ?? {}
-          // set từng field để không đè lên field không tồn tại
-          Object.entries(data).forEach(([k, v]) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            setValue(k as any, v as any, { shouldDirty: false, shouldValidate: false })
-          })
-        } catch {
-          /* noop */
+      // Lấy partitionKey đã lưu trước đó
+      const lastPartitionKey = localStorage.getItem(`${storageKeyBase}:lastPartitionKey`)
+      const actualPartitionKey = lastPartitionKey || partitionKey
+      const actualJsonKey = makeJsonKey(storageKeyBase, actualPartitionKey)
+
+      let raw = localStorage.getItem(actualJsonKey)
+
+      // Nếu vẫn không tìm thấy, thử tìm với các partitionKey khác
+      if (!raw) {
+        const possibleKeys = [`${storageKeyBase}`, `${storageKeyBase}:vehicle`, `${storageKeyBase}:battery`]
+
+        for (const key of possibleKeys) {
+          raw = localStorage.getItem(key)
+          if (raw) {
+            break
+          }
         }
+      }
+
+      if (raw) {
+        const parsed = JSON.parse(raw) as { data: Partial<TForm> }
+        const data = parsed?.data ?? {}
+
+        // set từng field để không đè lên field không tồn tại
+        Object.entries(data).forEach(([k, v]) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setValue(k as any, v as any, { shouldDirty: false, shouldValidate: false })
+        })
+
+        // Delay thêm để đảm bảo setValue hoàn thành
+        await new Promise((resolve) => setTimeout(resolve, 100))
       }
 
       // Images
@@ -150,7 +169,6 @@ export function useFormPersist<TForm extends FieldValues = FieldValues>(
   }, [jsonKey, imgKey])
 
   // Không có autosave - chỉ lưu khi gọi saveNow()
-
   const saveNow = useCallback(async () => {
     const curr = getValues() as Record<string, unknown>
     const serializable = pickSerializable(
@@ -161,6 +179,9 @@ export function useFormPersist<TForm extends FieldValues = FieldValues>(
 
     // Lưu form data
     localStorage.setItem(jsonKey, JSON.stringify({ data: serializable, savedAt: Date.now() }))
+
+    // Lưu partitionKey để biết key nào đã được sử dụng
+    localStorage.setItem(`${storageKeyBase}:lastPartitionKey`, partitionKey || '')
 
     // Lưu images
     const imgs: File[] = []
@@ -178,12 +199,13 @@ export function useFormPersist<TForm extends FieldValues = FieldValues>(
     } else {
       await clearImagesFromIDB(imgKey)
     }
-  }, [getValues, jsonKey, imgKey, includeKeys, excludeKeys])
+  }, [getValues, jsonKey, imgKey, includeKeys, excludeKeys, storageKeyBase, partitionKey])
 
   const clear = useCallback(async () => {
     await clearImagesFromIDB(imgKey)
     localStorage.removeItem(jsonKey)
-  }, [imgKey, jsonKey])
+    localStorage.removeItem(`${storageKeyBase}:lastPartitionKey`)
+  }, [imgKey, jsonKey, storageKeyBase])
 
   return { saveNow, clear, isRestored }
 }
