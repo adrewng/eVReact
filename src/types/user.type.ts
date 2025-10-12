@@ -15,3 +15,29 @@ export interface User {
   updateAt?: string
   isVerify?: boolean
 }
+
+export interface ProfileData {
+  fullname: string
+  dateOfBirth: string
+  gender: string
+  location: string
+  avatar: string
+  email: string
+  phone: string
+  balance: number
+  verificationStatus: string
+  total_posts: number
+  total_transactions: number
+  recentTransactions: {
+    description: string
+    date: string
+    amount: number
+  }[]
+  paymentMethod: {
+    cardType: string
+    cardHolder: string
+    cardNumber: string
+    expiry: string
+    balance: number
+  }
+}
