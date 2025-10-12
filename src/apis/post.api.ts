@@ -1,4 +1,5 @@
 import type { PostFormValues } from '~/schemas/post.schema'
+import type { PostListTypeConfig, PostListType as PostListTypeAdmin, PostListStatus } from '~/types/admin/post.type'
 import type { CategoryType } from '~/types/category.type'
 import type { PostListType, ProductListConfig } from '~/types/post.type'
 import type { PlanList } from '~/types/service.type'
@@ -18,6 +19,12 @@ const postApi = {
   },
   getPlans(type: Extract<CategoryType, 'vehicle' | 'battery'>) {
     return http.get<SuccessResponse<PlanList>>(`${URL_GET_PLANS}/${type}`)
+  },
+  getPostsByAdmin(params: PostListTypeConfig) {
+    return http.get<SuccessResponse<PostListTypeAdmin>>('/api/post/get-all', { params })
+  },
+  getPostByMe(params: PostListStatus) {
+    return http.get<SuccessResponse<PostListType>>('/api/post/user-posts', { params })
   }
 }
 
