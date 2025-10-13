@@ -4,6 +4,7 @@ import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 import PhoneRequiredModal from '~/components/PhoneRequiredModal'
 import { path } from '~/constants/path'
 import { AppContext } from '~/contexts/app.context'
+import Dashboard from '~/layouts/Dashboard'
 import MainLayout from '~/layouts/MainLayout'
 import Account from '~/pages/Account/layouts/Account'
 import AccountNotification from '~/pages/Account/pages/Notification/AccountNotification'
@@ -11,8 +12,10 @@ import AccountPost from '~/pages/Account/pages/Posts/AccountPost'
 import AccountProfile from '~/pages/Account/pages/Profile/AccountProfile'
 import AllProductList from '~/pages/AllProductList'
 import BatteryList from '~/pages/BatteryList'
+import Home from '~/pages/Home/Home'
 import Login from '~/pages/Login'
 import Post from '~/pages/Post'
+import PostManagement from '~/pages/PostManagement/PostManagement'
 import Profile from '~/pages/Profile'
 import Register from '~/pages/Register'
 import VehicleList from '~/pages/VehicleList'
@@ -97,16 +100,15 @@ export default function useRouteElements() {
         { path: path.accountProfile, element: <AccountProfile /> },
         { path: path.accountNotification, element: <AccountNotification /> }
       ]
+    },
+    {
+      path: path.admin,
+      element: <Dashboard />,
+      children: [
+        { path: path.adminDashboard, element: <Home /> },
+        { path: path.adminPosts, element: <PostManagement /> }
+      ]
     }
-
-    // {
-    //   path: path.admin,
-    //   element: <Dashboard />,
-    //   children: [
-    //     { path: path.adminDashboard, element: <Home /> },
-    //     { path: path.adminPosts, element: <PostManagement /> }
-    //   ]
-    // }
   ])
   return element
 }
