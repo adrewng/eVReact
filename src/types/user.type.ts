@@ -17,7 +17,7 @@ export interface User {
 }
 
 export interface ProfileData {
-  fullname: string
+  full_name: string
   dateOfBirth: string
   gender: string
   location: string
@@ -40,4 +40,14 @@ export interface ProfileData {
     expiry: string
     balance: number
   }
+}
+
+export interface BodyUpdateProfile {
+  email: string
+  avatar: string
+  full_name: string
+  phone: string
+  gender: string
+  dateOfBirth: string
+  location: string
 }
