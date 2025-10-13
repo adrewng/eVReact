@@ -1,21 +1,27 @@
 import { Car, ChevronRight, Zap } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { path } from '~/constants/path'
+import type { ProfileData } from '~/types/user.type'
+type Props = {
+  profile: ProfileData | undefined
+}
 
-export default function StatsProfile() {
+export default function StatsProfile(props: Props) {
+  const { profile } = props
   const stats = [
     {
       label: 'Active Posts',
-      value: 10,
+      value: profile?.total_posts || 0,
       icon: Car,
-      color: 'text-gray-900'
-      // path: path.accountPosts
+      color: 'text-gray-900',
+      path: path.accountPosts
     },
     {
       label: 'Transactions',
-      value: 22,
+      value: profile?.total_transactions || 0,
       icon: Zap,
-      color: 'text-gray-900'
-      //   path: path.accountPayment
+      color: 'text-gray-900',
+      path: path.accountPayment
     }
     // { label: 'Member Since', value: profileData.memberSince, icon: Calendar, color: 'text-gray-900' }
   ]
