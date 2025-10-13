@@ -1,7 +1,12 @@
 import { Edit2, Mail, MapPin, Shield } from 'lucide-react'
-import React from 'react'
+import StatsProfile from './components/StatsProfile'
+import { useState } from 'react'
+import ProfileOverview from './components/ProfileOverview'
+import ProfileSecurity from './components/ProfileSecurity'
 
 export default function AccountProfile() {
+  const [activeTab, setActiveTab] = useState('overview')
+
   return (
     <div className='min-h-screen bg-white flex-1'>
       AccountProfile
@@ -53,6 +58,31 @@ export default function AccountProfile() {
             </div>
           </div>
         </div>
+
+        {/* Stats Cards */}
+        <StatsProfile />
+
+        {/* Navigation Tabs */}
+        <div className='border-b border-gray-200'>
+          <div className='flex gap-8'>
+            {['overview', 'security'].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`pb-4 text-sm font-medium transition-all relative ${
+                  activeTab === tab ? 'text-gray-900' : 'text-gray-500 hover:text-gray-900'
+                }`}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                {activeTab === tab && <div className='absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900'></div>}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Content Section */}
+        {activeTab == 'overview' && <ProfileOverview />}
+        {activeTab == 'security' && <ProfileSecurity />}
       </div>
     </div>
   )
