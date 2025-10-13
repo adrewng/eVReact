@@ -40,7 +40,6 @@ export default function SidebarAccount() {
   }
   return (
     <div className='h-full bg-white border-r border-gray-200 flex flex-col '>
-      SidebarAccount
       {/* User Profile Section */}
       <div className='p-6 border-b border-gray-200'>
         <div className='flex items-center gap-3'>
@@ -129,6 +128,12 @@ export default function SidebarAccount() {
           )
         })}
       </nav>
+      {/* Footer */}
+      <div className='p-4 border-t border-gray-200'>
+        <button className='w-full px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-xl transition-all duration-200'>
+          Settings
+        </button>
+      </div>
     </div>
   )
 }
