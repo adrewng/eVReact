@@ -1,4 +1,3 @@
-import React from 'react'
 import AuthHeader from '~/components/AuthHeader'
 import SidebarAccount from '../components/SidebarAccount'
 import { Outlet } from 'react-router-dom'
@@ -7,6 +6,7 @@ export default function Account() {
   return (
     <div className='min-h-screen flex flex-col'>
       <AuthHeader />
+      {/* Main content */}
       <div className='flex flex-1'>
         {/* {Sidebar} */}
         <div className='w-64 flex-shrink-0'>
@@ -19,6 +19,7 @@ export default function Account() {
           <Outlet />
         </div>
       </div>
+      {/* Footer */}
     </div>
   )
 }

@@ -1,22 +1,20 @@
-import type { ProfileData, User } from '~/types/user.type'
+import type { BodyUpdateProfile, ProfileData, User } from '~/types/user.type'
 import type { SuccessResponse } from '~/types/util.type'
 import http from '~/utils/http'
-
-interface BodyUpdateProfile {
-  email: string
-  full_name: string
-  phone: string
-  gender: string
-  date_of_birth: string
-  address: string
-}
 
 const accountApi = {
   getProfile() {
     return http.get<SuccessResponse<ProfileData>>('/api/user/user-detail')
   },
   updateProfile(body: BodyUpdateProfile) {
-    return http.put<SuccessResponse<User>>('/api/user/update-user/1', body, {
+    const formData = new FormData()
+    formData.append('full_name', body.full_name)
+    formData.append('email', body.email)
+    if (body.avatar) {
+      formData.append('avatar', body.avatar)
+    }
+
+    return http.put<SuccessResponse<User>>('/api/user/update-user', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
   }

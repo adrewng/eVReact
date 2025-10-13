@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Bell, UserPen, Newspaper, ChevronRight, ChevronDown } from 'lucide-react'
 import { path } from '~/constants/path'
 import { NavLink } from 'react-router-dom'

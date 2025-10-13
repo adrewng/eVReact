@@ -19,6 +19,7 @@ export const path = {
   accountPrivacySetting: '/setting/privacy',
   //admin
   admin: '/admin',
+  adminPosts: '/admin/posts',
   adminDashboard: '/admin/dashboard',
   adminListings: '/admin/listings',
   adminUsers: '/admin/users',
