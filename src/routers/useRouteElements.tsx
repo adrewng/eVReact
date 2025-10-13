@@ -5,6 +5,10 @@ import PhoneRequiredModal from '~/components/PhoneRequiredModal'
 import { path } from '~/constants/path'
 import { AppContext } from '~/contexts/app.context'
 import MainLayout from '~/layouts/MainLayout'
+import Account from '~/pages/Account/layouts/Account'
+import AccountNotification from '~/pages/Account/pages/Notification/AccountNotification'
+import AccountPost from '~/pages/Account/pages/Posts/AccountPost'
+import AccountProfile from '~/pages/Account/pages/Profile/AccountProfile'
 import AllProductList from '~/pages/AllProductList'
 import BatteryList from '~/pages/BatteryList'
 import Login from '~/pages/Login'
@@ -84,7 +88,25 @@ export default function useRouteElements() {
           element: <AllProductList />
         }
       ]
+    },
+    {
+      path: path.account,
+      element: <Account />,
+      children: [
+        { path: path.accountPosts, element: <AccountPost /> },
+        { path: path.accountProfile, element: <AccountProfile /> },
+        { path: path.accountNotification, element: <AccountNotification /> }
+      ]
     }
+
+    // {
+    //   path: path.admin,
+    //   element: <Dashboard />,
+    //   children: [
+    //     { path: path.adminDashboard, element: <Home /> },
+    //     { path: path.adminPosts, element: <PostManagement /> }
+    //   ]
+    // }
   ])
   return element
 }
