@@ -3,9 +3,21 @@ import StatsProfile from './components/StatsProfile'
 import { useState } from 'react'
 import ProfileOverview from './components/ProfileOverview'
 import ProfileSecurity from './components/ProfileSecurity'
+import { useQuery } from '@tanstack/react-query'
+import accountApi from '~/apis/account.api'
 
 export default function AccountProfile() {
   const [activeTab, setActiveTab] = useState('overview')
+
+  const { data: profileData } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => accountApi.getProfile()
+  })
+
+  const profile = profileData?.data.data
+  console.log('profile: ', profile)
+
+  console.log('profile-data: ', profileData)
 
   return (
     <div className='min-h-screen bg-white flex-1'>
@@ -81,7 +93,7 @@ export default function AccountProfile() {
         </div>
 
         {/* Content Section */}
-        {activeTab == 'overview' && <ProfileOverview />}
+        {activeTab == 'overview' && <ProfileOverview profile={profile} />}
         {activeTab == 'security' && <ProfileSecurity />}
       </div>
     </div>
