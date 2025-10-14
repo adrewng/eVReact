@@ -1,21 +1,74 @@
-import { Edit2, Mail, MapPin, Shield } from 'lucide-react'
+import { Check, Edit2, Mail, MapPin, Shield } from 'lucide-react'
 import StatsProfile from './components/StatsProfile'
-import { useState } from 'react'
+import { useContext, useMemo, useRef, useState } from 'react'
 import ProfileOverview from './components/ProfileOverview'
 import ProfileSecurity from './components/ProfileSecurity'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import accountApi from '~/apis/account.api'
+import { AppContext } from '~/contexts/app.context'
+import { setProfileToLS } from '~/utils/auth'
 
 export default function AccountProfile() {
   const [activeTab, setActiveTab] = useState('overview')
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [file, setFile] = useState<File>()
+  const [isEditAvatar, setIsEditAvatar] = useState(false)
+  const { setProfile } = useContext(AppContext)
 
-  const { data: profileData } = useQuery({
+  const previewImage = useMemo(() => {
+    return file ? URL.createObjectURL(file) : ''
+  }, [file])
+
+  const { data: profileData, refetch } = useQuery({
     queryKey: ['profile'],
     queryFn: () => accountApi.getProfile()
   })
-
   const profile = profileData?.data.data.user
   console.log('profile: ', profile)
+
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const avatar = event.target.files?.[0]
+    setFile(avatar)
+  }
+  const handleUpload = () => {
+    fileInputRef.current?.click()
+  }
+  const handleEditClick = () => {
+    setIsEditAvatar(!isEditAvatar)
+  }
+
+  const uploadAvatarMutation = useMutation({
+    mutationFn: (data: FormData) => accountApi.updateAvatar(data),
+    onSuccess: async (response) => {
+      console.log('Cập nhật thành công!', response)
+      // setProfile(response.data.data)
+      // setProfileToLS(response.data.data)
+      // const { data: newData } = await refetch()
+      // console.log('data sau khi refetch', newData)
+      // setIsEdit(false)
+    },
+    onError: (error) => {
+      console.log('Cập nhật thất bại!', error)
+      // const axiosError = error as AxiosError
+      // console.error('❌ onError', axiosError.response?.data || axiosError.message)
+      // console.log('Chi tiết lỗi:', (error.response?.data as any).data)
+    }
+  })
+  const handleUploadAvatar = () => {
+    if (!file) return
+
+    const formData = new FormData()
+    formData.append('avatar', file)
+    // ----
+    formData.append('full_name', profile.full_name)
+    formData.append('email', profile.email)
+    formData.append('gender', profile.gender)
+    formData.append('phone', profile.phone)
+    formData.append('address', profile.address)
+
+    const uploadRes = uploadAvatarMutation.mutate(formData)
+    console.log(uploadRes)
+  }
 
   return (
     <div className='min-h-screen bg-white flex-1'>
@@ -31,11 +84,40 @@ export default function AccountProfile() {
               {/* Profile Image */}
               <div className='relative group'>
                 <div className='w-24 h-24 rounded-2xl overflow-hidden bg-gray-100 ring-2 ring-gray-200'>
-                  <img src={profile.avatar} alt='Profile' className='w-full h-full object-cover' />
+                  <img
+                    src={previewImage || profile.avatar || 'https://picsum.photos/32'}
+                    alt='Profile'
+                    className='w-full h-full object-cover'
+                  />
                 </div>
-                <button className='absolute -bottom-2 -right-2 w-8 h-8 bg-gray-900 hover:bg-gray-800 text-white rounded-lg flex items-center justify-center transition-all shadow-lg'>
-                  <Edit2 size={14} />
-                </button>
+                <input
+                  type='file'
+                  accept='.jpg, .png, .jpeg'
+                  className='hidden'
+                  ref={fileInputRef}
+                  onChange={onFileChange}
+                ></input>
+                {!isEditAvatar ? (
+                  <button
+                    className='absolute -bottom-2 -right-2 w-8 h-8 bg-gray-900 hover:bg-gray-800 text-white rounded-lg flex items-center justify-center transition-all shadow-lg'
+                    onClick={() => {
+                      handleEditClick()
+                      handleUpload()
+                    }}
+                  >
+                    <Edit2 size={14} />
+                  </button>
+                ) : (
+                  <button
+                    className='absolute -bottom-2 -right-2 w-8 h-8 bg-gray-900 hover:bg-gray-800 text-white rounded-lg flex items-center justify-center transition-all shadow-lg'
+                    onClick={() => {
+                      handleEditClick()
+                      handleUploadAvatar()
+                    }}
+                  >
+                    <Check size={14} />
+                  </button>
+                )}
               </div>
 
               {/* Name & Status */}
@@ -89,7 +171,7 @@ export default function AccountProfile() {
           </div>
 
           {/* Content Section */}
-          {activeTab == 'overview' && <ProfileOverview profile={profile} />}
+          {activeTab == 'overview' && <ProfileOverview profile={profile} refetch={refetch} />}
           {activeTab == 'security' && <ProfileSecurity />}
         </div>
       )}

@@ -1,11 +1,11 @@
-import AuthHeader from '~/components/AuthHeader'
 import SidebarAccount from '../components/SidebarAccount'
 import { Outlet } from 'react-router-dom'
+import NavHeader from '~/components/NavHeader'
 
 export default function Account() {
   return (
     <div className='min-h-screen flex flex-col'>
-      <AuthHeader />
+      <NavHeader />
       {/* Main content */}
       <div className='flex flex-1'>
         {/* {Sidebar} */}

@@ -123,8 +123,8 @@ export default function AccountPost() {
   console.log(accountPostData)
 
   // const getFilteredPosts = () => {
-  //   if (mockPosts) {
-  //     let filtered = activeTab === 'all' ? mockPosts : mockPosts.filter((post) => post.status === activeTab)
+  //   if (accountPostData) {
+  //     let filtered = activeTab === 'all' ? accountPostData : accountPostData.filter((post) => post.status === activeTab)
   //     if (searchQuery) {
   //       filtered = filtered.filter(
   //         (post) =>
@@ -256,7 +256,7 @@ export default function AccountPost() {
                     <div className='flex items-center gap-6 mt-4 text-sm'>
                       <div className='flex items-center gap-2'>
                         {/* <DollarSign className='w-5 h-5 text-emerald-600' /> */}
-                        <span className='font-bold text-emerald-600 text-xl'>${post.price}</span>
+                        <span className='font-bold text-emerald-600 text-xl'>{post.price}VND</span>
                       </div>
                       {post.vehicle && (
                         <>

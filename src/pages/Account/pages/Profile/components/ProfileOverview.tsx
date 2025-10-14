@@ -1,12 +1,20 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import {
+  useMutation,
+  type QueryObserverResult,
+  type RefetchOptions,
+  type RefetchQueryFilters
+} from '@tanstack/react-query'
 import type { AxiosError } from 'axios'
 import { Check, Edit2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import accountApi from '~/apis/account.api'
+import { AppContext } from '~/contexts/app.context'
 import type { BodyUpdateProfile, ProfileData } from '~/types/user.type'
+import { setProfileToLS } from '~/utils/auth'
 
 type Props = {
   profile: ProfileData | undefined
+  refetch: (options?: RefetchOptions & RefetchQueryFilters) => Promise<QueryObserverResult<ProfileData>>
 }
 
 // type FormData = Pick<UserSchema, 'full_name' | 'email' | 'phone' | 'avatar' | 'address'>
@@ -14,21 +22,21 @@ type Props = {
 // const profileSchema = userSchema.pick(['full_name', 'address', 'avatar', 'email', 'phone'])
 
 export default function ProfileOverview(props: Props) {
-  const { profile } = props
+  const { profile, refetch } = props
   const [isEdit, setIsEdit] = useState(false)
-  const initialFormData = { full_name: '', gender: '', dateOfBirth: '', phone: '', location: '', email: '' }
+  const initialFormData = { full_name: '', gender: '', phone: '', address: '', email: '', avatar: '' }
   const [formData, setFormData] = useState(initialFormData)
-  const queryClient = useQueryClient()
+  const { setProfile } = useContext(AppContext)
 
   useEffect(() => {
     if (profile) {
       setFormData({
         full_name: profile.full_name || '',
         gender: profile.gender || '',
-        dateOfBirth: profile.dateOfBirth || '',
         phone: profile.phone || '',
-        location: profile.location || '',
-        email: profile.email || ''
+        address: profile.address || '',
+        email: profile.email || '',
+        avatar: profile.avatar || ''
       })
     }
   }, [profile])
@@ -38,21 +46,16 @@ export default function ProfileOverview(props: Props) {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleToggleEdit = () => {
-    // Nếu đang ở edit mode thì submit
-    if (isEdit) {
-      console.log('Submitting...', formData)
-      updateProfileMutation.mutate(formData as BodyUpdateProfile)
-    }
-    setIsEdit((prev) => !prev)
-  }
   const updateProfileMutation = useMutation({
     mutationFn: (data: BodyUpdateProfile) => accountApi.updateProfile(data),
-    onSuccess: () => {
+    onSuccess: async (response) => {
       console.log('Cập nhật thành công!')
 
-      queryClient.invalidateQueries({ queryKey: ['profile'] })
-      const newData = queryClient.getQueryData(['profile'])
+      setProfile(response.data.data)
+      setProfileToLS(response.data.data)
+      setFormData(response.data.data)
+
+      const { data: newData } = await refetch()
       console.log('data sau khi refetch', newData)
       setIsEdit(false)
     },
@@ -63,17 +66,19 @@ export default function ProfileOverview(props: Props) {
       console.log('Chi tiết lỗi:', (error.response?.data as any).data)
     }
   })
+  const handleToggleEdit = () => {
+    // Nếu đang ở edit mode thì submit
+    if (isEdit) {
+      console.log('Submitting...', formData)
+      updateProfileMutation.mutate(formData as BodyUpdateProfile)
+    }
+    setIsEdit((prev) => !prev)
+  }
 
   return (
     <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
       {/* Personal Information */}
       <div className='bg-white border border-gray-200 rounded-2xl p-6 hover:border-gray-900 transition-all'>
-        {/* <div className='flex items-center justify-between mb-6'>
-                  <h2 className='text-xl font-bold text-gray-900'>Personal Information</h2>
-                  <button className='w-9 h-9 hover:bg-gray-100 rounded-lg flex items-center justify-center transition-colors'>
-                    <Edit2 size={16} className='text-gray-600' />
-                  </button>
-                </div> */}
         <div className='flex items-center justify-between mb-6'>
           <h2 className='text-xl font-bold text-gray-900'>Personal Information</h2>
           <button
@@ -88,7 +93,6 @@ export default function ProfileOverview(props: Props) {
           <div className='grid grid-cols-2 gap-5'>
             <div>
               <label className='text-xs font-medium text-gray-500 uppercase tracking-wider block mb-2'>Full Name</label>
-              {/* <p className='text-base font-semibold text-gray-900'>{profile.full_name}</p> */}
               {isEdit ? (
                 <input
                   type='text'
@@ -103,7 +107,6 @@ export default function ProfileOverview(props: Props) {
             </div>
             <div>
               <label className='text-xs font-medium text-gray-500 uppercase tracking-wider block mb-2'>Gender</label>
-              {/* <p className='text-base font-semibold text-gray-900'>{profile.gender || '_'}</p> */}
               {isEdit ? (
                 <input
                   type='text'
@@ -119,28 +122,11 @@ export default function ProfileOverview(props: Props) {
           </div>
 
           <div className='grid grid-cols-2 gap-5'>
-            <div>
-              <label className='text-xs font-medium text-gray-500 uppercase tracking-wider block mb-2'>
-                Date of Birth
-              </label>
-              {/* <p className='text-base font-semibold text-gray-900'>{profile.dateOfBirth || '_'}</p> */}
-              {isEdit ? (
-                <input
-                  type='text'
-                  name='dateOfBirth'
-                  value={formData.dateOfBirth}
-                  onChange={handleChange}
-                  className='border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
-                />
-              ) : (
-                <p className='text-base font-semibold text-gray-900'>{profile?.dateOfBirth || '_'}</p>
-              )}
-            </div>
+            {/*  */}
             <div>
               <label className='text-xs font-medium text-gray-500 uppercase tracking-wider block mb-2'>
                 Phone Number
               </label>
-              {/* <p className='text-base font-semibold text-gray-900'>{profile.phone || '_'}</p> */}
               {isEdit ? (
                 <input
                   type='text'
@@ -153,39 +139,36 @@ export default function ProfileOverview(props: Props) {
                 <p className='text-base font-semibold text-gray-900'>{profile?.phone || '_'}</p>
               )}
             </div>
+            <div>
+              <label className='text-xs font-medium text-gray-500 uppercase tracking-wider block mb-2'>
+                Email Address
+              </label>
+              {isEdit ? (
+                <input
+                  type='text'
+                  name='email'
+                  value={formData.email}
+                  onChange={handleChange}
+                  className='border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
+                />
+              ) : (
+                <p className='text-base font-semibold text-gray-900'>{profile?.email}</p>
+              )}
+            </div>
           </div>
 
           <div>
             <label className='text-xs font-medium text-gray-500 uppercase tracking-wider block mb-2'>Address</label>
-            {/* <p className='text-base font-semibold text-gray-900'>{profile.location || '_'}</p> */}
             {isEdit ? (
               <input
                 type='text'
-                name='location'
-                value={formData.location}
+                name='address'
+                value={formData.address}
                 onChange={handleChange}
                 className='border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
               />
             ) : (
-              <p className='text-base font-semibold text-gray-900'>{profile?.location || '_'}</p>
-            )}
-          </div>
-
-          <div>
-            <label className='text-xs font-medium text-gray-500 uppercase tracking-wider block mb-2'>
-              Email Address
-            </label>
-            {/* <p className='text-base font-semibold text-gray-900'>{profile.email}</p> */}
-            {isEdit ? (
-              <input
-                type='text'
-                name='email'
-                value={formData.email}
-                onChange={handleChange}
-                className='border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
-              />
-            ) : (
-              <p className='text-base font-semibold text-gray-900'>{profile?.email}</p>
+              <p className='text-base font-semibold text-gray-900'>{profile?.address || '_'}</p>
             )}
           </div>
         </div>

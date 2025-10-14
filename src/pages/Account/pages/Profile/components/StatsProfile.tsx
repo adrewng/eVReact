@@ -29,7 +29,7 @@ export default function StatsProfile(props: Props) {
     <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
       {stats.map((stat, index) => (
         <Link
-          to=''
+          to={stat.path}
           key={index}
           className='bg-gray-50 rounded-2xl p-6 border border-gray-100 hover:border-gray-900 transition-all group'
         >
