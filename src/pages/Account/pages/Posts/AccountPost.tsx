@@ -7,98 +7,25 @@ import postApi from '~/apis/post.api'
 import useQueryParam from '~/hooks/useQueryParam'
 import type { PostListStatus } from '~/types/admin/post.type'
 
-const mockPosts = [
-  {
-    id: 'EV20240001',
-    title: 'Tesla Model 3 Standard Range Plus 2020',
-    category: 'Electric Vehicle',
-    type: 'Car',
-    price: 32500,
-    batteryHealth: 92,
-    mileage: '45,000 km',
-    location: 'Ho Chi Minh City',
-    views: 1245,
-    status: 'pending',
-    createdAt: '2025-10-01',
-    thumbnail: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=400&h=300&fit=crop'
-  },
-  {
-    id: 'BAT20240002',
-    title: 'LiFePO4 Battery Pack 48V 100Ah',
-    category: 'Battery',
-    type: 'Battery Pack',
-    price: 1200,
-    batteryHealth: 98,
-    capacity: '100Ah',
-    location: 'Hanoi',
-    views: 856,
-    status: 'accepted',
-    createdAt: '2025-09-28',
-    thumbnail: 'https://images.unsplash.com/photo-1609853575419-d1b9a6c2c7b5?w=400&h=300&fit=crop'
-  },
-  {
-    id: 'EV20240003',
-    title: 'Nissan Leaf SV 2019 - Low Mileage',
-    category: 'Electric Vehicle',
-    type: 'Car',
-    price: 24000,
-    batteryHealth: 88,
-    mileage: '32,000 km',
-    location: 'Da Nang',
-    views: 2103,
-    status: 'certified',
-    createdAt: '2025-09-25',
-    thumbnail: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=400&h=300&fit=crop'
-  },
-  {
-    id: 'BAT20240004',
-    title: 'Tesla Battery Module 24V 5.3kWh',
-    category: 'Battery',
-    type: 'Battery Module',
-    price: 850,
-    batteryHealth: 95,
-    capacity: '5.3kWh',
-    location: 'Ho Chi Minh City',
-    views: 423,
-    status: 'certifying',
-    createdAt: '2025-10-03',
-    thumbnail: 'https://images.unsplash.com/photo-1593941707874-ef25b8b4a92b?w=400&h=300&fit=crop'
-  },
-  {
-    id: 'EV20240005',
-    title: 'Chevrolet Bolt EV Premier 2021',
-    category: 'Electric Vehicle',
-    type: 'Car',
-    price: 28500,
-    batteryHealth: 19,
-    mileage: '28,000 km',
-    location: 'Can Tho',
-    views: 678,
-    status: 'rejected',
-    createdAt: '2025-09-30',
-    thumbnail: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=300&fit=crop'
-  }
-]
-
-const statusConfig = {
-  pending: { label: 'Pending Review', color: 'text-amber-700 bg-amber-50 border-amber-200', dot: 'bg-amber-500' },
-  accepted: { label: 'Published', color: 'text-emerald-700 bg-emerald-50 border-emerald-200', dot: 'bg-emerald-500' },
-  rejected: { label: 'Rejected', color: 'text-rose-700 bg-rose-50 border-rose-200', dot: 'bg-rose-500' },
-  certified: { label: 'Certified', color: 'text-blue-700 bg-blue-50 border-blue-200', dot: 'bg-blue-500' },
-  certifying: {
-    label: 'Under Certification',
-    color: 'text-purple-700 bg-purple-50 border-purple-200',
-    dot: 'bg-purple-500'
-  }
-}
+// const statusConfig = {
+//   pending: { label: 'Pending Review', color: 'text-amber-700 bg-amber-50 border-amber-200', dot: 'bg-amber-500' },
+//   accepted: { label: 'Published', color: 'text-emerald-700 bg-emerald-50 border-emerald-200', dot: 'bg-emerald-500' },
+//   rejected: { label: 'Rejected', color: 'text-rose-700 bg-rose-50 border-rose-200', dot: 'bg-rose-500' },
+//   certified: { label: 'Certified', color: 'text-blue-700 bg-blue-50 border-blue-200', dot: 'bg-blue-500' },
+//   certifying: {
+//     label: 'Under Certification',
+//     color: 'text-purple-700 bg-purple-50 border-purple-200',
+//     dot: 'bg-purple-500'
+//   }
+// }
 
 const tabs = [
-  { id: 'all', label: 'All' },
-  { id: 'pending', label: 'Pending' },
-  { id: 'accepted', label: 'Published' },
-  { id: 'rejected', label: 'Rejected' },
-  { id: 'certified', label: 'Certified' },
-  { id: 'certifying', label: 'Certifying' }
+  { id: 'all', label: 'All', statusQuery: '' },
+  { id: 'pending', label: 'Pending', statusQuery: 'pending' },
+  { id: 'approved', label: 'Published', statusQuery: 'approved' },
+  { id: 'rejected', label: 'Rejected', statusQuery: 'rejected' },
+  { id: 'certified', label: 'Certified', statusQuery: 'certified' },
+  { id: 'certifying', label: 'Certifying', statusQuery: 'certifying' }
 ]
 
 type QueryConfigStatus = {
@@ -173,7 +100,7 @@ export default function AccountPost() {
               to={{
                 pathname: path.accountPosts,
                 search: createSearchParams({
-                  status: tab.label.toLowerCase()
+                  status: tab.statusQuery
                 }).toString()
               }}
               key={tab.id}
