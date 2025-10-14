@@ -41,11 +41,10 @@ export default function AccountProfile() {
     mutationFn: (data: FormData) => accountApi.updateAvatar(data),
     onSuccess: async (response) => {
       console.log('Cập nhật thành công!', response)
-      // setProfile(response.data.data)
-      // setProfileToLS(response.data.data)
-      // const { data: newData } = await refetch()
-      // console.log('data sau khi refetch', newData)
-      // setIsEdit(false)
+      setProfile(response.data.data)
+      setProfileToLS(response.data.data)
+      const { data: newData } = await refetch()
+      console.log('data sau khi refetch', newData)
     },
     onError: (error) => {
       console.log('Cập nhật thất bại!', error)
@@ -132,10 +131,10 @@ export default function AccountProfile() {
                   )}
                 </div>
                 <div className='flex items-center gap-6 text-sm text-gray-600'>
-                  {profile.location && (
+                  {profile.address && (
                     <span className='flex items-center gap-1.5'>
                       <MapPin className='w-4 h-4' />
-                      {profile.location}
+                      {profile.address}
                     </span>
                   )}
                   {profile.email && (
