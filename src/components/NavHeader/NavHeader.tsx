@@ -154,7 +154,10 @@ export default function NavHeader() {
               className='flex items-center py-1 cursor-pointer'
               renderProp={
                 <div className='relative rounded-sm border border-gray-200 border-t-0 bg-white shadow-md'>
-                  <Link to='/profile' className='block w-full bg-white py-3 px-4 text-left hover:bg-slate-50'>
+                  <Link
+                    to={path.accountProfile}
+                    className='block w-full bg-white py-3 px-4 text-left hover:bg-slate-50'
+                  >
                     Tài khoản của tôi
                   </Link>
                   <button
@@ -168,7 +171,7 @@ export default function NavHeader() {
             >
               <div className='size-8 rounded-full overflow-hidden ring-1 ring-zinc-200'>
                 <img
-                  src={profile?.avatar || 'https://picsum.photos/32'}
+                  src={profile?.user.avatar || 'https://picsum.photos/32'}
                   alt='User'
                   className='size-full object-cover'
                 />

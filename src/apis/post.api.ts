@@ -24,7 +24,7 @@ const postApi = {
     return http.get<SuccessResponse<PostListTypeAdmin>>('/api/post/get-all', { params })
   },
   getPostByMe(params: PostListStatus) {
-    return http.get<SuccessResponse<PostListType>>('/api/post/user-posts', { params })
+    return http.get<SuccessResponse<PostListType>>('/api/user/user-posts', { params })
   },
   updatePostByAdmin(id: string, status: string) {
     return http.put(`/api/post/update-post-by-admin/${id}`, { status: status })

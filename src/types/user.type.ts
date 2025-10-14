@@ -20,7 +20,7 @@ export interface ProfileData {
   full_name: string
   dateOfBirth: string
   gender: string
-  location: string
+  address: string
   avatar: string
   email: string
   phone: string
@@ -49,5 +49,5 @@ export interface BodyUpdateProfile {
   phone: string
   gender: string
   dateOfBirth: string
-  location: string
+  address: string
 }
