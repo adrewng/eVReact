@@ -1,19 +1,23 @@
-import { Link, useLocation } from 'react-router-dom'
-import { path } from '~/constants/path'
-import logoUrl from '~/shared/logo.svg'
+import { useMutation } from '@tanstack/react-query'
 import {
-  Home,
   BarChart2,
-  FileText,
-  ShoppingCart,
-  Users,
-  Megaphone,
   Bell,
+  FileText,
+  Home,
+  LogOutIcon,
+  Megaphone,
   MessageSquare,
   Settings,
-  LogOutIcon
+  ShoppingCart,
+  Users
 } from 'lucide-react'
+import { useContext } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { authApi } from '~/apis/auth.api'
+import { path } from '~/constants/path'
+import { AppContext } from '~/contexts/app.context'
 import { cn } from '~/lib/utils'
+import logoUrl from '~/shared/logo.svg'
 
 const menuItems = [
   { label: 'Dashboard', icon: Home, path: path.adminDashboard },
@@ -38,6 +42,11 @@ export default function Sidebar() {
   console.log('location -', location)
   console.log('currentPath -', currentPath)
 
+  const { setIsAuthenticated } = useContext(AppContext)
+  const logoutMutation = useMutation({
+    mutationFn: authApi.logout,
+    onSuccess: () => setIsAuthenticated(false)
+  })
   return (
     <div className='w-64 h-screen flex flex-col p-4 bg-white shadow-md'>
       {/* Logo */}
@@ -123,7 +132,7 @@ export default function Sidebar() {
         <button
           onClick={() => {
             // TODO: thêm logic logout
-            console.log('Logout clicked')
+            logoutMutation.mutate()
           }}
           className='flex items-center w-full px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition duration-200 font-medium'
         >

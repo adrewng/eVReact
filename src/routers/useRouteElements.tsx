@@ -16,32 +16,76 @@ import Home from '~/pages/Home/Home'
 import Login from '~/pages/Login'
 import Post from '~/pages/Post'
 import PostManagement from '~/pages/PostManagement/PostManagement'
-import Profile from '~/pages/Profile'
 import Register from '~/pages/Register'
 import VehicleList from '~/pages/VehicleList'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
-  return isAuthenticated ? <Outlet /> : <Navigate to='/login' />
+  return isAuthenticated ? <Outlet /> : <Navigate to={path.login} replace />
 }
+
 function RejectedRoute() {
-  const { isAuthenticated } = useContext(AppContext)
-  return !isAuthenticated ? <Outlet /> : <Navigate to='/' />
+  const { isAuthenticated, profile } = useContext(AppContext)
+  if (!isAuthenticated) return <Outlet />
+  const next = profile?.role === 'admin' ? path.adminDashboard : path.home
+  return <Navigate to={next} replace />
 }
+
+//Chặn Admin
+function RedirectAdminFromPublic() {
+  const { profile } = useContext(AppContext)
+  return profile?.role === 'admin' ? <Navigate to={path.adminDashboard} replace /> : <Outlet />
+}
+
 function PhoneRequiredWrapper() {
   const { profile } = useContext(AppContext)
-  return profile?.phone ? <Outlet /> : <PhoneRequiredModal isOpen={true} />
+  return profile?.phone ? <Outlet /> : <PhoneRequiredModal isOpen />
+}
+
+function RoleGuard({ role }: { role: 'customer' | 'admin' | 'staff' }) {
+  const { profile } = useContext(AppContext)
+  if (!profile || profile.role !== role) return <Navigate to={path.home} replace />
+  return <Outlet />
 }
 
 export default function useRouteElements() {
   const element = useRoutes([
     {
       path: path.home,
+      // Chặn admin
+      element: <RedirectAdminFromPublic />,
+      children: [
+        {
+          path: path.home,
+          element: <MainLayout />,
+          children: [
+            { index: true, element: <AllProductList /> },
+            { path: path.vehicle, element: <VehicleList /> },
+            { path: path.battery, element: <BatteryList /> }
+          ]
+        }
+      ]
+    },
+    {
+      path: path.home,
+      element: <RejectedRoute />,
+      children: [
+        { path: path.login, element: <Login /> },
+        { path: path.register, element: <Register /> }
+      ]
+    },
+    {
+      path: path.home,
       element: <ProtectedRoute />,
       children: [
         {
-          path: path.profile,
-          element: <Profile />
+          path: path.account,
+          element: <Account />,
+          children: [
+            { path: path.accountPosts, element: <AccountPost /> },
+            { path: path.accountProfile, element: <AccountProfile /> },
+            { path: path.accountNotification, element: <AccountNotification /> }
+          ]
         },
         {
           path: path.post,
@@ -56,57 +100,21 @@ export default function useRouteElements() {
               )
             }
           ]
-        }
-      ]
-    },
-    {
-      path: path.home,
-      element: <RejectedRoute />,
-      children: [
-        {
-          path: path.login,
-          element: <Login />
         },
         {
-          path: path.register,
-          element: <Register />
+          path: path.admin,
+          element: <RoleGuard role='admin' />,
+          children: [
+            {
+              element: <Dashboard />, // layout
+              children: [
+                { index: true, element: <Home /> }, // vào /admin là Home luôn
+                { path: 'dashboard', element: <Home /> },
+                { path: 'posts', element: <PostManagement /> }
+              ]
+            }
+          ]
         }
-      ]
-    },
-    {
-      path: path.home,
-      element: <MainLayout />,
-      children: [
-        {
-          path: path.vehicle,
-          element: <VehicleList />
-        },
-        {
-          path: path.battery,
-          element: <BatteryList />
-        },
-        {
-          path: path.home,
-          index: true,
-          element: <AllProductList />
-        }
-      ]
-    },
-    {
-      path: path.account,
-      element: <Account />,
-      children: [
-        { path: path.accountPosts, element: <AccountPost /> },
-        { path: path.accountProfile, element: <AccountProfile /> },
-        { path: path.accountNotification, element: <AccountNotification /> }
-      ]
-    },
-    {
-      path: path.admin,
-      element: <Dashboard />,
-      children: [
-        { path: path.adminDashboard, element: <Home /> },
-        { path: path.adminPosts, element: <PostManagement /> }
       ]
     }
   ])

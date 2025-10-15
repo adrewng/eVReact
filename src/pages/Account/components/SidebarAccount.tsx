@@ -1,7 +1,7 @@
+import { Bell, ChevronDown, ChevronRight, Newspaper, UserPen } from 'lucide-react'
 import { useContext, useState } from 'react'
-import { Bell, UserPen, Newspaper, ChevronRight, ChevronDown } from 'lucide-react'
-import { path } from '~/constants/path'
 import { NavLink } from 'react-router-dom'
+import { path } from '~/constants/path'
 import { AppContext } from '~/contexts/app.context'
 
 const accountItems = [
@@ -47,17 +47,15 @@ export default function SidebarAccount() {
       <div className='p-6 border-b border-gray-200'>
         <div className='flex items-center gap-3'>
           <img
-            src={profile?.user.avatar || 'https://picsum.photos/32'}
+            src={profile?.avatar || 'https://picsum.photos/32'}
             alt='User Avatar'
             className='w-12 h-12 rounded-xl object-cover ring-2 ring-gray-100'
           />
           <div className='flex-1 min-w-0'>
             {/* <p className='text-sm font-semibold text-gray-900 truncate'>{profile?.user.full_name}</p> */}
-            <p className='text-sm font-semibold text-gray-900 break-words whitespace-normal'>
-              {profile?.user.full_name}
-            </p>
+            <p className='text-sm font-semibold text-gray-900 break-words whitespace-normal'>{profile?.full_name}</p>
 
-            <p className='text-xs text-gray-500 truncate'>{profile?.user.email}</p>
+            <p className='text-xs text-gray-500 truncate'>{profile?.email}</p>
           </div>
         </div>
       </div>

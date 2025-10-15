@@ -118,7 +118,7 @@ export default function NavHeader() {
 
           {isAuthenticated && (
             <Link
-              to={path.post}
+              to={path.accountPosts}
               className='hidden tablet:inline-block px-4 py-2 rounded-full text-sm border border-black text-black font-medium hover:bg-black/10 transition'
             >
               Quản lí tin
@@ -171,7 +171,7 @@ export default function NavHeader() {
             >
               <div className='size-8 rounded-full overflow-hidden ring-1 ring-zinc-200'>
                 <img
-                  src={profile?.user.avatar || 'https://picsum.photos/32'}
+                  src={profile?.avatar || 'https://picsum.photos/32'}
                   alt='User'
                   className='size-full object-cover'
                 />
