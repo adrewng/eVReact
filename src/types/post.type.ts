@@ -79,10 +79,17 @@ export interface PostListType {
 export interface ProductListConfig {
   page?: number | string
   limit?: number | string
+  color?: string
+  warranty?: string
   sort_by?: 'createdAt' | 'view' | 'sold' | 'price'
   order?: 'asc' | 'desc'
   exclude?: string
-  rating_filter?: number | string
+  power?: string
+  mileage?: string
+  seat?: string
+  health?: string
+  voltage?: string
+  capacity?: string
   price_max?: number | string
   price_min?: number | string
   name?: string

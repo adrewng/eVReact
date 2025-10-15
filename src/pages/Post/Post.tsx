@@ -10,12 +10,13 @@ import serviceApi from '~/apis/service.api'
 import Button from '~/components/Button'
 import Input from '~/components/Input'
 import Popover from '~/components/Popover'
+import { path } from '~/constants/path'
 import { useFormPersist } from '~/hooks/useFormPersist'
 import useQueryParam from '~/hooks/useQueryParam'
 import { getPostSchema, type PostFormValues } from '~/schemas/post.schema'
 import { CategoryType, type CategoryChild } from '~/types/category.type'
 import type { Service } from '~/types/service.type'
-import { formatNumberToSocialStyle } from '~/utils/util'
+import { formatNumberToSocialStyle, isAxiosPaymentRequiredError, sameFile } from '~/utils/util'
 import AddressModal from './components/AddressModal'
 import BatteryForm from './components/BatteryForm'
 import CategoryModal from './components/CategoryModal'
@@ -137,6 +138,19 @@ const PostPage = () => {
     e.currentTarget.value = '' // để lần sau chọn lại cùng file vẫn onChange
   }
 
+  const makeCover = (idx: number) => {
+    const arr = (getValues('images') ?? []) as File[]
+    if (idx <= 0 || idx >= arr.length) return
+
+    const item = arr[idx]
+    // Nếu phần tử đầu đã là item thì thôi
+    if (sameFile(arr[0], item)) return
+
+    const next = [item, ...arr.slice(0, idx), ...arr.slice(idx + 1)].slice(0, 6)
+    setValue('images', next, { shouldValidate: true, shouldDirty: true })
+    setValue('image', next[0], { shouldValidate: true, shouldDirty: true })
+  }
+
   const removeImage = (i: number) => {
     const curr = getValues('images') ?? []
     const next = curr.filter((_, idx) => idx !== i)
@@ -155,7 +169,20 @@ const PostPage = () => {
       onSuccess: async () => {
         await clear()
         toast.success('Đăng tin thành công')
-        navigate('/post?draft=true')
+        navigate(path.home)
+      },
+      onError: (error) => {
+        if (isAxiosPaymentRequiredError<{ checkoutUrl: string }>(error)) {
+          console.log(error)
+          const url = error.response?.data?.checkoutUrl
+          if (typeof url === 'string' && /^https?:\/\//.test(url)) {
+            // window.location.replace(url) // nếu muốn chặn nút Back
+            // console.log(url)
+            window.location.assign(url)
+          } else {
+            // TODO: fallback/log
+          }
+        }
       }
     })
   })
@@ -230,41 +257,71 @@ const PostPage = () => {
                           <p className='text-xs text-red-600 mt-2'>{errors.images.message as string}</p>
                         )}
                       </div>
+                      <div className='grid grid-cols-3 gap-2'>
+                        {uploadedImages.map((f, index) => (
+                          <div key={`${f.name}-${f.size}-${f.lastModified}`} className='relative group'>
+                            {/* Khung ảnh */}
+                            <div className='aspect-square rounded-xl overflow-hidden border border-zinc-200 bg-zinc-50'>
+                              <img
+                                src={URL.createObjectURL(f)}
+                                alt={`Upload ${index + 1}`}
+                                className='w-full h-full object-cover'
+                                draggable={false}
+                              />
 
-                      {uploadedImages.length > 0 && (
-                        <div className='space-y-3'>
-                          <div className='flex items-center justify-between'>
-                            <h4 className='text-sm font-medium text-zinc-700'>Hình ảnh đã chọn</h4>
-                            <span className='text-xs text-zinc-500'>{uploadedImages.length}/6</span>
-                          </div>
-                          <div className='grid grid-cols-3 gap-2'>
-                            {uploadedImages.map((image, index) => (
-                              <div
-                                key={`${image.name}-${image.size}-${image.lastModified}-${index}`}
-                                className='relative group'
-                              >
-                                <div className='aspect-square rounded-xl overflow-hidden border border-zinc-200 bg-zinc-50'>
-                                  <img
-                                    src={URL.createObjectURL(image)}
-                                    alt={`Upload ${index + 1}`}
-                                    className='w-full h-full object-cover'
-                                  />
+                              {/* Error strip (nếu có) */}
+                              {errors.images?.[index]?.message && (
+                                <div className='absolute inset-x-0 bottom-0 px-2 py-1 text-[11px] bg-red-600/90 text-white'>
+                                  {String(errors.images?.[index]?.message)}
                                 </div>
-                                <div className='absolute top-1 left-1 bg-black/70 text-white text-xs px-1.5 py-0.5 rounded-full font-medium'>
-                                  {index === 0 ? 'Ảnh bìa' : index + 1}
-                                </div>
+                              )}
+
+                              {/* Overlay Đặt làm bìa - chỉ hiện khi hover và index != 0 */}
+                              {index !== 0 && (
                                 <button
                                   type='button'
-                                  onClick={() => removeImage(index)}
-                                  className='absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100'
+                                  onClick={() => makeCover(index)}
+                                  className='absolute inset-0 z-10 flex items-center justify-center
+                       bg-black/0 opacity-0 group-hover:opacity-100 group-hover:bg-black/40
+                       transition-opacity duration-200'
+                                  aria-label='Đặt làm bìa'
+                                  title='Đặt làm bìa'
                                 >
-                                  ×
+                                  <span className='px-3 py-1.5 rounded-lg bg-white/90 text-black text-xs font-medium shadow'>
+                                    Đặt làm ảnh bìa
+                                  </span>
                                 </button>
-                              </div>
-                            ))}
+                              )}
+                            </div>
+
+                            {/* Badge góc trái: “Ảnh bìa” / số thứ tự */}
+                            <div className='absolute top-1 left-1 z-20'>
+                              <span
+                                className={`px-1.5 py-0.5 rounded-full text-[11px] font-medium ${
+                                  index === 0
+                                    ? 'bg-black/80 text-white'
+                                    : 'bg-black/60 text-white opacity-0 group-hover:opacity-100'
+                                }`}
+                              >
+                                {index === 0 ? 'Ảnh bìa' : index + 1}
+                              </span>
+                            </div>
+
+                            {/* Nút Xóa */}
+                            <button
+                              type='button'
+                              onClick={() => removeImage(index)}
+                              className='absolute top-1 right-1 z-20 bg-red-500 text-white rounded-full w-5 h-5
+                   flex items-center justify-center text-xs hover:bg-red-600 transition
+                   opacity-0 group-hover:opacity-100'
+                              aria-label='Xóa ảnh'
+                              title='Xóa ảnh'
+                            >
+                              ×
+                            </button>
                           </div>
-                        </div>
-                      )}
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
