@@ -1,12 +1,12 @@
-import { Check, Edit2, Mail, MapPin, Shield } from 'lucide-react'
-import StatsProfile from './components/StatsProfile'
-import { useContext, useMemo, useRef, useState } from 'react'
-import ProfileOverview from './components/ProfileOverview'
-import ProfileSecurity from './components/ProfileSecurity'
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { Check, Edit2, Mail, MapPin, Shield } from 'lucide-react'
+import { useContext, useMemo, useRef, useState } from 'react'
 import accountApi from '~/apis/account.api'
 import { AppContext } from '~/contexts/app.context'
 import { setProfileToLS } from '~/utils/auth'
+import ProfileOverview from './components/ProfileOverview'
+import ProfileSecurity from './components/ProfileSecurity'
+import StatsProfile from './components/StatsProfile'
 
 export default function AccountProfile() {
   const [activeTab, setActiveTab] = useState('overview')
@@ -21,7 +21,10 @@ export default function AccountProfile() {
 
   const { data: profileData, refetch } = useQuery({
     queryKey: ['profile'],
-    queryFn: () => accountApi.getProfile()
+    queryFn: () => accountApi.getProfile(),
+    refetchOnMount: 'always', // mount lại là refetch
+    refetchOnWindowFocus: true, // focus tab là refetch (nên bật)
+    refetchOnReconnect: true
   })
   const profile = profileData?.data.data.user
   console.log('profile: ', profile)

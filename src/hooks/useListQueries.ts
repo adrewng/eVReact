@@ -49,6 +49,7 @@ export function useListQueries({ categoryType }: Props) {
     queryKey: ['posts', keyPart, queryConfig],
     queryFn: () => postApi.getPosts(queryConfig as ProductListConfig),
     // staleTime: STALE_TIME,
+    refetchOnMount: 'always',
     placeholderData: keepPreviousData,
     enabled: isAll || !!categorySlug // Nếu là all hoặc categorySlug thì mới call api
   })

@@ -1,9 +1,9 @@
-import { useState } from 'react'
-import { Bell, Search, Plus, Eye, Edit, Trash2, Battery, Car, MoreVertical } from 'lucide-react'
-import { createSearchParams, Link } from 'react-router-dom'
-import { path } from '~/constants/path'
 import { useQuery } from '@tanstack/react-query'
+import { Battery, Bell, Car, Edit, Eye, MoreVertical, Plus, Search, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import { createSearchParams, Link } from 'react-router-dom'
 import postApi from '~/apis/post.api'
+import { path } from '~/constants/path'
 import useQueryParam from '~/hooks/useQueryParam'
 import type { PostListStatus } from '~/types/admin/post.type'
 
@@ -33,19 +33,18 @@ type QueryConfigStatus = {
 }
 export default function AccountPost() {
   const [activeTab, setActiveTab] = useState('all')
-  const [searchQuery, setSearchQuery] = useState('')
+  // const [searchQuery, setSearchQuery] = useState('')
 
   const statusParams: QueryConfigStatus = useQueryParam()
   const queryConfigStatus: QueryConfigStatus = {
     status: statusParams.status
   }
+
   const { data } = useQuery({
-    queryKey: ['status', queryConfigStatus],
+    queryKey: ['post-me', queryConfigStatus],
     queryFn: () => postApi.getPostByMe(queryConfigStatus as PostListStatus)
   })
 
-  // console.log(data)
-  console.log('data-', data)
   const accountPostData = data?.data.data
   console.log(accountPostData)
 
@@ -64,8 +63,8 @@ export default function AccountPost() {
   //   }
   // }
 
-  const getTabCount = (status: string) =>
-    status === 'all' ? accountPostData?.length : accountPostData?.filter((p) => p.status === status).length
+  // const getTabCount = (status: string) =>
+  //   status === 'all' ? accountPostData?.length : accountPostData?.filter((p) => p.status === status).length
 
   // const filteredPosts = getFilteredPosts()
 
@@ -111,13 +110,13 @@ export default function AccountPost() {
             >
               <div className='flex items-center justify-center gap-2'>
                 <span>{tab.label}</span>
-                <span
+                {/* <span
                   className={`ml-1 text-xs rounded-full px-2 py-0.5 font-semibold ${
                     activeTab === tab.id ? 'bg-white/20' : 'bg-gray-100'
                   }`}
                 >
                   {getTabCount(tab.id)}
-                </span>
+                </span> */}
               </div>
             </Link>
           ))}
