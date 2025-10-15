@@ -6,6 +6,7 @@ export const path = {
   register: '/register',
   profile: '/profile',
   post: '/post',
+  payment: 'payment/result',
   updatePhone: '/update-phone',
   //account
   account: '/account',

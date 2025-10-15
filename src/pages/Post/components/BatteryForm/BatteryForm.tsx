@@ -46,6 +46,7 @@ export default function BatteryForm() {
             />
           )}
         />
+
         <Controller
           name='voltage'
           control={control}

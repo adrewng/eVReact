@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useContext } from 'react'
+import { Fragment, useContext } from 'react'
 import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 import PhoneRequiredModal from '~/components/PhoneRequiredModal'
 import { path } from '~/constants/path'
@@ -114,6 +114,13 @@ export default function useRouteElements() {
               ]
             }
           ]
+          path: path.home,
+          index: true,
+          element: <AllProductList />
+        },
+        {
+          path: path.payment,
+          element: <Fragment />
         }
       ]
     }

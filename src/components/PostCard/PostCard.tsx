@@ -10,7 +10,7 @@ export default function PostCard({ post }: PropType) {
     <>
       <div className='aspect-[4/3] w-full overflow-hidden bg-zinc-100'>
         <img
-          src={post.product.image}
+          src={post.product.image || undefined}
           alt={post.product.model}
           className='size-full object-cover transition-transform duration-300'
         />
@@ -19,7 +19,7 @@ export default function PostCard({ post }: PropType) {
       {/* Content */}
       <div className='flex flex-col flex-1'>
         <div className='flex items-start justify-between p-4'>
-          <div>
+          <div className='min-w-0'>
             <div className='font-semibold truncate leading-tight'>{post.title}</div>
             <div className='text-sm truncate text-zinc-600'>{post.product.address}</div>
           </div>
