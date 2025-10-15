@@ -114,9 +114,6 @@ export default function useRouteElements() {
               ]
             }
           ]
-          path: path.home,
-          index: true,
-          element: <AllProductList />
         },
         {
           path: path.payment,
