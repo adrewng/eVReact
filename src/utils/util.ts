@@ -17,6 +17,11 @@ export function isAxiosExpiredTokenError<UnauthorizedError>(error: unknown): err
     error.response?.data?.data?.name === 'EXPIRED_TOKEN'
   )
 }
+
+export function isAxiosPaymentRequiredError<T>(error: unknown): error is AxiosError<T> {
+  return isAxiosError(error) && error.response?.status === HttpStatusCode.PaymentRequired
+}
+
 export function formatCurrency(currency: number) {
   return new Intl.NumberFormat('de-DE').format(currency)
 }
@@ -29,4 +34,10 @@ export function formatNumberToSocialStyle(value: number) {
     .format(value)
     .replace('.', ',')
     .toLowerCase()
+}
+
+export function sameFile(a: unknown, b: unknown): boolean {
+  if (!(a instanceof File) || !(b instanceof File)) return false
+  if (a === b) return true // cùng reference
+  return a.name === b.name && a.size === b.size && a.lastModified === b.lastModified
 }
