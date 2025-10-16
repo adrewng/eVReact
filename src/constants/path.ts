@@ -8,6 +8,7 @@ export const path = {
   post: '/post',
   payment: 'payment/result',
   updatePhone: '/update-phone',
+  pricing: '/pricing',
   //account
   account: '/account',
   accountPosts: '/account/posts',

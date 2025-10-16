@@ -17,6 +17,7 @@ import Login from '~/pages/Login'
 import PageNotFound from '~/pages/PageNotFound'
 import Post from '~/pages/Post'
 import PostManagement from '~/pages/PostManagement/PostManagement'
+import PricingPage from '~/pages/PricingPage/PricingPage'
 import Register from '~/pages/Register'
 import VehicleList from '~/pages/VehicleList'
 
@@ -62,7 +63,8 @@ export default function useRouteElements() {
           children: [
             { index: true, element: <AllProductList /> },
             { path: path.vehicle, element: <VehicleList /> },
-            { path: path.battery, element: <BatteryList /> }
+            { path: path.battery, element: <BatteryList /> },
+            { path: path.pricing, element: <PricingPage /> }
           ]
         }
       ]
