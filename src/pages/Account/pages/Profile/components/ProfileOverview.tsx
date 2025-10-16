@@ -1,20 +1,19 @@
-import {
-  useMutation,
-  type QueryObserverResult,
-  type RefetchOptions,
-  type RefetchQueryFilters
-} from '@tanstack/react-query'
-import type { AxiosError } from 'axios'
+import { useMutation, type QueryObserverResult, type RefetchOptions } from '@tanstack/react-query'
+import type { AxiosResponse } from 'axios'
 import { Check, Edit2 } from 'lucide-react'
 import { useContext, useEffect, useState } from 'react'
 import accountApi from '~/apis/account.api'
 import { AppContext } from '~/contexts/app.context'
 import type { BodyUpdateProfile, ProfileData } from '~/types/user.type'
+import type { SuccessResponse } from '~/types/util.type'
 import { setProfileToLS } from '~/utils/auth'
 
 type Props = {
-  profile: ProfileData | undefined
-  refetch: (options?: RefetchOptions & RefetchQueryFilters) => Promise<QueryObserverResult<ProfileData>>
+  profile: ProfileData['user'] | undefined
+  // refetch: (options?: RefetchOptions & RefetchQueryFilters) => Promise<QueryObserverResult<ProfileData>>
+  refetch: (
+    options?: RefetchOptions
+  ) => Promise<QueryObserverResult<AxiosResponse<SuccessResponse<ProfileData>, unknown, object>, Error>>
 }
 
 // type FormData = Pick<UserSchema, 'full_name' | 'email' | 'phone' | 'avatar' | 'address'>
@@ -50,10 +49,20 @@ export default function ProfileOverview(props: Props) {
     mutationFn: (data: BodyUpdateProfile) => accountApi.updateProfile(data),
     onSuccess: async (response) => {
       console.log('Cập nhật thành công!')
+      console.log(typeof response)
 
       setProfile(response.data.data)
       setProfileToLS(response.data.data)
-      setFormData(response.data.data)
+      setFormData(
+        response.data.data as {
+          full_name: string
+          gender: string
+          phone: string
+          address: string
+          email: string
+          avatar: string
+        }
+      )
 
       const { data: newData } = await refetch()
       console.log('data sau khi refetch', newData)
@@ -61,9 +70,9 @@ export default function ProfileOverview(props: Props) {
     },
     onError: (error) => {
       console.log('Cập nhật thất bại!', error)
-      const axiosError = error as AxiosError
-      console.error('❌ onError', axiosError.response?.data || axiosError.message)
-      console.log('Chi tiết lỗi:', (error.response?.data as any).data)
+      // const axiosError = error as AxiosError
+      // console.error('❌ onError', axiosError.response?.data || axiosError.message)
+      // console.log('Chi tiết lỗi:', (error.response?.data as any).data)
     }
   })
   const handleToggleEdit = () => {

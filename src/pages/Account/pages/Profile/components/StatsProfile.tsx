@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { path } from '~/constants/path'
 import type { ProfileData } from '~/types/user.type'
 type Props = {
-  profile: ProfileData | undefined
+  profile: ProfileData['user'] | undefined
 }
 
 export default function StatsProfile(props: Props) {

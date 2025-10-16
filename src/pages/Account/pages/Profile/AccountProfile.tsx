@@ -60,13 +60,15 @@ export default function AccountProfile() {
     if (!file) return
 
     const formData = new FormData()
-    formData.append('avatar', file)
-    // ----
-    formData.append('full_name', profile.full_name)
-    formData.append('email', profile.email)
-    formData.append('gender', profile.gender)
-    formData.append('phone', profile.phone)
-    formData.append('address', profile.address)
+    if (profile) {
+      formData.append('avatar', file)
+      // ----
+      formData.append('full_name', profile.full_name)
+      formData.append('email', profile.email)
+      formData.append('gender', profile.gender)
+      formData.append('phone', profile.phone)
+      formData.append('address', profile.address)
+    }
 
     const uploadRes = uploadAvatarMutation.mutate(formData)
     console.log(uploadRes)
