@@ -14,6 +14,7 @@ import AllProductList from '~/pages/AllProductList'
 import BatteryList from '~/pages/BatteryList'
 import Home from '~/pages/Home/Home'
 import Login from '~/pages/Login'
+import PageNotFound from '~/pages/PageNotFound'
 import Post from '~/pages/Post'
 import PostManagement from '~/pages/PostManagement/PostManagement'
 import Register from '~/pages/Register'
@@ -120,6 +121,10 @@ export default function useRouteElements() {
           element: <Fragment />
         }
       ]
+    },
+    {
+      path: '*',
+      element: <PageNotFound />
     }
   ])
   return element
