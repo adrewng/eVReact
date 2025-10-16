@@ -48,9 +48,6 @@ export default function ProfileOverview(props: Props) {
   const updateProfileMutation = useMutation({
     mutationFn: (data: BodyUpdateProfile) => accountApi.updateProfile(data),
     onSuccess: async (response) => {
-      console.log('Cập nhật thành công!')
-      console.log(typeof response)
-
       setProfile(response.data.data)
       setProfileToLS(response.data.data)
       setFormData(
