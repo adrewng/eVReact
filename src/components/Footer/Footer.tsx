@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+import { path } from '~/constants/path'
 import logoUrl from '~/shared/logo.svg'
 
 export default function Footer() {
@@ -22,92 +24,92 @@ export default function Footer() {
                 <img src={logoUrl} className='h-10 w-auto brightness-0 invert' />
               </a>
               <p className='py-8 text-zinc-400 lg:max-w-xs text-center lg:text-left'>
-                Trusted in more than 100 countries &amp; 5 million customers. Have any query?
+                Nền tảng mua bán xe điện & pin đã qua sử dụng. An toàn, minh bạch, phí thấp
               </p>
-              <a
+              {/* <a
                 href='#contact'
                 className='py-2.5 px-5 block w-fit rounded-full shadow-sm mx-auto lg:mx-0 font-semibold
                            bg-indigo-600 text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400/60
                            transition'
               >
                 Contact us
-              </a>
+              </a> */}
             </div>
 
             {/* Col */}
             <div className='lg:mx-auto text-left'>
-              <h4 className='text-lg text-white font-medium mb-7'>Pagedone</h4>
+              <h4 className='text-lg text-white font-medium mb-7'>Trang</h4>
               <ul>
                 <li className='mb-6'>
-                  <a href='#' className='text-zinc-400 hover:text-white transition'>
-                    Home
-                  </a>
+                  <Link to={path.home} className='text-zinc-400 hover:text-white transition'>
+                    Trang chủ
+                  </Link>
                 </li>
                 <li className='mb-6'>
-                  <a href='#' className='text-zinc-400 hover:text-white transition'>
-                    About
-                  </a>
+                  <Link to={path.vehicle} className='text-zinc-400 hover:text-white transition'>
+                    Xe
+                  </Link>
                 </li>
                 <li>
-                  <a href='#' className='text-zinc-400 hover:text-white transition'>
-                    Pricing
-                  </a>
+                  <Link to={path.battery} className='text-zinc-400 hover:text-white transition'>
+                    Pin
+                  </Link>
                 </li>
               </ul>
             </div>
 
             <div className='lg:mx-auto text-left'>
-              <h4 className='text-lg text-white font-medium mb-7'>Products</h4>
+              <h4 className='text-lg text-white font-medium mb-7'>Dịch vụ</h4>
               <ul>
                 <li className='mb-6'>
-                  <a href='#' className='text-zinc-400 hover:text-white transition'>
-                    Figma UI System
-                  </a>
+                  <Link to={path.post} className='text-zinc-400 hover:text-white transition'>
+                    Đăng tin sản phẩm
+                  </Link>
                 </li>
                 <li className='mb-6'>
-                  <a href='#' className='text-zinc-400 hover:text-white transition'>
-                    Icons Assets
-                  </a>
+                  <Link to={path.post} className='text-zinc-400 hover:text-white transition'>
+                    Mua gói
+                  </Link>
                 </li>
                 <li>
-                  <a href='#' className='text-zinc-400 hover:text-white transition'>
-                    Responsive Blocks
-                  </a>
+                  <Link to={path.post} className='text-zinc-400 hover:text-white transition'>
+                    Kiểm tra dành cho người bán
+                  </Link>
                 </li>
               </ul>
             </div>
 
             <div className='lg:mx-auto text-left'>
-              <h4 className='text-lg text-white font-medium mb-7'>Support</h4>
+              <h4 className='text-lg text-white font-medium mb-7'>Quản lí</h4>
               <ul>
                 <li className='mb-6'>
-                  <a href='#' className='text-zinc-400 hover:text-white transition'>
-                    Customer Support
-                  </a>
+                  <Link to={path.accountProfile} className='text-zinc-400 hover:text-white transition'>
+                    Quản lí hồ sơ cá nhân
+                  </Link>
                 </li>
                 <li className='mb-6'>
-                  <a href='#' className='text-zinc-400 hover:text-white transition'>
-                    Terms &amp; Conditions
-                  </a>
+                  <Link to={path.accountPosts} className='text-zinc-400 hover:text-white transition'>
+                    Quản lí bài viết
+                  </Link>
                 </li>
                 <li>
-                  <a href='#' className='text-zinc-400 hover:text-white transition'>
-                    Privacy Policy
-                  </a>
+                  <Link to={path.accountNotification} className='text-zinc-400 hover:text-white transition'>
+                    Quản lí thông báo
+                  </Link>
                 </li>
               </ul>
             </div>
 
             <div className='lg:mx-auto text-left'>
-              <h4 className='text-lg text-white font-medium mb-7'>Subscribe</h4>
-              <p className='text-zinc-400 leading-6 mb-7'>Subscribe to get the latest news from us</p>
-              <a
-                href='#subscribe'
+              <h4 className='text-lg text-white font-medium mb-7'>Đăng kí</h4>
+              <p className='text-zinc-400 leading-6 mb-7'>Đăng kí để nhận được các tin đăng mới nhất từ chúng tôi</p>
+              <Link
+                to={path.register}
                 className='flex items-center justify-center gap-2 rounded-full py-3 px-6 w-fit font-semibold
                            border border-zinc-600 text-zinc-200 hover:bg-zinc-800 hover:border-zinc-500
                            focus:outline-none focus:ring-2 focus:ring-zinc-400/60 transition'
               >
-                Subscribe
+                Đăng ký
                 <svg width={15} height={12} viewBox='0 0 15 12' fill='none' xmlns='http://www.w3.org/2000/svg'>
                   <path
                     d='M1.25 6L13.25 6M9.5 10.5L13.4697 6.53033C13.7197 6.28033 13.8447 6.15533 13.8447 6C13.8447 5.84467 13.7197 5.71967 13.4697 5.46967L9.5 1.5'
@@ -117,7 +119,7 @@ export default function Footer() {
                     strokeLinejoin='round'
                   />
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -126,11 +128,10 @@ export default function Footer() {
             <div className='flex items-center justify-center flex-col lg:justify-between lg:flex-row gap-3'>
               <span className='text-zinc-400'>
                 ©
-                <a href='https://themedevhub.com' target='_blank' className='text-indigo-400 hover:text-indigo-300'>
-                  {' '}
-                  Themedevhub
-                </a>{' '}
-                2025, All rights reserved.
+                <Link to={path.home} className='text-indigo-400 hover:text-indigo-300'>
+                  EViest
+                </Link>{' '}
+                {new Date().getFullYear()}, giữ mọi quyền.
               </span>
 
               <div className='flex mt-1 space-x-3 sm:justify-center lg:mt-0'>
