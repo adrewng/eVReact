@@ -1,4 +1,5 @@
 export const path = {
+  landingPage: '/landing',
   home: '/',
   vehicle: '/vehicle',
   battery: '/battery',

@@ -13,6 +13,7 @@ import AccountProfile from '~/pages/Account/pages/Profile/AccountProfile'
 import AllProductList from '~/pages/AllProductList'
 import BatteryList from '~/pages/BatteryList'
 import Home from '~/pages/Home/Home'
+import LandingPage from '~/pages/LandingPage/LandingPage'
 import Login from '~/pages/Login'
 import PageNotFound from '~/pages/PageNotFound'
 import Post from '~/pages/Post'
@@ -66,6 +67,17 @@ export default function useRouteElements() {
             { path: path.battery, element: <BatteryList /> },
             { path: path.pricing, element: <PricingPage /> }
           ]
+        }
+      ]
+    },
+    {
+      path: path.landingPage,
+      // Chặn admin
+      element: <RedirectAdminFromPublic />,
+      children: [
+        {
+          path: path.landingPage,
+          element: <LandingPage />
         }
       ]
     },
