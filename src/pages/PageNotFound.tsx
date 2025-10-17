@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 import page_not_found from '../assets/page_not_found.jpg'
 
 const PageNotFound = () => {
@@ -21,7 +21,7 @@ const PageNotFound = () => {
         className='relative text-center px-6'
       >
         <h1 className='text-7xl md:text-8xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400'>
-          Error 404
+          404
         </h1>
         <h2 className='text-2xl md:text-3xl font-light tracking-widest uppercase mb-4'>PAGE NOT FOUND</h2>
         <p className='text-gray-300 mb-8 max-w-md mx-auto font-light italic'>

@@ -54,15 +54,14 @@ function RoleGuard({ role }: { role: 'customer' | 'admin' | 'staff' }) {
 export default function useRouteElements() {
   const element = useRoutes([
     {
-      path: path.home,
-      // Chặn admin
+      path: path.landingPage,
       element: <RedirectAdminFromPublic />,
       children: [
+        { index: true, element: <LandingPage /> },
         {
-          path: path.home,
           element: <MainLayout />,
           children: [
-            { index: true, element: <AllProductList /> },
+            { path: path.home, element: <AllProductList /> },
             { path: path.vehicle, element: <VehicleList /> },
             { path: path.battery, element: <BatteryList /> },
             { path: path.pricing, element: <PricingPage /> }
@@ -72,17 +71,6 @@ export default function useRouteElements() {
     },
     {
       path: path.landingPage,
-      // Chặn admin
-      element: <RedirectAdminFromPublic />,
-      children: [
-        {
-          path: path.landingPage,
-          element: <LandingPage />
-        }
-      ]
-    },
-    {
-      path: path.home,
       element: <RejectedRoute />,
       children: [
         { path: path.login, element: <Login /> },
@@ -90,7 +78,7 @@ export default function useRouteElements() {
       ]
     },
     {
-      path: path.home,
+      path: path.landingPage,
       element: <ProtectedRoute />,
       children: [
         {
@@ -123,7 +111,7 @@ export default function useRouteElements() {
             {
               element: <Dashboard />, // layout
               children: [
-                { index: true, element: <Home /> }, // vào /admin là Home luôn
+                { index: true, element: <Home /> },
                 { path: 'dashboard', element: <Home /> },
                 { path: 'posts', element: <PostManagement /> }
               ]

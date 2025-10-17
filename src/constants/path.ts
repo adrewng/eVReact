@@ -1,6 +1,6 @@
 export const path = {
-  landingPage: '/landing',
-  home: '/',
+  landingPage: '/',
+  home: '/all',
   vehicle: '/vehicle',
   battery: '/battery',
   login: '/login',

@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
 import { Disclosure, Transition } from '@headlessui/react'
 import { ChevronUpIcon } from '@heroicons/react/20/solid'
+import React, { useState } from 'react'
 
 interface Package {
   id: string
@@ -120,11 +120,11 @@ const PricingPage: React.FC = () => {
                 pkg.isMostPopular ? 'border-black' : 'border-neutral-200'
               }`}
             >
-              {pkg.isMostPopular && (
+              {/* {pkg.isMostPopular && (
                 <div className='absolute -top-3 right-6 bg-black text-white text-xs font-semibold py-1 px-3 rounded-full'>
                   Gói nổi bật
                 </div>
-              )}
+              )} */}
               <h2 className='text-2xl font-semibold text-neutral-900'>{pkg.name}</h2>
               <p className='text-neutral-500 mt-2 min-h-[48px]'>{pkg.description}</p>
               <div className='mt-6 flex items-end gap-1'>
