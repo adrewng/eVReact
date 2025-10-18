@@ -42,7 +42,15 @@ const DISPLAY_LABEL: Partial<Record<keyof QueryConfig, string>> = {
 }
 
 // Ẩn chip cho các key này
-const HIDDEN_KEYS: (keyof QueryConfig)[] = ['page', 'limit', 'sort_by', 'order', 'category_type', 'category_id']
+const HIDDEN_KEYS: (keyof QueryConfig)[] = [
+  'page',
+  'limit',
+  'sort_by',
+  'order',
+  'category_type',
+  'category_id',
+  'title'
+]
 
 export default function SortBar({ queryConfig, onToggleFilter, isFilterOpen, pathName }: Props) {
   const navigate = useNavigate()
