@@ -1,5 +1,4 @@
-// src/types/post.type.ts
-export type PostStatus = 'Pending' | 'Accepted' | 'Rejected'
+export type PostStatus = 'pending' | 'approved' | 'rejected' | 'verifying' | 'verified' | 'unverified'
 
 export interface PostType {
   id: string
@@ -27,7 +26,8 @@ export interface PostListTypeConfig {
   limit?: number | string
   search?: string
   year?: string
-  status?: 'Pending' | 'Accepted' | 'Rejected'
+  status?: Extract<PostStatus, 'Pending' | 'Approved' | 'Rejected'>
+  status_verify?: Extract<PostStatus, 'Verifying' | 'Verified' | 'Unverified'>
   priority?: string
 }
 

@@ -1,7 +1,7 @@
 import type { CategoryChild, CategoryType } from './category.type'
 import type { User } from './user.type'
 
-export interface PostDetailType {
+export interface PostType {
   id: number
   title: string
   priority: number
@@ -33,7 +33,8 @@ export interface VehicleType {
   image: string // ảnh bìa
   images: string[] // danh sách ảnh chi tiết,
   warranty: string // bảo hành
-  color: string // màu sắc
+  color: string // màu sắc,
+  health: string
   previousOwners?: number
 }
 
@@ -56,24 +57,6 @@ export interface BatteryType {
   previousOwners?: number
 }
 
-export interface PostType {
-  id: number
-  title: string
-  description: string
-  created_at: string
-  updated_at: string
-  priority: number
-  product: {
-    brand: string
-    model: string
-    year: number
-    price: string
-    address: string
-    images: string[]
-    image: string
-    category: CategoryChild
-  }
-}
 export interface PostListType {
   posts: PostType[]
   pagination: {
@@ -81,15 +64,25 @@ export interface PostListType {
     limit: number
     page_size: number
   }
+  count?: {
+    all: number
+    pending: number
+    approved: number
+    rejected: number
+    unverified: number
+    verifying: number
+    verified: number
+  }
 }
 
+export type PostStatus = 'pending' | 'approved' | 'rejected' | 'verifying' | 'verified' | 'unverified'
 export interface ProductListConfig {
   page?: number | string
   limit?: number | string
   color?: string
   title?: string
   warranty?: string
-  sort_by?: 'createdAt' | 'view' | 'sold' | 'price'
+  sort_by?: 'recommend' | 'price' | 'createdAt'
   order?: 'asc' | 'desc'
   exclude?: string
   power?: string
@@ -100,7 +93,8 @@ export interface ProductListConfig {
   capacity?: string
   price_max?: number | string
   price_min?: number | string
-  name?: string
   category_type?: Omit<CategoryType, 'notFound' | 'all'>
   category_id?: string
+  status?: Extract<PostStatus, 'pending' | 'approved' | 'rejected'> | 'all'
+  status_verify?: Extract<PostStatus, 'verifying' | 'verified' | 'unverified'>
 }

@@ -3,36 +3,20 @@ import { Battery, Bell, Car, Edit, Eye, MoreVertical, Plus, Search, Trash2 } fro
 import { useState } from 'react'
 import { createSearchParams, Link } from 'react-router-dom'
 import postApi from '~/apis/post.api'
+import PaginationAdmin from '~/components/Pagination/PaginationAdmin'
 import { path } from '~/constants/path'
-import useQueryParam from '~/hooks/useQueryParam'
-import type { PostListStatus } from '~/types/admin/post.type'
+import { tabs } from '~/constants/post'
+import useQueryConfig from '~/hooks/useQueryConfig'
+import { CategoryType } from '~/types/category.type'
+import type { BatteryType, PostStatus, ProductListConfig, VehicleType } from '~/types/post.type'
 
-const tabs = [
-  { id: 'all', label: 'All', statusQuery: '' },
-  { id: 'pending', label: 'Pending', statusQuery: 'pending' },
-  { id: 'approved', label: 'Published', statusQuery: 'approved' },
-  { id: 'rejected', label: 'Rejected', statusQuery: 'rejected' },
-  { id: 'certified', label: 'Certified', statusQuery: 'certified' },
-  { id: 'certifying', label: 'Certifying', statusQuery: 'certifying' }
-]
-
-type QueryConfigStatus = {
-  [key in keyof PostListStatus]?: string
-}
 export default function AccountPost() {
   const [activeTab, setActiveTab] = useState('all')
-  // const [searchQuery, setSearchQuery] = useState('')
-
-  const statusParams: QueryConfigStatus = useQueryParam()
-  const queryConfigStatus: QueryConfigStatus = {
-    status: statusParams.status
-  }
-
+  const queryConfig = useQueryConfig()
   const { data: postData } = useQuery({
-    queryKey: ['post-me', queryConfigStatus],
-    queryFn: () => postApi.getPostByMe(queryConfigStatus as PostListStatus)
+    queryKey: ['post-me', queryConfig],
+    queryFn: () => postApi.getPostByMe(queryConfig as ProductListConfig)
   })
-
   const accountPostData = postData?.data.data
 
   // const getFilteredPosts = () => {
@@ -50,9 +34,6 @@ export default function AccountPost() {
   //   }
   // }
 
-  // const getTabCount = (status: string) =>
-  //   status === 'all' ? accountPostData?.length : accountPostData?.filter((p) => p.status === status).length
-
   // const filteredPosts = getFilteredPosts()
 
   // const filteredPosts = accountPostData
@@ -65,45 +46,48 @@ export default function AccountPost() {
         {/* Header */}
         <div className='flex justify-between items-start'>
           <div>
-            <h1 className='text-4xl font-bold text-gray-900 mb-2'>My Posts</h1>
-            <p className='text-gray-600'>Manage your electric vehicle and battery listings</p>
+            <h1 className='text-4xl font-bold text-gray-900 mb-2'>Các bài đăng của bạn</h1>
+            <p className='text-gray-600'>Quản lí danh sách các bài đăng về xe và pin của bạn</p>
           </div>
           <div className='flex items-center gap-3'>
             <button className='relative p-3 hover:bg-gray-100 rounded-xl transition-all'>
               <Bell className='w-5 h-5 text-gray-700' />
               <span className='absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full'></span>
             </button>
-            <button className='flex items-center gap-2 px-5 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-medium shadow-lg transition-all'>
-              <Plus className='w-5 h-5' /> Create New Post
-            </button>
+            <Link
+              to={path.post}
+              className='flex items-center gap-2 px-5 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-medium shadow-lg transition-all'
+            >
+              <Plus className='w-5 h-5' /> Tạo bài đăng mới
+            </Link>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className='bg-white border border-gray-200 rounded-2xl p-2 grid grid-cols-6 gap-2'>
+        <div className='bg-white border border-gray-200 rounded-2xl p-2 grid grid-cols-7 gap-2'>
           {tabs.map((tab) => (
             <Link
               to={{
                 pathname: path.accountPosts,
                 search: createSearchParams({
-                  status: tab.statusQuery
+                  [tab.param]: tab.statusQuery
                 }).toString()
               }}
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`relative px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+              className={`relative px-3 py-3 rounded-xl text-sm font-medium transition-all ${
                 activeTab === tab.id ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-50'
               }`}
             >
               <div className='flex items-center justify-center gap-2'>
                 <span>{tab.label}</span>
-                {/* <span
+                <span
                   className={`ml-1 text-xs rounded-full px-2 py-0.5 font-semibold ${
                     activeTab === tab.id ? 'bg-white/20' : 'bg-gray-100'
                   }`}
                 >
-                  {getTabCount(tab.id)}
-                </span> */}
+                  {accountPostData?.count?.[tab.id as PostStatus | 'all'] ?? 0}
+                </span>
               </div>
             </Link>
           ))}
@@ -111,7 +95,23 @@ export default function AccountPost() {
 
         {/* Posts List */}
         <div className='space-y-4'>
-          {accountPostData?.map((post) => (
+          {/* Empty State */}
+          {(accountPostData === undefined || accountPostData.posts.length === 0) && (
+            <div className='text-center py-20 bg-white border border-gray-200 rounded-2xl'>
+              <div className='w-20 h-20 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-5'>
+                <Search className='w-10 h-10 text-gray-400' />
+              </div>
+              <h3 className='text-xl font-semibold text-gray-900 mb-2'>Không tìm thấy bài đăng nào</h3>
+              <p className='text-gray-600 mb-6'>Hãy điều chỉnh lại tìm kiếm của bạn hoặc tạo bài đăng mới</p>
+              <Link
+                to={path.post}
+                className='px-6 py-3 bg-gray-900 text-white rounded-xl font-medium hover:bg-gray-800 transition-all'
+              >
+                Tạo bài đăng mới
+              </Link>
+            </div>
+          )}
+          {accountPostData?.posts.map((post) => (
             <div
               key={post.id}
               className='bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300'
@@ -119,7 +119,7 @@ export default function AccountPost() {
               <div className='flex gap-4 p-5'>
                 {/* Thumbnail */}
                 <div className='relative w-56 h-40 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100'>
-                  <img src={post.image} alt={post.title} className='w-full h-full object-cover' />
+                  <img src={post.product?.image || ''} alt={post.title} className='w-full h-full object-cover' />
                   <div className='absolute top-3 left-3'>
                     {/* <span
                       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border backdrop-blur-sm ${statusConfig[post.status as keyof typeof statusConfig].color}`}
@@ -132,7 +132,7 @@ export default function AccountPost() {
                   </div>
                   <div className='absolute bottom-3 right-3'>
                     <div className='bg-gray-900/80 text-white px-3 py-1.5 rounded-full text-xs flex items-center gap-1.5 font-medium'>
-                      {post.category.name === 'Electric Car' ? (
+                      {post.product.category.typeSlug === CategoryType.vehicle ? (
                         <>
                           <Car className='w-3.5 h-3.5' /> Vehicle
                         </>
@@ -156,9 +156,9 @@ export default function AccountPost() {
                             <span className='font-medium'>ID:</span> {post.id}
                           </span>
                           <span>•</span>
-                          <span>{post.category.type}</span>
+                          <span>{post.product.category.name}</span>
                           <span>•</span>
-                          <span className='flex items-center gap-1'>📍 {post.address}</span>
+                          <span className='flex items-center gap-1'>📍 {post.product.address}</span>
                         </div>
                       </div>
                       <button className='p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors'>
@@ -169,38 +169,41 @@ export default function AccountPost() {
                     <div className='flex items-center gap-6 mt-4 text-sm'>
                       <div className='flex items-center gap-2'>
                         {/* <DollarSign className='w-5 h-5 text-emerald-600' /> */}
-                        <span className='font-bold text-emerald-600 text-xl'>{post.price}VND</span>
+                        <span className='font-bold text-emerald-600 text-xl'>{post.product.price}VND</span>
                       </div>
-                      {post.vehicle && (
+                      {post.product.category.typeSlug === CategoryType.vehicle && (
                         <>
                           <span className='text-gray-300'>|</span>
                           <span className='text-gray-600'>
-                            <span className='font-medium'>🚗</span> {post.vehicle.mileage_km}km
+                            <span className='font-medium'>🚗</span> {(post.product as VehicleType).mileage}km
                           </span>
                         </>
                       )}
-                      {post.battery && (
+                      {post.product.category.typeSlug === CategoryType.battery && (
                         <>
                           <span className='text-gray-300'>|</span>
                           <span className='text-gray-600'>
-                            <span className='font-medium'>⚡</span> {post.battery.capacity}
+                            <span className='font-medium'>⚡</span> {(post.product as BatteryType).capacity}
                           </span>
                         </>
                       )}
                       <span className='text-gray-300'>|</span>
                       <span className='text-gray-600 flex items-center gap-1'>
                         <span className='font-medium'>🔋</span>
-                        {post.battery ? (
+                        <span
+                          className={`font-semibold ${
+                            post.product.health >= '90' ? 'text-emerald-600' : 'text-amber-600'
+                          }`}
+                        >
+                          {post.product.health}
+                        </span>
+                        {/* {post.product.category.typeSlug === CategoryType.battery ? (
                           <span
                             className={`font-semibold ${
-                              post.battery.health >= 90
-                                ? 'text-emerald-600'
-                                : post.price >= 80
-                                  ? 'text-amber-600'
-                                  : 'text-rose-600'
+                              (post.product as BatteryType).health >= '90' ? 'text-emerald-600' : 'text-amber-600'
                             }`}
                           >
-                            {post.battery.health}
+                            {(post.product as BatteryType).health}
                           </span>
                         ) : (
                           <span
@@ -214,7 +217,7 @@ export default function AccountPost() {
                           >
                             {post.vehicle.battery_capacity}%
                           </span>
-                        )}
+                        )} */}
                       </span>
                     </div>
                   </div>
@@ -244,19 +247,8 @@ export default function AccountPost() {
               </div>
             </div>
           ))}
-
-          {/* Empty State */}
-          {accountPostData?.length === 0 && (
-            <div className='text-center py-20 bg-white border border-gray-200 rounded-2xl'>
-              <div className='w-20 h-20 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-5'>
-                <Search className='w-10 h-10 text-gray-400' />
-              </div>
-              <h3 className='text-xl font-semibold text-gray-900 mb-2'>No posts found</h3>
-              <p className='text-gray-600 mb-6'>Try adjusting your filters or create a new post</p>
-              <button className='px-6 py-3 bg-gray-900 text-white rounded-xl font-medium hover:bg-gray-800 transition-all'>
-                Create New Post
-              </button>
-            </div>
+          {accountPostData !== undefined && accountPostData.posts.length !== 0 && (
+            <PaginationAdmin pageSize={accountPostData.pagination.page_size} queryConfig={queryConfig} />
           )}
         </div>
       </div>

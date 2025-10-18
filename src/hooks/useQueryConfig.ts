@@ -25,7 +25,9 @@ export default function useQueryConfig() {
       category_id: queryParam.category_id,
       category_type: queryParam.category_type,
       color: queryParam.color,
-      warranty: queryParam.warranty
+      warranty: queryParam.warranty,
+      status: queryParam.status,
+      status_verify: queryParam.status_verify
     },
     isUndefined
   )
