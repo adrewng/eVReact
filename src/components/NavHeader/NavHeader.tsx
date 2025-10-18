@@ -1,20 +1,43 @@
 import { useMutation } from '@tanstack/react-query'
-import { useContext, useState } from 'react'
-import { createSearchParams, Link, useLocation } from 'react-router-dom'
+import { omit } from 'lodash'
+import { useContext, useEffect, useState } from 'react'
+import { createSearchParams, Link, useLocation, useNavigate } from 'react-router-dom'
 import { authApi } from '~/apis/auth.api'
 import { path } from '~/constants/path'
 import { AppContext } from '~/contexts/app.context'
+import useQueryConfig from '~/hooks/useQueryConfig'
 import logoUrl from '~/shared/logo.svg'
 import { CategoryType } from '~/types/category.type'
 import Popover from '../Popover'
 
 export default function NavHeader() {
   const pathname = useLocation().pathname
-  const [query, setQuery] = useState('')
+  const [title, setTitle] = useState<string>('')
+  const navigate = useNavigate()
   const { isAuthenticated, profile, setIsAuthenticated } = useContext(AppContext)
-
+  const queryConfig = useQueryConfig()
+  useEffect(() => {
+    if (queryConfig.title) {
+      setTitle(queryConfig.title)
+    } else {
+      setTitle('')
+    }
+  }, [queryConfig.title])
   function onSearch() {
-    console.log({ query })
+    navigate({
+      pathname: pathname,
+      search: createSearchParams(
+        omit(
+          {
+            ...queryConfig,
+            page: '1',
+            limit: '20',
+            title
+          },
+          ['order', 'sort_by']
+        )
+      ).toString()
+    })
   }
   const logoutMutation = useMutation({
     mutationFn: authApi.logout,
@@ -41,27 +64,29 @@ export default function NavHeader() {
         {/* Search input - hiển thị từ md trở lên */}
         <div className='hidden md:flex justify-center items-center flex-1 ml-5'>
           <div className='w-full max-w-3xl flex justify-center items-center rounded-full border border-zinc-200 bg-white px-4 py-2 shadow-sm'>
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              fill='none'
-              viewBox='0 0 24 24'
-              strokeWidth={1.5}
-              stroke='currentColor'
-              className='size-6'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z'
-              />
-            </svg>
+            <button onClick={onSearch}>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={1.5}
+                stroke='currentColor'
+                className='size-6'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z'
+                />
+              </svg>
+            </button>
 
             <label htmlFor='exact-search-desktop' className='sr-only'>
               Search
             </label>
             <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && onSearch()}
               id='exact-search-desktop'
               placeholder='Eligible for tax credit'
@@ -210,8 +235,8 @@ export default function NavHeader() {
             Search
           </label>
           <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && onSearch()}
             id='exact-search-mobile'
             placeholder='Eligible for tax credit'

@@ -1,10 +1,10 @@
 export interface User {
   id: number
-  email: string
+  email?: string
   full_name: string
-  role: string
-  reputation: number
-  totalCredit: string
+  role?: string
+  reputation?: number
+  totalCredit?: string
   status?: string
   phone?: string
   avatar?: string
