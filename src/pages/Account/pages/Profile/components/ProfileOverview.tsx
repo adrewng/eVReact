@@ -7,6 +7,7 @@ import { AppContext } from '~/contexts/app.context'
 import type { BodyUpdateProfile, ProfileData } from '~/types/user.type'
 import type { SuccessResponse } from '~/types/util.type'
 import { setProfileToLS } from '~/utils/auth'
+import { formatCurrencyVND } from '~/utils/util'
 
 type Props = {
   profile: ProfileData['user'] | undefined
@@ -186,7 +187,7 @@ export default function ProfileOverview(props: Props) {
           <div className='flex items-center justify-between mb-8'>
             <div>
               <p className='text-sm text-gray-400 mb-2'>Available Balance</p>
-              <h2 className='text-4xl font-bold'>{profile?.total_credit || '0'}₫</h2>
+              <h2 className='text-4xl font-bold'>{formatCurrencyVND(profile?.total_credit)}</h2>
             </div>
             <div className='flex gap-3'>
               <button className='px-5 py-2.5 bg-white text-gray-900 rounded-xl font-medium hover:bg-gray-100 transition-all'>

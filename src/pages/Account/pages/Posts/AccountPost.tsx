@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { Battery, Bell, Car, Edit, Eye, MoreVertical, Plus, Search, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { createSearchParams, Link } from 'react-router-dom'
@@ -9,37 +9,17 @@ import { tabs } from '~/constants/post'
 import useQueryConfig from '~/hooks/useQueryConfig'
 import { CategoryType } from '~/types/category.type'
 import type { BatteryType, PostStatus, ProductListConfig, VehicleType } from '~/types/post.type'
+import { formatCurrencyVND } from '~/utils/util'
 
 export default function AccountPost() {
   const [activeTab, setActiveTab] = useState('all')
   const queryConfig = useQueryConfig()
   const { data: postData } = useQuery({
     queryKey: ['post-me', queryConfig],
-    queryFn: () => postApi.getPostByMe(queryConfig as ProductListConfig)
+    queryFn: () => postApi.getPostByMe(queryConfig as ProductListConfig),
+    placeholderData: keepPreviousData
   })
   const accountPostData = postData?.data.data
-
-  // const getFilteredPosts = () => {
-  //   if (accountPostData) {
-  //     let filtered = activeTab === 'all' ? accountPostData : accountPostData.filter((post) => post.status === activeTab)
-  //     if (searchQuery) {
-  //       filtered = filtered.filter(
-  //         (post) =>
-  //           post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //           post.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //           post.location.toLowerCase().includes(searchQuery.toLowerCase())
-  //       )
-  //     }
-  //     return filtered
-  //   }
-  // }
-
-  // const filteredPosts = getFilteredPosts()
-
-  // const filteredPosts = accountPostData
-
-  // const mockPosts = data?.data.data
-
   return (
     <div className='flex-1 bg-white min-h-screen'>
       <div className='max-w-7xl mx-auto p-6 space-y-6'>
@@ -75,7 +55,7 @@ export default function AccountPost() {
               }}
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`relative px-3 py-3 rounded-xl text-sm font-medium transition-all ${
+              className={`relative py-3 rounded-xl text-sm font-medium transition-all ${
                 activeTab === tab.id ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-50'
               }`}
             >
@@ -120,16 +100,6 @@ export default function AccountPost() {
                 {/* Thumbnail */}
                 <div className='relative w-56 h-40 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100'>
                   <img src={post.product?.image || ''} alt={post.title} className='w-full h-full object-cover' />
-                  <div className='absolute top-3 left-3'>
-                    {/* <span
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border backdrop-blur-sm ${statusConfig[post.status as keyof typeof statusConfig].color}`}
-                    >
-                      <span
-                        className={`w-1.5 h-1.5 rounded-full ${statusConfig[post.status as keyof typeof statusConfig].dot}`}
-                      ></span>
-                      {statusConfig[post.status as keyof typeof statusConfig].label}
-                    </span> */}
-                  </div>
                   <div className='absolute bottom-3 right-3'>
                     <div className='bg-gray-900/80 text-white px-3 py-1.5 rounded-full text-xs flex items-center gap-1.5 font-medium'>
                       {post.product.category.typeSlug === CategoryType.vehicle ? (
@@ -169,7 +139,9 @@ export default function AccountPost() {
                     <div className='flex items-center gap-6 mt-4 text-sm'>
                       <div className='flex items-center gap-2'>
                         {/* <DollarSign className='w-5 h-5 text-emerald-600' /> */}
-                        <span className='font-bold text-emerald-600 text-xl'>{post.product.price}VND</span>
+                        <span className='font-bold text-emerald-600 text-xl'>
+                          {formatCurrencyVND(post.product.price)}
+                        </span>
                       </div>
                       {post.product.category.typeSlug === CategoryType.vehicle && (
                         <>

@@ -18,14 +18,14 @@ import {
 } from 'lucide-react'
 
 import { toNumber } from 'lodash'
-import type { PostDetailType, VehicleType } from '~/types/post.type'
+import type { PostType, VehicleType } from '~/types/post.type'
 import { nonEmpty } from '~/utils/formater'
 import { formatCurrencyVND, formatOwners, isVehicle } from '~/utils/util'
 import Gallery from './components/Gallery'
 import MarketPriceRange from './components/MarketPriceRange'
 import SpecRow from './components/SpecRow'
 
-export function ProductDetailPage({ post }: { post: PostDetailType }) {
+export function ProductDetailPage({ post }: { post: PostType }) {
   const product = post.product
   const base = isVehicle(product)
     ? [
@@ -209,7 +209,7 @@ export function ProductDetailPage({ post }: { post: PostDetailType }) {
 }
 
 export default function PostDetail() {
-  const demo: PostDetailType = {
+  const demo: PostType = {
     id: 1,
     title: 'Xe điện VinFast VF e34 chạy 20.000km, bảo hành 12 tháng',
     priority: 0,

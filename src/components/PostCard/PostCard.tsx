@@ -1,6 +1,6 @@
 import { FaCog, FaHeart, FaUsers } from 'react-icons/fa'
 import type { PostType } from '~/types/post.type'
-import { formatCurrency } from '~/utils/util'
+import { formatCurrencyVND } from '~/utils/util'
 
 interface PropType {
   post: PostType
@@ -37,7 +37,7 @@ export default function PostCard({ post }: PropType) {
               <FaCog /> {post.product.category.typeSlug}
             </div>
           </div>
-          <div className='font-semibold'>{formatCurrency(Number(post.product.price))}</div>
+          <div className='font-semibold'>{formatCurrencyVND(post.product.price)}</div>
         </div>
       </div>
     </>
