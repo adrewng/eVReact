@@ -12,6 +12,7 @@ import AccountPost from '~/pages/Account/pages/Posts/AccountPost'
 import AccountProfile from '~/pages/Account/pages/Profile/AccountProfile'
 import AllProductList from '~/pages/AllProductList'
 import BatteryList from '~/pages/BatteryList'
+import CheckoutPage from '~/pages/CheckoutPage/CheckoutPage'
 import Home from '~/pages/Home/Home'
 import LandingPage from '~/pages/LandingPage/LandingPage'
 import Login from '~/pages/Login'
@@ -64,7 +65,8 @@ export default function useRouteElements() {
             { path: path.home, element: <AllProductList /> },
             { path: path.vehicle, element: <VehicleList /> },
             { path: path.battery, element: <BatteryList /> },
-            { path: path.pricing, element: <PricingPage /> }
+            { path: path.pricing, element: <PricingPage /> },
+            { path: path.checkout, element: <CheckoutPage /> }
           ]
         }
       ]
