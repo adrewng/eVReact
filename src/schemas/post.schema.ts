@@ -24,6 +24,7 @@ export const baseSchema = yup.object({
   address: yup.string().required('Vui lòng nhập địa chỉ'),
   brand: yup.string().required('Vui lòng nhập hãng sản xuất'),
   model: yup.string().required('Vui lòng nhập model'),
+  color: yup.string().oneOf(ONEOF(COLOR_OPTIONS), 'Màu không hợp lệ').required('Vui lòng chọn màu sắc'),
   year: yup
     .number()
     .min(2000, 'Năm sản xuất phải lớn hơn 2000')
@@ -65,9 +66,7 @@ export const vehicleSchema = baseSchema.shape({
     .typeError('Số chỗ ngồi phải là số')
     .required('Vui lòng chọn số chỗ ngồi'),
 
-  mileage: yup.string().oneOf(ONEOF(MILEAGE_OPTIONS), 'Mức số km không hợp lệ').required('Vui lòng chọn mức số km'),
-
-  color: yup.string().oneOf(ONEOF(COLOR_OPTIONS), 'Màu không hợp lệ').required('Vui lòng chọn màu sắc')
+  mileage: yup.string().oneOf(ONEOF(MILEAGE_OPTIONS), 'Mức số km không hợp lệ').required('Vui lòng chọn mức số km')
 })
 
 export const batterySchema = baseSchema.shape({

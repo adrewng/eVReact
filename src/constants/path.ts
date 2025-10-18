@@ -11,6 +11,7 @@ export const path = {
   updatePhone: '/update-phone',
   pricing: '/pricing',
   checkout: '/checkout',
+  postDetail: '/postDetail',
   //account
   account: '/account',
   accountPosts: '/account/posts',

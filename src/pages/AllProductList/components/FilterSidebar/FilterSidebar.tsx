@@ -19,7 +19,7 @@ export default function FilterSidebar({ queryConfig, categories }: FilterSidebar
     navigate({
       pathname: path.home,
       search: createSearchParams(
-        omit(queryConfig, ['price_min', 'price_max', 'waranty', 'color', 'year_min', 'year_max'])
+        omit(queryConfig, ['price_min', 'price_max', 'waranty', 'color', 'year_min', 'year_max', 'title'])
       ).toString()
     })
   }

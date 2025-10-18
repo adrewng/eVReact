@@ -25,9 +25,9 @@ export default function VehicleFilter({ queryConfig, categorySlug }: VehicleFilt
   })
   const handleRemoveAll = () => {
     navigate({
-      pathname: path.battery,
+      pathname: path.vehicle,
       search: createSearchParams(
-        omit(queryConfig, ['price_min', 'price_max', 'waranty', 'color', 'year_min', 'year_max'])
+        omit(queryConfig, ['price_min', 'price_max', 'waranty', 'color', 'year_min', 'year_max', 'title'])
       ).toString()
     })
   }

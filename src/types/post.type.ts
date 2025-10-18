@@ -12,6 +12,10 @@ export interface PostDetailType {
   seller?: User
   reviewer?: User
   reviewed_by?: string
+  ai?: {
+    min_price: number
+    max_price: number
+  }
 }
 
 export interface VehicleType {
@@ -30,6 +34,7 @@ export interface VehicleType {
   images: string[] // danh sách ảnh chi tiết,
   warranty: string // bảo hành
   color: string // màu sắc
+  previousOwners?: number
 }
 
 export interface BatteryType {
@@ -47,6 +52,8 @@ export interface BatteryType {
   image: string
   images: string[]
   warranty: string // bảo hành
+  color: string // màu sắc
+  previousOwners?: number
 }
 
 export interface PostType {
@@ -80,6 +87,7 @@ export interface ProductListConfig {
   page?: number | string
   limit?: number | string
   color?: string
+  title?: string
   warranty?: string
   sort_by?: 'createdAt' | 'view' | 'sold' | 'price'
   order?: 'asc' | 'desc'

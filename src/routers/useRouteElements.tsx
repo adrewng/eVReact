@@ -18,6 +18,7 @@ import LandingPage from '~/pages/LandingPage/LandingPage'
 import Login from '~/pages/Login'
 import PageNotFound from '~/pages/PageNotFound'
 import Post from '~/pages/Post'
+import PostDetail from '~/pages/PostDetail'
 import PostManagement from '~/pages/PostManagement/PostManagement'
 import PricingPage from '~/pages/PricingPage/PricingPage'
 import Register from '~/pages/Register'
@@ -67,6 +68,7 @@ export default function useRouteElements() {
             { path: path.battery, element: <BatteryList /> },
             { path: path.pricing, element: <PricingPage /> },
             { path: path.checkout, element: <CheckoutPage /> }
+            { path: path.postDetail, element: <PostDetail /> }
           ]
         }
       ]
