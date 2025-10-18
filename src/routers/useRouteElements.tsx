@@ -67,7 +67,7 @@ export default function useRouteElements() {
             { path: path.vehicle, element: <VehicleList /> },
             { path: path.battery, element: <BatteryList /> },
             { path: path.pricing, element: <PricingPage /> },
-            { path: path.checkout, element: <CheckoutPage /> }
+            { path: path.checkout, element: <CheckoutPage /> },
             { path: path.postDetail, element: <PostDetail /> }
           ]
         }

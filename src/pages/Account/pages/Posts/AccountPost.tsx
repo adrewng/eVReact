@@ -7,18 +7,6 @@ import { path } from '~/constants/path'
 import useQueryParam from '~/hooks/useQueryParam'
 import type { PostListStatus } from '~/types/admin/post.type'
 
-// const statusConfig = {
-//   pending: { label: 'Pending Review', color: 'text-amber-700 bg-amber-50 border-amber-200', dot: 'bg-amber-500' },
-//   accepted: { label: 'Published', color: 'text-emerald-700 bg-emerald-50 border-emerald-200', dot: 'bg-emerald-500' },
-//   rejected: { label: 'Rejected', color: 'text-rose-700 bg-rose-50 border-rose-200', dot: 'bg-rose-500' },
-//   certified: { label: 'Certified', color: 'text-blue-700 bg-blue-50 border-blue-200', dot: 'bg-blue-500' },
-//   certifying: {
-//     label: 'Under Certification',
-//     color: 'text-purple-700 bg-purple-50 border-purple-200',
-//     dot: 'bg-purple-500'
-//   }
-// }
-
 const tabs = [
   { id: 'all', label: 'All', statusQuery: '' },
   { id: 'pending', label: 'Pending', statusQuery: 'pending' },
@@ -40,13 +28,12 @@ export default function AccountPost() {
     status: statusParams.status
   }
 
-  const { data } = useQuery({
+  const { data: postData } = useQuery({
     queryKey: ['post-me', queryConfigStatus],
     queryFn: () => postApi.getPostByMe(queryConfigStatus as PostListStatus)
   })
 
-  const accountPostData = data?.data.data
-  console.log(accountPostData)
+  const accountPostData = postData?.data.data
 
   // const getFilteredPosts = () => {
   //   if (accountPostData) {
