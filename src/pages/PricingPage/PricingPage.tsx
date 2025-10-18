@@ -1,6 +1,8 @@
 import { Disclosure, Transition } from '@headlessui/react'
 import { ChevronUpIcon } from '@heroicons/react/20/solid'
-import React, { useState } from 'react'
+import { useState } from 'react'
+import VehiclePackage from './components/VehiclePackage'
+import BatteryPackage from './components/BatteryPackage'
 
 interface Package {
   id: string
@@ -73,8 +75,13 @@ const popularQuestions: Question[] = [
   }
 ]
 
-const PricingPage: React.FC = () => {
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annually'>('monthly')
+export default function PricingPage() {
+  const [type, setType] = useState<'vehicle' | 'battery'>('vehicle')
+  // const { data: packageData } = useQuery({
+  //   queryKey: ['package'],
+  //   queryFn: packageApi.getPackage
+  // })
+  // console.log('package data -', packageData)
 
   return (
     <div className='min-h-screen bg-white text-neutral-900 font-inter'>
@@ -88,82 +95,31 @@ const PricingPage: React.FC = () => {
             Chọn gói đăng tin phù hợp để lan tỏa thông tin xe điện và pin của bạn một cách hiệu quả nhất.
           </p>
         </section>
-
         {/* ===== BILLING TOGGLE ===== */}
         <div className='flex justify-center mb-12'>
           <div className='flex items-center bg-neutral-100 rounded-full p-1 shadow-inner'>
             <button
-              onClick={() => setBillingCycle('monthly')}
+              onClick={() => setType('vehicle')}
               className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                billingCycle === 'monthly' ? 'bg-black text-white shadow-sm' : 'text-neutral-600 hover:text-black'
+                type === 'vehicle' ? 'bg-black text-white shadow-sm' : 'text-neutral-600 hover:text-black'
               }`}
             >
-              Theo tháng
+              Vehicle
             </button>
             <button
-              onClick={() => setBillingCycle('annually')}
+              onClick={() => setType('battery')}
               className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                billingCycle === 'annually' ? 'bg-black text-white shadow-sm' : 'text-neutral-600 hover:text-black'
+                type === 'battery' ? 'bg-black text-white shadow-sm' : 'text-neutral-600 hover:text-black'
               }`}
             >
-              Theo năm
+              Battery
             </button>
           </div>
         </div>
-
         {/* ===== PACKAGE CARDS ===== */}
-        <section className='grid md:grid-cols-3 gap-8 mb-20'>
-          {packages.map((pkg) => (
-            <div
-              key={pkg.id}
-              className={`rounded-2xl border bg-white p-8 shadow-sm hover:shadow-lg transition-all duration-300 ${
-                pkg.isMostPopular ? 'border-black' : 'border-neutral-200'
-              }`}
-            >
-              {/* {pkg.isMostPopular && (
-                <div className='absolute -top-3 right-6 bg-black text-white text-xs font-semibold py-1 px-3 rounded-full'>
-                  Gói nổi bật
-                </div>
-              )} */}
-              <h2 className='text-2xl font-semibold text-neutral-900'>{pkg.name}</h2>
-              <p className='text-neutral-500 mt-2 min-h-[48px]'>{pkg.description}</p>
-              <div className='mt-6 flex items-end gap-1'>
-                <span className='text-5xl font-bold text-neutral-900'>
-                  {billingCycle === 'monthly' ? pkg.priceMonthly.toLocaleString() : pkg.priceAnnually.toLocaleString()}₫
-                </span>
-                <span className='text-sm text-neutral-400 mb-2'>/{billingCycle === 'monthly' ? 'tháng' : 'năm'}</span>
-              </div>
-              <button
-                className={`mt-8 w-full py-3 rounded-xl text-base font-semibold transition-all duration-300 ${
-                  pkg.isMostPopular
-                    ? 'bg-black text-white hover:bg-neutral-800'
-                    : 'bg-neutral-900 text-white hover:bg-neutral-800'
-                }`}
-              >
-                Mua gói này
-              </button>
-              <ul className='mt-8 space-y-3 text-sm text-neutral-700'>
-                {pkg.features.map((f, i) => (
-                  <li key={i} className='flex items-center'>
-                    <svg
-                      className='w-5 h-5 text-black mr-2'
-                      fill='none'
-                      viewBox='0 0 24 24'
-                      stroke='currentColor'
-                      strokeWidth={2}
-                    >
-                      <path strokeLinecap='round' strokeLinejoin='round' d='M5 13l4 4L19 7' />
-                    </svg>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </section>
 
+        {type === 'vehicle' ? <VehiclePackage /> : <BatteryPackage />}
         {/* ===== COMPARE SECTION ===== */}
-
         <section className='mb-20'>
           <div className='text-center mb-12'>
             <h2 className='text-3xl font-bold text-neutral-900'>So sánh các gói</h2>
@@ -228,7 +184,6 @@ const PricingPage: React.FC = () => {
             </table>
           </div>
         </section>
-
         {/* ===== FAQ SECTION ===== */}
         <section className='max-w-3xl mx-auto'>
           <h2 className='text-3xl font-bold text-center mb-10'>Câu hỏi thường gặp</h2>
@@ -263,5 +218,3 @@ const PricingPage: React.FC = () => {
     </div>
   )
 }
-
-export default PricingPage

@@ -10,6 +10,7 @@ export const path = {
   payment: 'payment/result',
   updatePhone: '/update-phone',
   pricing: '/pricing',
+  checkout: '/checkout',
   postDetail: '/postDetail',
   //account
   account: '/account',
