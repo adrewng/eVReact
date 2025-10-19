@@ -69,3 +69,15 @@ export function sameFile(a: unknown, b: unknown): boolean {
 
 export const isVehicle = (p: VehicleType | BatteryType): p is VehicleType =>
   p.category.typeSlug === CategoryType.vehicle
+
+export const getIdFromNameId = (nameId: string) => {
+  const arr = nameId.split('-i-')
+  return arr[arr.length - 1]
+}
+const removeSpecialCharacter = (str: string) =>
+  // eslint-disable-next-line no-useless-escape
+  str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, '')
+
+export const generateNameId = ({ name, id }: { name: string; id: string | number }) => {
+  return removeSpecialCharacter(name).replace(/\s/g, '-') + `-i-${id}`
+}

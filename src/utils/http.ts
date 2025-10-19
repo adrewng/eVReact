@@ -26,32 +26,68 @@ class Http {
     this.instance = axios.create({
       // baseURL: '/api/',
       baseURL: 'https://electriccarmanagement-swp.up.railway.app/',
+      // baseURL: 'http://localhost:3000/',
       timeout: 10 * 1000,
       headers: { 'Content-Type': 'application/json' }
     })
     this.instance.interceptors.request.use(
       (config) => {
+        // auth
         if (this.accessToken && config.headers) {
           config.headers.authorization = this.accessToken
         }
-        const data = config.data
-        if (data && typeof data === 'object' && !(data instanceof FormData)) {
-          const hasFile = Object.values(data).some((value) => value instanceof File || value instanceof FileList)
 
-          if (hasFile) {
-            const formData = new FormData()
+        const data = config.data
+
+        // chỉ xử lý khi data là object "phẳng" người dùng gửi lên
+        if (data && typeof data === 'object' && !(data instanceof FormData)) {
+          // có chứa bất kỳ File / FileList / File[] không?
+          const hasBinary = Object.values(data).some(
+            (v) =>
+              v instanceof File ||
+              v instanceof Blob ||
+              v instanceof FileList ||
+              (Array.isArray(v) && v.length && v.every((x) => x instanceof File || x instanceof Blob))
+          )
+
+          if (hasBinary) {
+            const fd = new FormData()
+
             Object.entries(data).forEach(([key, value]) => {
+              if (value == null) return // bỏ qua null/undefined
+
+              // 1) File đơn
+              if (value instanceof File || value instanceof Blob) {
+                fd.append(key, value as File, (value as File).name ?? 'blob')
+                return
+              }
+
+              // 2) FileList
               if (value instanceof FileList) {
-                if (value.length > 0) formData.append(key, value[0])
-              } else {
+                Array.from(value).forEach((f) => fd.append(key, f, f.name))
+                return
+              }
+
+              // 3) Mảng File[]
+              if (Array.isArray(value) && value.every((x) => x instanceof File || x instanceof Blob)) {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                formData.append(key, value as any)
+                ;(value as (File | Blob)[]).forEach((f: any) => fd.append(key, f, (f as File).name ?? 'blob'))
+                return
+              }
+
+              // 4) Primitive / object thường
+              //  - number/boolean/string -> toString
+              //  - object khác -> stringify
+              if (typeof value === 'object') {
+                fd.append(key, JSON.stringify(value))
+              } else {
+                fd.append(key, String(value))
               }
             })
 
-            config.data = formData
+            config.data = fd
             if (config.headers) {
-              config.headers['Content-Type'] = 'multipart/form-data'
+              delete config.headers['Content-Type']
             }
           }
         }

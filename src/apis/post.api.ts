@@ -1,11 +1,12 @@
 import type { PostFormValues } from '~/schemas/post.schema'
 import type { PostListType as PostListTypeAdmin, PostListTypeConfig } from '~/types/admin/post.type'
-import type { PostListType, ProductListConfig } from '~/types/post.type'
+import type { PostListType, PostType, ProductListConfig } from '~/types/post.type'
 import type { SuccessResponse } from '~/types/util.type'
 import http from '~/utils/http'
 
 export const URL_GET_POSTS = 'api/post/get-all-approved'
 export const URL_ADD_POST = 'api/post/create-post'
+export const URL = 'api/post'
 
 const postApi = {
   getPosts(config: ProductListConfig) {
@@ -19,6 +20,9 @@ const postApi = {
   },
   getPostByMe(config: ProductListConfig) {
     return http.get<SuccessResponse<PostListType>>('/api/user/user-posts', { params: config })
+  },
+  getProductDetail(id: string) {
+    return http.get<SuccessResponse<PostType>>(`${URL}/${id}`)
   },
   updatePostByAdmin(id: string, status: string) {
     return http.put(`/api/post/update-post-by-admin/${id}`, { status: status })

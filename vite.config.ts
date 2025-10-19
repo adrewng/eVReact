@@ -7,7 +7,7 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    port: 3000
+    port: 3001
     // proxy: {
     //   '/api': {
     //     target: 'https://electriccarmanagement-swp.up.railway.app',

@@ -2,7 +2,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
 import categoryApi from '~/apis/categories.api'
 import postApi from '~/apis/post.api'
 import serviceApi from '~/apis/service.api'
@@ -20,6 +19,7 @@ import BatteryForm from './components/BatteryForm'
 import CategoryModal from './components/CategoryModal'
 import VehicleForm from './components/VehicleForm'
 
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { path } from '~/constants/path'
 
@@ -171,6 +171,7 @@ const PostPage = () => {
       onSuccess: async () => {
         await clear()
         toast.success('Đăng tin thành công')
+        // console.log('data', data)
         navigate(path.home)
       },
       onError: (error) => {

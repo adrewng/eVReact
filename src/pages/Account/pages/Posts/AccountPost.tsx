@@ -99,7 +99,7 @@ export default function AccountPost() {
               <div className='flex gap-4 p-5'>
                 {/* Thumbnail */}
                 <div className='relative w-56 h-40 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100'>
-                  <img src={post.product?.image || ''} alt={post.title} className='w-full h-full object-cover' />
+                  <img src={post.product.image} alt={post.title} className='w-full h-full object-cover' />
                   <div className='absolute bottom-3 right-3'>
                     <div className='bg-gray-900/80 text-white px-3 py-1.5 rounded-full text-xs flex items-center gap-1.5 font-medium'>
                       {post.product.category.typeSlug === CategoryType.vehicle ? (

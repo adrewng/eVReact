@@ -7,11 +7,11 @@ export const path = {
   register: '/register',
   profile: '/profile',
   post: '/post',
-  payment: 'payment/result',
+  payment: '/payment/result',
   updatePhone: '/update-phone',
   pricing: '/pricing',
   checkout: '/checkout',
-  postDetail: '/postDetail',
+  postDetail: '/post/:nameid',
   //account
   account: '/account',
   accountPosts: '/account/posts',

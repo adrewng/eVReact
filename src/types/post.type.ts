@@ -82,7 +82,7 @@ export interface ProductListConfig {
   color?: string
   title?: string
   warranty?: string
-  sort_by?: 'recommend' | 'price' | 'createdAt'
+  sort_by?: 'recommend' | 'price' | 'created_at'
   order?: 'asc' | 'desc'
   exclude?: string
   power?: string
