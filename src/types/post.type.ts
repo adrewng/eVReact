@@ -29,12 +29,13 @@ export interface VehicleType {
   category: CategoryChild
   mileage: string // số km đã đi
   year: number // đời xe
-  seats: number // số chỗ ngồi
+  seats: number | string // số chỗ ngồi
   image: string // ảnh bìa
   images: string[] // danh sách ảnh chi tiết,
   warranty: string // bảo hành
   color: string // màu sắc,
   health: string
+  rejected_reason?: string
   previousOwners?: number
 }
 
@@ -54,6 +55,7 @@ export interface BatteryType {
   images: string[]
   warranty: string // bảo hành
   color: string // màu sắc
+  rejected_reason?: string
   previousOwners?: number
 }
 

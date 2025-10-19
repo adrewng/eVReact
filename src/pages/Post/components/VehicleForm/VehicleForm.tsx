@@ -62,7 +62,7 @@ export default function VehicleForm() {
           control={control}
           render={({ field, fieldState }) => (
             <SelectDropdown
-              label='Bảo hành *'
+              label='Bảo hành'
               options={WARRANTY_OPTIONS}
               placeholder='Chọn thời gian bảo hành'
               errorMsg={fieldState.error?.message}
@@ -131,7 +131,6 @@ export default function VehicleForm() {
         <Controller
           name='health'
           control={control}
-          rules={{ required: 'Vui lòng chọn tình trạng pin' }}
           render={({ field, fieldState }) => (
             <SelectDropdown
               label='Tình trạng pin *'

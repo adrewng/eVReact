@@ -1,12 +1,6 @@
 import { Controller, useFormContext } from 'react-hook-form'
 import SelectDropdown from '~/components/SelectDropdown'
-import {
-  BATTERY_HEALTH_OPTIONS,
-  CAPACITY_OPTIONS,
-  COLOR_OPTIONS,
-  VOLTAGE_OPTIONS,
-  WARRANTY_OPTIONS
-} from '~/constants/options'
+import { BATTERY_HEALTH_OPTIONS, CAPACITY_OPTIONS, VOLTAGE_OPTIONS, WARRANTY_OPTIONS } from '~/constants/options'
 import type { PostFormValues } from '~/schemas/post.schema'
 import InputStyle from '../InputStyle'
 
@@ -52,7 +46,6 @@ export default function BatteryForm() {
             />
           )}
         />
-
         <Controller
           name='voltage'
           control={control}
@@ -92,31 +85,6 @@ export default function BatteryForm() {
           placeholder='Nhập năm sản xuất'
           register={register}
           errorMsg={errors.year?.message}
-        />
-      </div>
-
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-        {/* Màu sắc */}
-        <Controller
-          name='color'
-          control={control}
-          render={({ field, fieldState }) => (
-            <SelectDropdown
-              label='Màu sắc'
-              options={COLOR_OPTIONS}
-              placeholder='Chọn màu sắc'
-              errorMsg={fieldState.error?.message}
-              {...field}
-            />
-          )}
-        />
-        <InputStyle
-          label='Đời chủ'
-          name='previousOwners'
-          type='number'
-          placeholder='Nhập số đời chủ'
-          register={register}
-          errorMsg={errors.previousOwners?.message}
         />
       </div>
 

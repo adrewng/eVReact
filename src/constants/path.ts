@@ -12,6 +12,7 @@ export const path = {
   pricing: '/pricing',
   checkout: '/checkout',
   postDetail: '/post/:nameid',
+  updatePostReject: 'update-rejected',
   //account
   account: '/account',
   accountPosts: '/account/posts',
