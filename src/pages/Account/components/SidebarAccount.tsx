@@ -17,7 +17,7 @@ const accountItems = [
     path: path.accountProfile,
     children: [
       { label: 'Profile', path: path.accountProfile },
-      { label: 'Payment', path: path.accountPayment },
+      { label: 'Transaction', path: path.accountTransaction },
       // { label: 'Address', path: path.accountAddress },
       // { label: 'Password Changing', path: path.accountChangePassword },
       { label: 'Privacy Setting', path: path.accountPrivacySetting }

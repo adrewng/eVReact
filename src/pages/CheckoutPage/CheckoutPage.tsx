@@ -1,5 +1,4 @@
-import React, { useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { RadioGroup } from '@headlessui/react'
 import { CheckCircle2, Wallet, Banknote, Plus } from 'lucide-react'

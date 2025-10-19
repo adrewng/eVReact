@@ -18,7 +18,7 @@ export const path = {
   accountNotification: '/account/notification',
   accountProfile: '/account/profile',
   accountUpdateProfile: 'updateProfile',
-  accountPayment: '/account/payment',
+  accountTransaction: '/account/transaction',
   accountAddress: '/account/payment',
   accountChangePassword: '/account/password',
   accountPrivacySetting: '/setting/privacy',

@@ -10,6 +10,7 @@ import Account from '~/pages/Account/layouts/Account'
 import AccountNotification from '~/pages/Account/pages/Notification/AccountNotification'
 import AccountPost from '~/pages/Account/pages/Posts/AccountPost'
 import AccountProfile from '~/pages/Account/pages/Profile/AccountProfile'
+import AccountTransaction from '~/pages/Account/pages/Transaction/AccountTransaction'
 import AllProductList from '~/pages/AllProductList'
 import BatteryList from '~/pages/BatteryList'
 import CheckoutPage from '~/pages/CheckoutPage/CheckoutPage'
@@ -91,7 +92,8 @@ export default function useRouteElements() {
           children: [
             { path: path.accountPosts, element: <AccountPost /> },
             { path: path.accountProfile, element: <AccountProfile /> },
-            { path: path.accountNotification, element: <AccountNotification /> }
+            { path: path.accountNotification, element: <AccountNotification /> },
+            { path: path.accountTransaction, element: <AccountTransaction /> }
           ]
         },
         {
