@@ -2,7 +2,14 @@
 import { Controller, useFormContext } from 'react-hook-form'
 import SelectDropdown from '~/components/SelectDropdown'
 
-import { COLOR_OPTIONS, MILEAGE_OPTIONS, POWER_OPTIONS, SEATS_OPTIONS, WARRANTY_OPTIONS } from '~/constants/options'
+import {
+  BATTERY_HEALTH_OPTIONS,
+  COLOR_OPTIONS,
+  MILEAGE_OPTIONS,
+  POWER_OPTIONS,
+  SEATS_OPTIONS,
+  WARRANTY_OPTIONS
+} from '~/constants/options'
 import type { PostFormValues } from '~/schemas/post.schema'
 import InputStyle from '../InputStyle'
 
@@ -118,6 +125,30 @@ export default function VehicleForm() {
               {...field}
             />
           )}
+        />
+      </div>
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+        <Controller
+          name='health'
+          control={control}
+          rules={{ required: 'Vui lòng chọn tình trạng pin' }}
+          render={({ field, fieldState }) => (
+            <SelectDropdown
+              label='Tình trạng pin *'
+              options={BATTERY_HEALTH_OPTIONS}
+              placeholder='Chọn tình trạng pin'
+              errorMsg={fieldState.error?.message}
+              {...field}
+            />
+          )}
+        />
+        <InputStyle
+          label='Đời chủ'
+          name='previousOwners'
+          type='number'
+          placeholder='Nhập số đời chủ'
+          register={register}
+          errorMsg={errors.previousOwners?.message}
         />
       </div>
       <InputStyle
