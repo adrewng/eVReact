@@ -1,37 +1,25 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { motion } from 'framer-motion'
 import { RadioGroup } from '@headlessui/react'
 import { CheckCircle2, Wallet, Banknote, Plus } from 'lucide-react'
 import useQueryParam from '~/hooks/useQueryParam'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import packageApi from '~/apis/package.api'
 import type { PackageConfig } from '~/types/package.type'
-
-interface Package {
-  id: string
-  name: string
-  priceMonthly: number
-  priceAnnually: number
-  description: string
-}
-
-const packages: Package[] = [
-  { id: 'starter', name: 'Starter', priceMonthly: 0, priceAnnually: 0, description: 'Phù hợp cho người mới bắt đầu.' },
-  { id: 'pro', name: 'Pro', priceMonthly: 199000, priceAnnually: 1990000, description: 'Tăng lượt tiếp cận tin đăng.' },
-  {
-    id: 'enterprise',
-    name: 'Enterprise',
-    priceMonthly: 499000,
-    priceAnnually: 4990000,
-    description: 'Dành cho đại lý và doanh nghiệp.'
-  }
-]
+import { AppContext } from '~/contexts/app.context'
+import { useNavigate } from 'react-router-dom'
+import { path } from '~/constants/path'
+import { isAxiosPaymentRequiredError } from '~/utils/util'
 
 export default function CheckoutPage() {
   const packageQueryParams = useQueryParam()
-  console.log('pck querry param -', packageQueryParams)
+
   const [paymentMethod, setPaymentMethod] = useState<'wallet' | 'bank'>('wallet')
-  const [walletBalance, setWalletBalance] = useState<number>(150000) // demo user balance
+  const navigate = useNavigate()
+  const [walletBalance, setWalletBalance] = useState<number>(11000)
+
+  const { profile } = useContext(AppContext)
+  console.log('profile -', profile)
 
   const packageConfig: PackageConfig = {
     id: packageQueryParams.id,
@@ -42,22 +30,46 @@ export default function CheckoutPage() {
     queryKey: ['checkout-package', packageConfig],
     queryFn: () => packageApi.getCheckoutPackage(packageConfig)
   })
+  console.log('checkout-pck-data:', checkoutPackageData)
+
   const checkoutPackage = checkoutPackageData?.data.data.packages[0]
-  console.log(checkoutPackage)
+  console.log('checkout-pck: ', checkoutPackage)
 
-  // const packageId = params.get('package_id') || 'starter'
-  // const cycle = (params.get('cycle') as 'monthly' | 'annually') || 'monthly'
-  // const quantity = Number(params.get('quantity')) || 1
+  const payPackage = useMutation({
+    mutationFn: (payload: { user_id: number; service_id: number }) => packageApi.createPackage(payload)
+  })
+  const handlePaymentClick = () => {
+    const userId = profile?.id
+    const serviceId = checkoutPackage?.id
 
-  // const selectedPackage = useMemo(() => packages.find((p) => p.id === packageId), [packageId])
+    if (!userId || !serviceId) {
+      alert('Thiếu thông tin người dùng hoặc gói dịch vụ.')
+      return
+    }
+    const payload = { user_id: userId, service_id: serviceId }
+    console.log('Payload gửi sang API:', payload)
 
-  // if (!selectedPackage)
-  //   return (
-  //     <div className='min-h-screen flex items-center justify-center text-neutral-600'>Không tìm thấy gói dịch vụ.</div>
-  //   )
+    payPackage.mutate(payload, {
+      onSuccess: () => {
+        navigate(path.home)
+      },
+      onError: (error) => {
+        if (isAxiosPaymentRequiredError<{ data: { checkoutUrl: string } }>(error)) {
+          const url = error.response?.data?.data?.checkoutUrl
+          if (url) {
+            window.location.assign(url)
+          } else {
+            alert('Không thể chuyển đến trang thanh toán.')
+          }
+        } else {
+          alert('Đã có lỗi xảy ra. Vui lòng thử lại.')
+        }
+      }
+    })
+  }
 
-  // const price = cycle === 'monthly' ? selectedPackage.priceMonthly * quantity : selectedPackage.priceAnnually * quantity
-  // const isEnoughBalance = walletBalance >= price
+  const price = 1
+  const isEnoughBalance = walletBalance >= price
   return (
     <div className='min-h-screen bg-neutral-50 text-neutral-900 font-inter py-16 px-4 sm:px-6 lg:px-8'>
       <div className='max-w-4xl mx-auto bg-white rounded-2xl shadow-sm p-8'>
@@ -75,13 +87,13 @@ export default function CheckoutPage() {
             <p className='font-medium'>{cycle === 'monthly' ? 'Theo tháng' : 'Theo năm'}</p> */}
 
             <p className='text-neutral-600'>Số lượng:</p>
-            <p className='font-medium'>{}</p>
+            <p className='font-medium'>{1}</p>
 
             <p className='text-neutral-600'>Giá mỗi gói:</p>
-            <p className='font-medium'>{checkoutPackage?.cost}₫</p>
+            <p className='font-medium'>{Number(checkoutPackage?.cost).toLocaleString('vi-VN')}₫</p>
 
             <p className='text-neutral-600'>Tổng thanh toán:</p>
-            <p className='text-xl font-semibold text-black'>{checkoutPackage?.cost.toLocaleString()}₫</p>
+            <p className='text-xl font-semibold text-black'>{Number(checkoutPackage?.cost).toLocaleString('vi-VN')}₫</p>
           </div>
         </div>
 
@@ -137,7 +149,7 @@ export default function CheckoutPage() {
               <p className='text-neutral-700'>Số dư ví hiện tại:</p>
               <p className='font-semibold text-black'>{walletBalance.toLocaleString()}₫</p>
             </div>
-            {
+            {isEnoughBalance && (
               <div className='mt-4 text-center'>
                 <p className='text-sm text-red-500 mb-3'>Số dư không đủ để thanh toán gói này.</p>
                 <button
@@ -147,7 +159,7 @@ export default function CheckoutPage() {
                   <Plus className='w-4 h-4' /> Nạp thêm 500.000₫
                 </button>
               </div>
-            }
+            )}
           </motion.div>
         )}
 
@@ -160,6 +172,7 @@ export default function CheckoutPage() {
               ? 'bg-neutral-300 cursor-not-allowed'
               : 'bg-black text-white hover:bg-neutral-800'
           }`}
+          onClick={handlePaymentClick}
         >
           Xác nhận thanh toán
         </motion.button>

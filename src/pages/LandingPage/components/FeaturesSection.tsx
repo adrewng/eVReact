@@ -30,10 +30,10 @@ export default function FeaturesSection() {
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='text-center mb-16'>
           <h2 className='text-4xl sm:text-5xl font-semibold tracking-tight text-neutral-900 mb-4'>
-            Tại sao chọn chúng tôi?
+            Tại sao người dùng tin chọn EViest?
           </h2>
           <p className='text-lg text-neutral-500 max-w-2xl mx-auto'>
-            Nền tảng được thiết kế để mang lại trải nghiệm tốt nhất cho cả người mua và người bán
+            Mỗi hành trình với EViest là một câu chuyện về niềm tin, công nghệ và khát vọng thay đổi tương lai xanh.
           </p>
         </div>
 

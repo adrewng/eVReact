@@ -1,58 +1,40 @@
-import { ArrowRight, Zap } from 'lucide-react'
 import { motion } from 'framer-motion'
-import page_not_found from '../../../assets/page_not_found.jpg'
+import heroBg from '../../../assets/hero2.jpg'
+
 export default function HeroSection() {
   return (
-    <section className='min-h-screen flex items-center justify-center bg-white pt-20'>
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20'>
-        <div className='text-center max-w-4xl mx-auto'>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className='text-5xl sm:text-6xl lg:text-7xl font-semibold tracking-tight text-neutral-900 mb-6'
-          >
-            Nền tảng đăng tin xe điện & pin cũ <span className='text-black'>đáng tin cậy nhất</span> Việt Nam
-          </motion.h1>
+    <section className='relative min-h-screen w-full overflow-hidden bg-black text-white font-inter'>
+      {/* Background image */}
+      <div className='absolute inset-0'>
+        <img src={heroBg} alt='Electric Vehicle' className='w-full h-full object-cover ' />
+        {/* Optional overlay gradient */}
+        <div className='absolute inset-0 bg-gradient-to-b from-black/0 via-black/40 to-black/80' />
+      </div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className='text-lg text-neutral-500 mb-10 max-w-3xl mx-auto'
-          >
-            Kết nối người mua và người bán xe điện & pin qua sử dụng một cách nhanh chóng, minh bạch và tiện lợi.
-          </motion.p>
+      {/* Content container */}
+      <div className='relative z-10 min-h-screen flex flex-col justify-between px-10 sm:px-16 lg:px-24 py-12'>
+        {/* Top-left heading */}
+        <motion.h1
+          initial={{ opacity: 0, x: -60, y: -20 }}
+          animate={{ opacity: 1, x: 0, y: 0 }}
+          transition={{ duration: 1, delay: 0.3 }}
+          className='text-left text-5xl  font-extrabold leading-tight  max-w-2xl drop-shadow-lg pt-25'
+        >
+          Nền tảng đăng tin <br />
+          xe điện & pin cũ <br />
+          đáng tin cậy nhất Việt Nam
+        </motion.h1>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className='flex flex-col sm:flex-row items-center justify-center gap-4'
-          >
-            <button className='px-8 py-4 bg-black text-white rounded-xl text-base font-semibold hover:bg-neutral-800 transition-all duration-300 flex items-center gap-2'>
-              <Zap className='w-5 h-5' />
-              Đăng tin ngay
-              <ArrowRight className='w-5 h-5' />
-            </button>
-            <button className='px-8 py-4 bg-white text-neutral-900 border border-neutral-300 rounded-xl text-base font-semibold hover:bg-neutral-50 transition-all duration-300'>
-              Xem tin mới nhất
-            </button>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className='mt-16'
-          >
-            <img
-              src={page_not_found}
-              alt='EV Platform'
-              className='w-full rounded-2xl shadow-2xl border border-neutral-200'
-            />
-          </motion.div>
-        </div>
+        {/* Bottom-right tagline */}
+        <motion.p
+          initial={{ opacity: 0, x: 60, y: 20 }}
+          animate={{ opacity: 1, x: 0, y: 0 }}
+          transition={{ duration: 1, delay: 0.8 }}
+          className='text-right text-base sm:text-lg lg:text-xl max-w-md ml-auto drop-shadow-md'
+        >
+          Kết nối người mua và người bán xe điện & pin qua sử dụng — <br />
+          nhanh chóng, minh bạch và tiện lợi.
+        </motion.p>
       </div>
     </section>
   )

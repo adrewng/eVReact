@@ -23,7 +23,7 @@ export default function VehiclePackage() {
             <h2 className='text-2xl font-semibold text-neutral-900'>{pkg.name}</h2>
             <p className='text-neutral-500 mt-2 min-h-[48px]'>{pkg.description}</p>
             <div className='mt-6 flex items-end gap-1'>
-              <span className='text-5xl font-bold text-neutral-900'>{pkg.cost}₫</span>
+              <span className='text-5xl font-bold text-neutral-900'>{Number(pkg.cost).toLocaleString('vi-VN')}₫</span>
               <span className='text-sm text-neutral-400 mb-2'>/month</span>
             </div>
             <Link
@@ -43,7 +43,7 @@ export default function VehiclePackage() {
             </Link>
 
             <ul className='mt-8 space-y-3 text-sm text-neutral-700'>
-              {JSON.parse(pkg.feature).map((f: string, i: number) => (
+              {pkg.feature.split(',').map((f: string, i: number) => (
                 <li key={i} className='flex items-center'>
                   <svg
                     className='w-5 h-5 text-black mr-2'

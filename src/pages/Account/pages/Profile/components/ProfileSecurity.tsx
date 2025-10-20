@@ -1,8 +1,37 @@
+import { useMutation } from '@tanstack/react-query'
+import { useState, type ChangeEvent, type FormEvent } from 'react'
+import accountApi from '~/apis/account.api'
+
 export default function ProfileSecurity() {
+  const [newPassword, setNewPassword] = useState('')
+  const updateNewPassword = useMutation({
+    mutationFn: (password: string) => accountApi.updateNewPassword(password),
+    onSuccess: () => {
+      console.log('update password thanh cong')
+    },
+    onError: () => {
+      console.log('update password that bai')
+    }
+  })
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value
+    setNewPassword(value)
+    console.log(value)
+  }
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    updateNewPassword.mutate(newPassword)
+    setNewPassword('')
+  }
+
   return (
     <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
       {/* Change Password */}
-      <div className='bg-white border border-gray-200 rounded-2xl p-6 hover:border-gray-900 transition-all'>
+      <form
+        onSubmit={handleSubmit}
+        className='bg-white border border-gray-200 rounded-2xl p-6 hover:border-gray-900 transition-all'
+      >
         <h2 className='text-xl font-bold text-gray-900 mb-6'>Change Password</h2>
 
         <div className='space-y-4'>
@@ -18,6 +47,8 @@ export default function ProfileSecurity() {
             <label className='text-sm font-medium text-gray-700 block mb-2'>New Password</label>
             <input
               type='password'
+              onChange={handleChange}
+              value={newPassword}
               className='w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 transition-colors'
               placeholder='Enter new password'
             />
@@ -30,11 +61,14 @@ export default function ProfileSecurity() {
               placeholder='Confirm new password'
             />
           </div>
-          <button className='w-full py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-medium transition-all'>
+          <button
+            type='submit'
+            className='w-full py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-medium transition-all'
+          >
             Update Password
           </button>
         </div>
-      </div>
+      </form>
 
       {/* Two-Factor Authentication */}
       <div className='bg-white border border-gray-200 rounded-2xl p-6 hover:border-gray-900 transition-all'>
