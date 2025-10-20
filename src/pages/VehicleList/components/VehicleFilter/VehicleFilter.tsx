@@ -193,7 +193,7 @@ export default function VehicleFilter({ queryConfig, categorySlug }: VehicleFilt
                 queryConfig={queryConfig}
                 pathName={path.vehicle}
                 param='seat'
-                value={item.value}
+                value={String(item.value)}
                 label={item.label} // chữ hiển thị bên trái
                 rightBadge={-1} // số bên phải (component sẽ tự bọc badge)
               />

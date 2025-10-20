@@ -119,7 +119,7 @@ export default function useRouteElements() {
               children: [
                 { index: true, element: <Home /> },
                 { path: 'dashboard', element: <Home /> },
-                { path: 'posts', element: <PostManagement /> }
+                { path: path.adminPosts, element: <PostManagement /> }
               ]
             }
           ]

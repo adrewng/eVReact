@@ -9,7 +9,7 @@ import { tabs } from '~/constants/post'
 import useQueryConfig from '~/hooks/useQueryConfig'
 import { CategoryType } from '~/types/category.type'
 import type { BatteryType, PostStatus, ProductListConfig, VehicleType } from '~/types/post.type'
-import { formatCurrencyVND } from '~/utils/util'
+import { formatCurrencyVND, generateNameId } from '~/utils/util'
 
 export default function AccountPost() {
   const [activeTab, setActiveTab] = useState('all')
@@ -207,9 +207,26 @@ export default function AccountPost() {
                       <button className='flex items-center gap-1.5 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-xl text-sm font-medium transition-all'>
                         <Eye className='w-4 h-4' /> View
                       </button>
-                      <button className='flex items-center gap-1.5 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-xl text-sm font-medium transition-all'>
-                        <Edit className='w-4 h-4' /> Edit
-                      </button>
+                      {post.allow_resubmit ? (
+                        <Link
+                          to={`/update-rejected/${generateNameId({ name: post.title, id: post.id })}`}
+                          className='flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all
+               bg-gray-100 hover:bg-gray-200 text-gray-900'
+                          title='Chỉnh sửa bài'
+                          // onClick={(e) => e.stopPropagation()}
+                        >
+                          <Edit className='w-4 h-4' /> Edit
+                        </Link>
+                      ) : (
+                        <span
+                          aria-disabled
+                          title='Bài này chưa được phép gửi lại'
+                          className='flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium
+               bg-gray-100 text-gray-400 opacity-60 cursor-not-allowed select-none'
+                        >
+                          <Edit className='w-4 h-4' /> Edit
+                        </span>
+                      )}
                       <button className='flex items-center gap-1.5 px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-sm font-medium transition-all'>
                         <Trash2 className='w-4 h-4' /> Delete
                       </button>

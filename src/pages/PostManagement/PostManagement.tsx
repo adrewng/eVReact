@@ -3,8 +3,8 @@ import { isUndefined, omitBy } from 'lodash'
 import postApi from '~/apis/post.api'
 import useQueryParam from '~/hooks/useQueryParam'
 import type { PostListTypeConfig } from '~/types/admin/post.type'
-import PostStats from './components/PostStats'
 import PostFilters from './components/PostFilters'
+import PostStats from './components/PostStats'
 import PostTable from './components/PostTable'
 
 export type QueryConfig = {
@@ -30,8 +30,6 @@ export default function PostManagement() {
     queryKey: ['posts', queryConfig],
     queryFn: () => postApi.getPostsByAdmin(queryConfig as PostListTypeConfig)
   })
-
-  console.log('queryConfig - ', queryConfig)
 
   return (
     <div className='p-6 space-y-6 flex-1 overflow-y-auto'>

@@ -29,7 +29,6 @@ import SpecRow from './components/SpecRow'
 export default function PostDetail() {
   const { nameid } = useParams()
   const id = getIdFromNameId(nameid as string)
-  console.log('id: ', id)
   const { data: postDetailData } = useQuery({
     queryKey: ['product', id],
     queryFn: () => postApi.getProductDetail(id as string)

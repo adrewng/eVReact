@@ -12,6 +12,8 @@ export interface PostType {
   seller?: User
   reviewer?: User
   reviewed_by?: string
+  status?: string
+  allow_resubmit?: boolean
   ai?: {
     min_price: number
     max_price: number

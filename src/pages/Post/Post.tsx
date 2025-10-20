@@ -486,6 +486,8 @@ const PostPage = () => {
                       <Button
                         type='submit'
                         className='w-full bg-gradient-to-r from-black to-zinc-800 text-white px-6 py-4 rounded-2xl hover:from-zinc-800 hover:to-zinc-700 transition-all text-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105'
+                        isLoading={addPostMutation.isPending}
+                        disabled={addPostMutation.isPending}
                       >
                         Đăng tin
                       </Button>
