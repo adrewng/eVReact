@@ -74,7 +74,7 @@ export function Gallery({ images }: { images?: string[] }) {
         </div>
 
         {/* Prev / Next buttons */}
-        {list.length > 1 && (
+        {list.length > 0 && (
           <>
             {/* Prev (trái) */}
             <button
@@ -120,7 +120,7 @@ export function Gallery({ images }: { images?: string[] }) {
       </div>
 
       {/* thumbs */}
-      {list.length > 1 && (
+      {list.length > 0 && (
         <div className='no-scrollbar -mx-1.5 flex gap-3 overflow-x-auto px-1.5'>
           {list.map((src, i) => (
             <button

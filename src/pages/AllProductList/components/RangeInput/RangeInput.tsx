@@ -7,15 +7,26 @@ import type { path } from '~/constants/path'
 type QueryConfig = Record<string, string | number | undefined | null>
 
 const MIN = 0.5 // 500k
-const MAX = 500 // 500 triệu
+const MAX = 1500 // 1 tỷ 500 triệu
 const STEP = 0.5
 const MIN_DISTANCE = 20 // 5 triệu
 
-const formatTrieu = (v: number) =>
-  v % 1 === 0
-    ? `${v} triệu`
-    : `${v.toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} triệu`
+const formatTrieuOrTy = (v: number) => {
+  // v đang là đơn vị "triệu"
+  if (Math.abs(v) >= 1000) {
+    const ty = v / 1000 // đổi sang "tỷ"
+    const opts: Intl.NumberFormatOptions = Number.isInteger(ty)
+      ? {} // nguyên: không hiện phần thập phân
+      : { minimumFractionDigits: 2, maximumFractionDigits: 2 } // lẻ: 2 số thập phân
+    return `${ty.toLocaleString('vi-VN', opts)} tỷ`
+  }
 
+  // < 1000 triệu: giữ đơn vị "triệu"
+  const opts: Intl.NumberFormatOptions = Number.isInteger(v)
+    ? {}
+    : { minimumFractionDigits: 1, maximumFractionDigits: 1 }
+  return `${v.toLocaleString('vi-VN', opts)} triệu`
+}
 const formatVND = (vTrieu: number) =>
   (vTrieu * 1_000_000).toLocaleString('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 })
 
@@ -90,7 +101,7 @@ export default function PriceRangeSlider({
         max={MAX}
         step={STEP}
         valueLabelDisplay='on'
-        valueLabelFormat={formatTrieu}
+        valueLabelFormat={formatTrieuOrTy}
         disableSwap
         sx={{
           color: '#000',
@@ -116,7 +127,7 @@ export default function PriceRangeSlider({
           '& .MuiSlider-track, & .MuiSlider-rail': { borderRadius: 999 }
         }}
         getAriaLabel={(i) => (i === 0 ? 'Giá tối thiểu' : 'Giá tối đa')}
-        getAriaValueText={formatTrieu}
+        getAriaValueText={formatTrieuOrTy}
       />
 
       <div className='mt-2 text-sm text-zinc-600'>

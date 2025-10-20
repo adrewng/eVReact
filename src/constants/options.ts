@@ -1,5 +1,9 @@
 // Vehicle form options constants
 
+export type Option<T extends string | number = string | number> = {
+  value: T
+  label: string
+}
 export const SEATS_OPTIONS = [
   { value: 1, label: '1 chỗ' },
   { value: 2, label: '2 chỗ' },

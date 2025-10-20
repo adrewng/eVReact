@@ -12,6 +12,7 @@ import {
   MapPin,
   MessageCircle,
   Palette,
+  Shield,
   ShieldCheck,
   Sparkles,
   Zap
@@ -20,7 +21,18 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
 import postApi from '~/apis/post.api'
+import {
+  BATTERY_HEALTH_OPTIONS,
+  CAPACITY_OPTIONS,
+  COLOR_OPTIONS,
+  MILEAGE_OPTIONS,
+  POWER_OPTIONS,
+  SEATS_OPTIONS,
+  VOLTAGE_OPTIONS,
+  WARRANTY_OPTIONS
+} from '~/constants/options'
 import { nonEmpty, toNumber } from '~/utils/formater'
+import { labelFromOptions } from '~/utils/option'
 import { formatCurrencyVND, formatOwners, getIdFromNameId, isVehicle } from '~/utils/util'
 import Gallery from './components/Gallery'
 import MarketPriceRange from './components/MarketPriceRange'
@@ -41,21 +53,69 @@ export default function PostDetail() {
       ? [
           { icon: <Factory className='h-4 w-4' />, label: 'Thương hiệu', value: product.brand },
           { icon: <Car className='h-4 w-4' />, label: 'Model', value: product.model }, // hoặc <Cube />
-          { icon: <Zap className='h-4 w-4' />, label: 'Động cơ', value: product.power },
-          { icon: <Gauge className='h-4 w-4' />, label: 'Số km đã đi', value: product.mileage },
+          {
+            icon: <Zap className='h-4 w-4' />,
+            label: 'Động cơ',
+            value: labelFromOptions(POWER_OPTIONS, product.power)
+          },
+          {
+            icon: <Gauge className='h-4 w-4' />,
+            label: 'Số km đã đi',
+            value: labelFromOptions(MILEAGE_OPTIONS, product.mileage)
+          },
           { icon: <Calendar className='h-4 w-4' />, label: 'Năm sản xuất', value: product.year },
-          { icon: <Armchair className='h-4 w-4' />, label: 'Số chỗ ngồi', value: product.seats },
-          { icon: <Palette className='h-4 w-4' />, label: 'Màu sắc', value: product.color },
+          {
+            icon: <Armchair className='h-4 w-4' />,
+            label: 'Số chỗ ngồi',
+            value: labelFromOptions(SEATS_OPTIONS, product.seats)
+          },
+          {
+            icon: <Palette className='h-4 w-4' />,
+            label: 'Màu sắc',
+            value: labelFromOptions(COLOR_OPTIONS, product.color)
+          },
+          {
+            icon: <HeartPulse className='h-4 w-4' />,
+            label: 'Sức khoẻ pin',
+            value: labelFromOptions(BATTERY_HEALTH_OPTIONS, product.health)
+          },
+          {
+            icon: <Shield className='h-4 w-4' />,
+            label: 'Tình trạng bảo hành',
+            value: labelFromOptions(WARRANTY_OPTIONS, product.warranty)
+          },
           { icon: <History className='h-4 w-4' />, label: 'Số đời chủ', value: formatOwners(product.previousOwners) }
         ]
       : [
           { icon: <Factory className='h-4 w-4' />, label: 'Thương hiệu', value: product.brand },
           { icon: <Battery className='h-4 w-4' />, label: 'Model', value: product.model }, // hoặc <Cube />
-          { icon: <Zap className='h-4 w-4' />, label: 'Điện áp', value: product.voltage },
-          { icon: <BatteryFull className='h-4 w-4' />, label: 'Điện dung', value: product.capacity },
-          { icon: <HeartPulse className='h-4 w-4' />, label: 'Sức khoẻ pin', value: product.health },
+          {
+            icon: <Zap className='h-4 w-4' />,
+            label: 'Điện áp',
+            value: labelFromOptions(VOLTAGE_OPTIONS, product.voltage)
+          },
+          {
+            icon: <BatteryFull className='h-4 w-4' />,
+            label: 'Điện dung',
+            value: labelFromOptions(CAPACITY_OPTIONS, product.capacity)
+          },
+          {
+            icon: <HeartPulse className='h-4 w-4' />,
+            label: 'Sức khoẻ pin',
+            value: labelFromOptions(BATTERY_HEALTH_OPTIONS, product.health)
+          },
           { icon: <Calendar className='h-4 w-4' />, label: 'Năm sản xuất', value: product.year },
-          { icon: <History className='h-4 w-4' />, label: 'Số đời chủ', value: formatOwners(product.previousOwners) }
+          { icon: <History className='h-4 w-4' />, label: 'Số đời chủ', value: formatOwners(product.previousOwners) },
+          {
+            icon: <Shield className='h-4 w-4' />,
+            label: 'Tình trạng bảo hành',
+            value: labelFromOptions(WARRANTY_OPTIONS, product.warranty)
+          },
+          {
+            icon: <Palette className='h-4 w-4' />,
+            label: 'Màu sắc',
+            value: labelFromOptions(COLOR_OPTIONS, product.color)
+          }
         ]
     : []
 
