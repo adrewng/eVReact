@@ -5,7 +5,7 @@ import { createSearchParams, useNavigate } from 'react-router-dom'
 import categoryApi from '~/apis/categories.api'
 import CollapseItem from '~/components/CollapseItem'
 import FilterOptionLink from '~/components/FilterOptionLink'
-import { COLOR_OPTIONS, POWER_OPTIONS, SEATS_OPTIONS, WARRANTY_OPTIONS } from '~/constants/options'
+import { COLOR_OPTIONS, MILEAGE_OPTIONS, POWER_OPTIONS, SEATS_OPTIONS, WARRANTY_OPTIONS } from '~/constants/options'
 import { path } from '~/constants/path'
 import { type QueryConfig } from '~/hooks/useQueryConfig'
 import RangeInput from '~/pages/AllProductList/components/RangeInput/RangeInput'
@@ -165,7 +165,7 @@ export default function VehicleFilter({ queryConfig, categorySlug }: VehicleFilt
         <div className='h-px bg-zinc-100' />
         {/* Số km đã đi */}
         <CollapseItem
-          renderProp={POWER_OPTIONS.map((item) => {
+          renderProp={MILEAGE_OPTIONS.map((item) => {
             return (
               <FilterOptionLink
                 key={item.label}
@@ -193,7 +193,7 @@ export default function VehicleFilter({ queryConfig, categorySlug }: VehicleFilt
                 queryConfig={queryConfig}
                 pathName={path.vehicle}
                 param='seat'
-                value={item.value}
+                value={String(item.value)}
                 label={item.label} // chữ hiển thị bên trái
                 rightBadge={-1} // số bên phải (component sẽ tự bọc badge)
               />

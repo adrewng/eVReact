@@ -10,7 +10,7 @@ export default function useQueryConfig() {
   const queryConfig: QueryConfig = omitBy(
     {
       page: queryParam.page || '1',
-      limit: queryParam.limit || '10',
+      limit: queryParam.limit || '12',
       sort_by: queryParam.sort_by,
       title: queryParam.title,
       order: queryParam.order,
@@ -25,7 +25,9 @@ export default function useQueryConfig() {
       category_id: queryParam.category_id,
       category_type: queryParam.category_type,
       color: queryParam.color,
-      warranty: queryParam.warranty
+      warranty: queryParam.warranty,
+      status: queryParam.status,
+      status_verify: queryParam.status_verify
     },
     isUndefined
   )

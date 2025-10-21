@@ -1,7 +1,7 @@
 export const SORT_BY = {
   RECOMMEND: 'recommend',
   PRICE: 'price',
-  CREATED_AT: 'createdAt'
+  CREATED_AT: 'created_at'
 } as const
 export type SortBy = (typeof SORT_BY)[keyof typeof SORT_BY]
 

@@ -2,15 +2,12 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
 import categoryApi from '~/apis/categories.api'
 import postApi from '~/apis/post.api'
 import serviceApi from '~/apis/service.api'
 import Button from '~/components/Button'
 import Input from '~/components/Input'
 import Popover from '~/components/Popover'
-import { path } from '~/constants/path'
 import { useFormPersist } from '~/hooks/useFormPersist'
 import useQueryParam from '~/hooks/useQueryParam'
 import { getPostSchema, type PostFormValues } from '~/schemas/post.schema'
@@ -21,6 +18,10 @@ import AddressModal from './components/AddressModal'
 import BatteryForm from './components/BatteryForm'
 import CategoryModal from './components/CategoryModal'
 import VehicleForm from './components/VehicleForm'
+
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { path } from '~/constants/path'
 
 const PostPage = () => {
   const [showCategoryModal, setShowCategoryModal] = useState(true)
@@ -38,7 +39,7 @@ const PostPage = () => {
     defaultValues: {
       title: '',
       description: '',
-      price: 0,
+      price: 500000,
       address: '',
       brand: '',
       images: [],
@@ -54,6 +55,7 @@ const PostPage = () => {
     setValue,
     formState: { errors }
   } = methods
+  console.log('error', errors)
   const { saveNow, clear, isRestored } = useFormPersist(methods, {
     storageKeyBase: 'draft:post',
     partitionKey: selectedCategory?.typeSlug
@@ -165,10 +167,12 @@ const PostPage = () => {
 
   const onSubmit = handleSubmit((data) => {
     saveNow()
+
     addPostMutation.mutate(data, {
       onSuccess: async () => {
         await clear()
         toast.success('Đăng tin thành công')
+        // console.log('data', data)
         navigate(path.home)
       },
       onError: (error) => {
@@ -483,6 +487,8 @@ const PostPage = () => {
                       <Button
                         type='submit'
                         className='w-full bg-gradient-to-r from-black to-zinc-800 text-white px-6 py-4 rounded-2xl hover:from-zinc-800 hover:to-zinc-700 transition-all text-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105'
+                        isLoading={addPostMutation.isPending}
+                        disabled={addPostMutation.isPending}
                       >
                         Đăng tin
                       </Button>

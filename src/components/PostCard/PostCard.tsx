@@ -1,13 +1,15 @@
 import { FaCog, FaHeart, FaUsers } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
+import { path } from '~/constants/path'
 import type { PostType } from '~/types/post.type'
-import { formatCurrency } from '~/utils/util'
+import { formatCurrencyVND, generateNameId } from '~/utils/util'
 
 interface PropType {
   post: PostType
 }
 export default function PostCard({ post }: PropType) {
   return (
-    <>
+    <Link to={`${path.post}/${generateNameId({ name: post.title, id: post.id })}`}>
       <div className='aspect-[4/3] w-full overflow-hidden bg-zinc-100'>
         <img
           src={post.product.image || undefined}
@@ -37,9 +39,9 @@ export default function PostCard({ post }: PropType) {
               <FaCog /> {post.product.category.typeSlug}
             </div>
           </div>
-          <div className='font-semibold'>{formatCurrency(Number(post.product.price))}</div>
+          <div className='font-semibold'>{formatCurrencyVND(post.product.price)}</div>
         </div>
       </div>
-    </>
+    </Link>
   )
 }

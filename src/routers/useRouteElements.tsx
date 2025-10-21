@@ -22,6 +22,7 @@ import PostDetail from '~/pages/PostDetail'
 import PostManagement from '~/pages/PostManagement/PostManagement'
 import PricingPage from '~/pages/PricingPage/PricingPage'
 import Register from '~/pages/Register'
+import UpdateRejectedPostMock from '~/pages/UpdateRejectedPostMock'
 import VehicleList from '~/pages/VehicleList'
 
 function ProtectedRoute() {
@@ -68,7 +69,8 @@ export default function useRouteElements() {
             { path: path.battery, element: <BatteryList /> },
             { path: path.pricing, element: <PricingPage /> },
             { path: path.checkout, element: <CheckoutPage /> },
-            { path: path.postDetail, element: <PostDetail /> }
+            { path: path.postDetail, element: <PostDetail /> },
+            { path: path.updatePostReject, element: <UpdateRejectedPostMock /> }
           ]
         }
       ]
@@ -117,7 +119,7 @@ export default function useRouteElements() {
               children: [
                 { index: true, element: <Home /> },
                 { path: 'dashboard', element: <Home /> },
-                { path: 'posts', element: <PostManagement /> }
+                { path: path.adminPosts, element: <PostManagement /> }
               ]
             }
           ]

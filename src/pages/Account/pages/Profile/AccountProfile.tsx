@@ -27,7 +27,6 @@ export default function AccountProfile() {
     refetchOnReconnect: true
   })
   const profile = profileData?.data.data.user
-  console.log('profile: ', profile)
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const avatar = event.target.files?.[0]
