@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { RadioGroup } from '@headlessui/react'
 import { CheckCircle2, Wallet, Banknote, Plus } from 'lucide-react'
@@ -15,8 +15,9 @@ export default function CheckoutPage() {
   const packageQueryParams = useQueryParam()
 
   const [paymentMethod, setPaymentMethod] = useState<'wallet' | 'bank'>('wallet')
+  const [isEnoughBalance, setIsEnoughBalance] = useState<boolean>(true)
+
   const navigate = useNavigate()
-  const [walletBalance, setWalletBalance] = useState<number>(11000)
 
   const { profile } = useContext(AppContext)
   console.log('profile -', profile)
@@ -34,6 +35,13 @@ export default function CheckoutPage() {
 
   const checkoutPackage = checkoutPackageData?.data.data.packages[0]
   console.log('checkout-pck: ', checkoutPackage)
+
+  useEffect(() => {
+    if (checkoutPackage) {
+      const enough = checkoutPackage.user_total_credit >= checkoutPackage.cost
+      setIsEnoughBalance(enough)
+    }
+  }, [checkoutPackage])
 
   const payPackage = useMutation({
     mutationFn: (payload: { user_id: number; service_id: number }) => packageApi.createPackage(payload)
@@ -67,9 +75,6 @@ export default function CheckoutPage() {
       }
     })
   }
-
-  const price = 1
-  const isEnoughBalance = walletBalance >= price
   return (
     <div className='min-h-screen bg-neutral-50 text-neutral-900 font-inter py-16 px-4 sm:px-6 lg:px-8'>
       <div className='max-w-4xl mx-auto bg-white rounded-2xl shadow-sm p-8'>
@@ -147,16 +152,18 @@ export default function CheckoutPage() {
           >
             <div className='flex justify-between items-center'>
               <p className='text-neutral-700'>Số dư ví hiện tại:</p>
-              <p className='font-semibold text-black'>{walletBalance.toLocaleString()}₫</p>
+              <p className='font-semibold text-black'>
+                {Number(checkoutPackage?.user_total_credit).toLocaleString('vi-VN')}₫
+              </p>
             </div>
-            {isEnoughBalance && (
+            {!isEnoughBalance && (
               <div className='mt-4 text-center'>
                 <p className='text-sm text-red-500 mb-3'>Số dư không đủ để thanh toán gói này.</p>
                 <button
-                  onClick={() => setWalletBalance(walletBalance + 500000)} // demo: nạp thêm
+                  onClick={handlePaymentClick} // demo: nạp thêm
                   className='inline-flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg hover:bg-neutral-800 transition'
                 >
-                  <Plus className='w-4 h-4' /> Nạp thêm 500.000₫
+                  <Plus className='w-4 h-4' /> Nạp thêm {checkoutPackage?.topup_credit.toLocaleString('vi-VN')}₫
                 </button>
               </div>
             )}
@@ -166,12 +173,13 @@ export default function CheckoutPage() {
         {/* CONFIRM BUTTON */}
         <motion.button
           whileTap={{ scale: 0.97 }}
-          disabled={paymentMethod === 'wallet'}
-          className={`w-full py-4 rounded-xl font-semibold text-lg transition ${
-            paymentMethod === 'wallet'
-              ? 'bg-neutral-300 cursor-not-allowed'
-              : 'bg-black text-white hover:bg-neutral-800'
-          }`}
+          disabled={!paymentMethod || (paymentMethod === 'wallet' && !isEnoughBalance)}
+          className={`w-full py-4 rounded-xl font-semibold text-lg transition
+    ${
+      !paymentMethod || (paymentMethod === 'wallet' && !isEnoughBalance)
+        ? 'bg-neutral-300 cursor-not-allowed'
+        : 'bg-black text-white hover:bg-neutral-800'
+    }`}
           onClick={handlePaymentClick}
         >
           Xác nhận thanh toán

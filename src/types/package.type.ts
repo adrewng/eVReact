@@ -11,6 +11,8 @@ export interface Package {
   product_type: string
   service_ref: string
   type: string
+  topup_credit: number
+  user_total_credit: string
 }
 
 export interface Packages {
