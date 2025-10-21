@@ -10,6 +10,9 @@ const packageApi = {
   },
   getCheckoutPackage(params: PackageConfig) {
     return http.get<SuccessResponse<Packages>>('/api/service/packages', { params })
+  },
+  createPackage(payload: { user_id: number; service_id: number }) {
+    return http.post('/api/payment/package-payment', payload)
   }
 }
 

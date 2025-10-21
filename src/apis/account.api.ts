@@ -24,6 +24,9 @@ const accountApi = {
     return http.put<SuccessResponse<User>>('/api/user/update-user', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
+  },
+  updateNewPassword(newPassword: string) {
+    return http.put('/api/user/change-password', { newPassword })
   }
 }
 
