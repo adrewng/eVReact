@@ -14,17 +14,20 @@ import AccountTransaction from '~/pages/Account/pages/Transaction/AccountTransac
 import AllProductList from '~/pages/AllProductList'
 import BatteryList from '~/pages/BatteryList'
 import CheckoutPage from '~/pages/CheckoutPage/CheckoutPage'
-import Home from '~/pages/Home/Home'
+
 import LandingPage from '~/pages/LandingPage/LandingPage'
 import Login from '~/pages/Login'
 import PageNotFound from '~/pages/PageNotFound'
 import Post from '~/pages/Post'
 import PostDetail from '~/pages/PostDetail'
-import PostManagement from '~/pages/PostManagement/PostManagement'
+import PostManagement from '~/pages/admin/PostManagement/PostManagement'
 import PricingPage from '~/pages/PricingPage/PricingPage'
 import Register from '~/pages/Register'
 import UpdateRejectedPostMock from '~/pages/UpdateRejectedPostMock'
 import VehicleList from '~/pages/VehicleList'
+import UserManagement from '~/pages/admin/UserManagement/UserManagement'
+import TransactionManagment from '~/pages/admin/TransactionManagement/TransactionManagment'
+import Home from '~/pages/admin/Home/Home'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
@@ -121,7 +124,9 @@ export default function useRouteElements() {
               children: [
                 { index: true, element: <Home /> },
                 { path: 'dashboard', element: <Home /> },
-                { path: path.adminPosts, element: <PostManagement /> }
+                { path: path.adminPosts, element: <PostManagement /> },
+                { path: path.adminUsers, element: <UserManagement /> },
+                { path: path.adminTransactions, element: <TransactionManagment /> }
               ]
             }
           ]

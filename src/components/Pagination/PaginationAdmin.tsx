@@ -1,5 +1,5 @@
 import { createSearchParams, Link } from 'react-router-dom'
-import type { QueryConfig } from '~/pages/PostManagement/PostManagement'
+import type { QueryConfig } from '~/pages/admin/PostManagement/PostManagement'
 // import type { QueryConfig } from '../PostManagement/PostTable'
 
 interface Props {

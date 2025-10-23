@@ -8,7 +8,7 @@ import { Button } from '~/components/ui/button'
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { cn } from '~/lib/utils'
 import { ChevronDown } from 'lucide-react'
-import type { QueryConfig } from '~/pages/PostManagement/PostManagement'
+import type { QueryConfig } from '~/pages/admin/PostManagement/PostManagement'
 import { createSearchParams, Link, useNavigate } from 'react-router-dom'
 import { path } from '~/constants/path'
 

@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import {
-  BarChart2,
   Bell,
+  CreditCard,
   FileText,
   Home,
   LogOutIcon,
@@ -21,10 +21,10 @@ import logoUrl from '~/shared/logo.svg'
 
 const menuItems = [
   { label: 'Dashboard', icon: Home, path: path.adminDashboard },
-  { label: 'Analytics', icon: BarChart2, path: 'home' },
+  { label: 'Transaction', icon: CreditCard, path: path.adminTransactions },
   { label: 'Posts', icon: FileText, path: path.adminPosts },
   { label: 'Orders', icon: ShoppingCart, badge: 14 },
-  { label: 'User', icon: Users, badge: 23, path: 'home' },
+  { label: 'User', icon: Users, badge: 23, path: path.adminUsers },
   { label: 'Campaign', icon: Megaphone, badge: 1, path: 'home' }
 ]
 
