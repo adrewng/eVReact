@@ -21,6 +21,7 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
 import postApi from '~/apis/post.api'
+import Button from '~/components/Button'
 import {
   BATTERY_HEALTH_OPTIONS,
   CAPACITY_OPTIONS,
@@ -52,7 +53,7 @@ export default function PostDetail() {
     ? isVehicle(product)
       ? [
           { icon: <Factory className='h-4 w-4' />, label: 'Thương hiệu', value: product.brand },
-          { icon: <Car className='h-4 w-4' />, label: 'Model', value: product.model }, // hoặc <Cube />
+          { icon: <Car className='h-4 w-4' />, label: 'Tên', value: product.model }, // hoặc <Cube />
           {
             icon: <Zap className='h-4 w-4' />,
             label: 'Động cơ',
@@ -234,9 +235,9 @@ export default function PostDetail() {
                   />
                 </div>
                 <div className='flex gap-2'>
-                  <button className='flex-1 rounded-xl bg-zinc-900 px-4 py-3 font-medium text-white shadow-sm transition hover:translate-y-[-1px] hover:shadow-md'>
-                    <MessageCircle className='mr-2 inline h-5 w-5' /> Liên hệ người bán
-                  </button>
+                  <Button className='flex-1 flex justify-center items-center rounded-xl bg-zinc-900 px-4 py-3 font-medium text-white shadow-sm transition hover:translate-y-[-1px] hover:shadow-md'>
+                    <MessageCircle className='mr-2 inline h-5 w-5' /> Gữi yêu cầu mua
+                  </Button>
                 </div>
               </div>
 
@@ -244,7 +245,7 @@ export default function PostDetail() {
               {post.seller && (
                 <div className='flex items-center gap-3 rounded-2xl border border-zinc-100 bg-white/90 p-5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/70'>
                   <img
-                    src={post.seller.avatar || 'https://api.iconify.design/solar:user-bold.svg?color=%23a1a1aa'}
+                    src={'https://api.iconify.design/solar:user-bold.svg?color=%23a1a1aa'}
                     alt='avatar'
                     className='h-12 w-12 rounded-full object-cover ring-2 ring-white shadow-sm'
                   />
@@ -257,7 +258,7 @@ export default function PostDetail() {
                         </span>
                       )}
                     </p>
-                    {post.seller.phone && <p className='text-sm text-zinc-500'>{post.seller.phone}</p>}
+                    {/* {post.seller.phone && <p className='text-sm text-zinc-500'>{post.seller.phone}</p>} */}
                   </div>
                   {/* <button className='rounded-lg border border-zinc-300 px-3 py-2 text-sm font-medium shadow-sm transition hover:bg-zinc-100'>
                   Xem trang
