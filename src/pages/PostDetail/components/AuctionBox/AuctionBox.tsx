@@ -8,14 +8,6 @@ const Button = ({ children, className, ...props }) => (
   </button>
 )
 
-// Mock format function
-const formatCurrencyVND = (amount) => {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND'
-  }).format(amount)
-}
-
 interface AuctionBoxProps {
   startPrice: number
   currentPrice: number
@@ -119,15 +111,15 @@ export default function AuctionBox({
       <div className='mb-5 space-y-2 text-sm'>
         <div className='flex items-center justify-between text-zinc-600'>
           <span>Giá khởi điểm:</span>
-          <span className='font-bold text-lg text-zinc-900'>{formatCurrencyVND(startPrice)}</span>
+          <span className='font-bold text-lg text-zinc-900'>{startPrice.toLocaleString('vi-VN')}đ</span>
         </div>
         <div className='flex items-center justify-between text-zinc-600'>
           <span>Giá chốt:</span>
-          <span className='font-bold text-lg text-zinc-900'>{formatCurrencyVND(startPrice)}</span>
+          <span className='font-bold text-lg text-zinc-900'>{startPrice.toLocaleString('vi-VN')}đ</span>
         </div>
         <div className='flex items-center justify-between border-t border-zinc-100 '>
           <span className='text-zinc-600'>Giá hiện tại:</span>
-          <span className='text-xl font-bold text-zinc-900'>{formatCurrencyVND(currentPrice)}</span>
+          <span className='text-xl font-bold text-zinc-900'>{currentPrice.toLocaleString('vi-VN')}đ</span>
         </div>
       </div>
       <hr className='my-4 border-zinc-900 pt-3' />
@@ -149,7 +141,7 @@ export default function AuctionBox({
                 <Plus className='mr-2 h-4 w-4 shrink-0 text-zinc-400' />
                 <input
                   type='text'
-                  value={formatCurrencyVND(bidAmount)}
+                  value={bidAmount.toLocaleString('vi-VN')}
                   readOnly
                   className='w-full bg-transparent text-center text-base font-semibold text-zinc-900 outline-none'
                 />
@@ -181,7 +173,7 @@ export default function AuctionBox({
                 className='flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-300 bg-white px-4 py-3 font-medium text-zinc-900 shadow-sm transition hover:bg-zinc-50'
               >
                 <Zap className='h-5 w-5' />
-                Mua ngay • {formatCurrencyVND(buyNowPrice)}
+                Mua ngay • {buyNowPrice.toLocaleString('vi-VN')}đ
               </Button>
             )}
           </div>

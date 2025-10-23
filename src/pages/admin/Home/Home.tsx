@@ -229,55 +229,6 @@ export default function Home() {
             </ResponsiveContainer>
           </CardContent>
         </Card>
-
-        {/* Quick Links */}
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4'>
-          <Link to='/users'>
-            <Button
-              variant='outline'
-              className='w-full h-20 flex flex-col items-center justify-center gap-2 bg-transparent'
-            >
-              <Users className='h-5 w-5' />
-              <span className='text-xs'>User Management</span>
-            </Button>
-          </Link>
-          <Link to='/transactions'>
-            <Button
-              variant='outline'
-              className='w-full h-20 flex flex-col items-center justify-center gap-2 bg-transparent'
-            >
-              <DollarSign className='h-5 w-5' />
-              <span className='text-xs'>Transactions</span>
-            </Button>
-          </Link>
-          <Link to='/posts'>
-            <Button
-              variant='outline'
-              className='w-full h-20 flex flex-col items-center justify-center gap-2 bg-transparent'
-            >
-              <TrendingUp className='h-5 w-5' />
-              <span className='text-xs'>Posts</span>
-            </Button>
-          </Link>
-          <Link to='/packages'>
-            <Button
-              variant='outline'
-              className='w-full h-20 flex flex-col items-center justify-center gap-2 bg-transparent'
-            >
-              <Zap className='h-5 w-5' />
-              <span className='text-xs'>Packages</span>
-            </Button>
-          </Link>
-          <Link to='/'>
-            <Button
-              variant='outline'
-              className='w-full h-20 flex flex-col items-center justify-center gap-2 bg-transparent'
-            >
-              <AlertCircle className='h-5 w-5' />
-              <span className='text-xs'>System Health</span>
-            </Button>
-          </Link>
-        </div>
       </div>
     </div>
   )

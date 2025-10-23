@@ -17,11 +17,13 @@ import {
   Pie,
   Cell
 } from 'recharts'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
-import { Button } from '~/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardAction, CardFooter } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
 import { Users, TrendingUp, Shield, Search, ChevronLeft, type LucideIcon } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Badge } from '~/components/ui/badge'
+import { IconTrendingDown, IconTrendingUp } from '@tabler/icons-react'
+import { UserBarChart } from './components/UserBarChart'
+import UserStatCards from './components/UserStatCards'
 
 // Mock data
 const userStats = {
@@ -111,125 +113,12 @@ export default function UserManagement() {
 
   return (
     <div className='min-h-screen flex-1 bg-background'>
-      {/* Header */}
-      {/* <div className='border-b border-border bg-card'>
-        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6'>
-          <div className='flex items-center gap-4 mb-4'>
-            <Link to='/'>
-              <Button variant='ghost' size='sm'>
-                <ChevronLeft className='h-4 w-4' />
-              </Button>
-            </Link>
-            <div>
-              <h1 className='text-3xl font-bold text-foreground'>User Management</h1>
-              <p className='text-muted-foreground mt-1'>Monitor and manage platform users</p>
-            </div>
-          </div>
-        </div>
-      </div> */}
-
       {/* Main Content */}
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         {/* KPI Cards */}
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8'>
-          <StatCard
-            title='Total Users'
-            value={userStats.totalUsers.toLocaleString()}
-            icon={Users}
-            color='bg-blue-500'
-          />
-          <StatCard
-            title='Active Users'
-            value={userStats.activeUsers.toLocaleString()}
-            icon={TrendingUp}
-            color='bg-green-500'
-          />
-          <StatCard title='New This Month' value={userStats.newUsersThisMonth} icon={Users} color='bg-purple-500' />
-          <StatCard
-            title='Verified Users'
-            value={userStats.verifiedUsers.toLocaleString()}
-            icon={Shield}
-            color='bg-emerald-500'
-          />
-        </div>
+        <UserStatCards />
 
-        {/* Charts */}
-        <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8'>
-          {/* User Growth */}
-          <Card className='lg:col-span-2'>
-            <CardHeader>
-              <CardTitle>User Growth Trend</CardTitle>
-              <CardDescription>Total vs Verified users over time</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width='100%' height={300}>
-                <LineChart data={userGrowthData}>
-                  <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
-                  <XAxis dataKey='month' stroke='#6b7280' />
-                  <YAxis stroke='#6b7280' />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px', color: '#fff' }}
-                  />
-                  <Legend />
-                  <Line type='monotone' dataKey='total' stroke='#3b82f6' strokeWidth={2} dot={{ fill: '#3b82f6' }} />
-                  <Line type='monotone' dataKey='verified' stroke='#10b981' strokeWidth={2} dot={{ fill: '#10b981' }} />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* User Type Distribution */}
-          <Card>
-            <CardHeader>
-              <CardTitle>User Types</CardTitle>
-              <CardDescription>Distribution by role</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width='100%' height={300}>
-                <PieChart>
-                  <Pie
-                    data={userTypeDistribution}
-                    cx='50%'
-                    cy='50%'
-                    labelLine={false}
-                    label={({ name, value }) => `${name}: ${value}%`}
-                    outerRadius={80}
-                    fill='#8884d8'
-                    dataKey='value'
-                  >
-                    {userTypeDistribution.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Users by Region */}
-        <Card className='mb-8'>
-          <CardHeader>
-            <CardTitle>Users by Region</CardTitle>
-            <CardDescription>Click on a region to drill down</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width='100%' height={300}>
-              <BarChart data={usersByRegion}>
-                <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
-                <XAxis dataKey='region' stroke='#6b7280' />
-                <YAxis stroke='#6b7280' />
-                <Tooltip
-                  contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px', color: '#fff' }}
-                />
-                <Legend />
-                <Bar dataKey='users' fill='#3b82f6' radius={[8, 8, 0, 0]} />
-                <Bar dataKey='active' fill='#10b981' radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        <UserBarChart />
 
         {/* Recent Users Table */}
         <Card>
