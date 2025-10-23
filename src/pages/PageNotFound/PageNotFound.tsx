@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import page_not_found from '../assets/page_not_found.jpg'
+import page_not_found from '~/assets/page_not_found.jpg'
 
 const PageNotFound = () => {
   const navigate = useNavigate()

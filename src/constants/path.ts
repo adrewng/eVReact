@@ -13,6 +13,8 @@ export const path = {
   checkout: '/checkout',
   postDetail: '/post/:nameid',
   updatePostReject: '/update-rejected/:nameid',
+  deletePost: '/delete-post/:id',
+  requestAution: '/request-auction/:nameid',
   //account
   account: '/account',
   accountPosts: '/account/posts',
