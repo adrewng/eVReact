@@ -1,22 +1,45 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import classNames from 'classnames'
 import { ArrowLeft, Banknote, CheckCircle2, Clock, FileText, Info, Loader2, ShieldCheck, Upload } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 import postApi from '~/apis/post.api'
 import { path } from '~/constants/path'
+import { auctionSchema, type AuctionSchema } from '~/schemas/auction.schema'
 import { formatCurrencyVND, getIdFromNameId } from '~/utils/util'
 
-const DEFAULT_BID_INCREMENT = 200_000
+// const DEFAULT_BID_INCREMENT = 200_000
 const PLATFORM_FEE_FLAT = 1_000_000
 const MIN_DEPOSIT_SUGGEST = 2_000_000
 
+type FormValue = Pick<AuctionSchema, 'product_id' | 'bidIncrement' | 'buyNowPrice' | 'deposit' | 'note' | 'startingBid'>
+const schema = auctionSchema.pick(['product_id', 'bidIncrement', 'buyNowPrice', 'deposit', 'note', 'startingBid'])
 export default function AuctionRequest() {
   const navigate = useNavigate()
   const { nameid } = useParams()
   const id = getIdFromNameId(nameid as string)
 
-  // 1) Lấy thông tin sơ bộ sản phẩm
+  const {
+    control,
+    handleSubmit,
+    watch,
+    getValues,
+    setValue,
+    formState: { errors, isSubmitting, isValid }
+  } = useForm<FormValue>({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+    defaultValues: {
+      product_id: Number(id),
+      startingBid: '' as unknown as number,
+      bidIncrement: '' as unknown as number,
+      deposit: '' as unknown as number,
+      note: ''
+    }
+  })
+  // Get info
   const { data: productDetail, isLoading } = useQuery({
     queryKey: ['product', id],
     queryFn: () => postApi.getProductDetail(id),
@@ -25,18 +48,19 @@ export default function AuctionRequest() {
 
   const post = productDetail?.data.data
 
+  // Suggestion (can be extended to depend on post later)
   const depositSuggestion = useMemo(() => {
     return Math.max(MIN_DEPOSIT_SUGGEST, PLATFORM_FEE_FLAT)
   }, [])
 
-  // 3) Local form state
-  const [startingBid, setStartingBid] = useState<number | ''>('')
-  const [buyNowPrice, setBuyNowPrice] = useState<number | ''>('')
-  const [bidIncrement, setBidIncrement] = useState<number>(DEFAULT_BID_INCREMENT)
-  const [deposit, setDeposit] = useState<number>(depositSuggestion)
-  const [note, setNote] = useState<string>('')
+  const startingPrice = getValues('startingBid')
+  useEffect(() => {
+    if (startingPrice) {
+      setValue('deposit', 0.1 * startingPrice)
+    }
+  }, [startingPrice, setValue])
 
-  // 4) Submit mutation
+  // Submit mutation
   const createRequestMutation = useMutation({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mutationFn: (payload: FormData) => postApi.addPost(payload as any),
@@ -45,34 +69,16 @@ export default function AuctionRequest() {
     }
   })
 
-  const disabled = isLoading || !post || !startingBid || !bidIncrement || !deposit
+  const disabled = isLoading || !post || !isValid || isSubmitting || createRequestMutation.isPending
 
   // Helpers
-  const pretty = (n?: number | '') => (n === '' || n === undefined ? '—' : formatCurrencyVND(Number(n)))
+  const pretty = (n?: number | '' | null) =>
+    n === '' || n === undefined || n === null ? '—' : formatCurrencyVND(Number(n))
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (!post) return
+  const values = watch()
 
-    // Validate tối thiểu
-    if (!startingBid || startingBid <= 0) return alert('Vui lòng nhập giá khởi điểm hợp lệ')
-    if (buyNowPrice && Number(buyNowPrice) <= Number(startingBid)) {
-      return alert('Giá mua ngay phải lớn hơn giá khởi điểm')
-    }
-    if (!bidIncrement || bidIncrement <= 0) return alert('Bước giá phải > 0')
-    if (!deposit || deposit < PLATFORM_FEE_FLAT) {
-      return alert(`Tiền cọc phải ≥ phí sàn (${formatCurrencyVND(PLATFORM_FEE_FLAT)})`)
-    }
-
-    // FormData để gửi file
-    const form = new FormData()
-    form.append('product_id', String(post.product.id))
-    form.append('starting_bid', String(startingBid))
-    if (buyNowPrice) form.append('buy_now_price', String(buyNowPrice))
-    form.append('bid_increment', String(bidIncrement))
-    form.append('deposit_amount', String(deposit))
-    if (note) form.append('note', note)
-
+  const onSubmit = (data: FormValue) => {
+    console.log('data: ', data)
     // 👉 Bật dòng dưới để gọi API thật
     // createRequestMutation.mutate(form)
   }
@@ -152,24 +158,24 @@ export default function AuctionRequest() {
               </div>
             </SectionCard>
 
-            {/* Tóm tắt cấu hình yêu cầu (đã chuyển sang cột trái) */}
+            {/* Tóm tắt cấu hình yêu cầu */}
             <SectionCard title='Tóm tắt cấu hình yêu cầu'>
               <ul className='text-sm text-gray-700 space-y-1'>
                 <li className='flex justify-between'>
                   <span>Giá khởi điểm</span>
-                  <span className='font-semibold'>{pretty(startingBid)}</span>
+                  <span className='font-semibold'>{pretty(values.startingBid)}</span>
                 </li>
                 <li className='flex justify-between'>
                   <span>Giá mua ngay</span>
-                  <span className='font-semibold'>{pretty(buyNowPrice)}</span>
+                  <span className='font-semibold'>{pretty(values.buyNowPrice)}</span>
                 </li>
                 <li className='flex justify-between'>
                   <span>Bước giá</span>
-                  <span className='font-semibold'>{pretty(bidIncrement)}</span>
+                  <span className='font-semibold'>{pretty(values.bidIncrement)}</span>
                 </li>
                 <li className='flex justify-between'>
                   <span>Tiền cọc</span>
-                  <span className='font-semibold'>{pretty(deposit)}</span>
+                  <span className='font-semibold'>{pretty(values.deposit)}</span>
                 </li>
               </ul>
             </SectionCard>
@@ -192,7 +198,7 @@ export default function AuctionRequest() {
               </ul>
             </SectionCard>
 
-            {/* FAQ ngắn */}
+            {/* FAQ  */}
             <SectionCard title='Câu hỏi thường gặp'>
               <details className='group rounded-lg border border-gray-200 p-3 open:bg-gray-50 transition-colors'>
                 <summary className='flex cursor-pointer select-none items-center justify-between text-sm font-medium text-gray-800'>
@@ -218,68 +224,115 @@ export default function AuctionRequest() {
           {/* RIGHT: Form + Summary sticky */}
           <div className='lg:col-span-2'>
             <form
-              onSubmit={handleSubmit}
+              onSubmit={handleSubmit(onSubmit)}
               className='rounded-2xl border border-gray-200 bg-white p-4 sm:p-5 shadow-sm space-y-5 sticky top-4'
             >
               <header>
                 <h3 className='text-lg font-semibold'>Yêu cầu đấu giá</h3>
-                <p className='text-xs text-gray-500 mt-0.5'>Các trường bắt buộc được đánh dấu *</p>
+                <p className='text-xs text-gray-500 mt-0.5'>Hãy nhập những thông tin sau để hoàn đơn yêu cầu của bạn</p>
               </header>
 
               {/* Giá khởi điểm */}
               <Field label='Giá khởi điểm *' hint='Gợi ý: đặt thấp hơn kỳ vọng ~5–20% để kích hoạt cạnh tranh.'>
-                <NumberInput
-                  value={startingBid}
-                  onChange={setStartingBid}
-                  min={0}
-                  step={1000}
-                  placeholder='Nhập giá khởi điểm'
+                <Controller
+                  name='startingBid'
+                  control={control}
+                  render={({ field }) => (
+                    <>
+                      <NumberInput
+                        value={field.value}
+                        onChange={field.onChange}
+                        min={0}
+                        step={1000}
+                        placeholder='Nhập giá khởi điểm'
+                      />
+                      <LiveValue value={field.value} />
+                    </>
+                  )}
                 />
-                <LiveValue value={startingBid} />
+                {errors.startingBid && <p className='text-xs text-red-600 mt-1'>{errors.startingBid.message}</p>}
               </Field>
 
-              {/* Giá mua ngay (optional) */}
-              <Field label='Giá mua ngay (tùy chọn)' hint='Nếu có người trả tới mức này, hệ thống bán ngay.'>
-                <NumberInput
-                  value={buyNowPrice}
-                  onChange={setBuyNowPrice}
-                  min={0}
-                  step={1000}
-                  placeholder='Ví dụ 250.000.000'
+              {/* Giá mua ngay) */}
+              <Field label='Giá mua ngay' hint='Nếu có người trả tới mức này, hệ thống bán ngay.'>
+                <Controller
+                  name='buyNowPrice'
+                  control={control}
+                  render={({ field }) => (
+                    <>
+                      <NumberInput
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                        min={0}
+                        step={1000}
+                        placeholder='Nhập giá mong muốn bán ngay của sản phẩm'
+                      />
+                      <LiveValue value={field.value ?? ''} />
+                    </>
+                  )}
                 />
-                <LiveValue value={buyNowPrice} />
+                {errors.buyNowPrice && <p className='text-xs text-red-600 mt-1'>{errors.buyNowPrice.message}</p>}
               </Field>
 
               {/* Bước giá */}
-              <Field label='Bước giá *' hint='Mỗi bid kế tiếp phải ≥ (giá hiện tại + bước giá).'>
-                <NumberInput
-                  value={bidIncrement}
-                  onChange={() => setBidIncrement}
-                  min={1_000}
-                  step={1_000}
-                  placeholder='Ví dụ 200.000'
+              <Field label='Bước giá' hint='Mỗi lần đặt giá kế tiếp phải ≥ (giá hiện tại + bước giá).'>
+                <Controller
+                  name='bidIncrement'
+                  control={control}
+                  render={({ field }) => (
+                    <>
+                      <NumberInput
+                        value={field.value}
+                        onChange={field.onChange}
+                        min={1_000}
+                        step={1_000}
+                        placeholder='Hãy nhập bước giá thiểu'
+                      />
+                      <LiveValue value={field.value} />
+                    </>
+                  )}
                 />
-                <LiveValue value={bidIncrement} />
+                {errors.bidIncrement && <p className='text-xs text-red-600 mt-1'>{errors.bidIncrement.message}</p>}
               </Field>
 
               {/* Tiền cọc */}
               <Field
-                label='Tiền cọc tham gia đấu giá *'
-                hint={`Gợi ý: ${formatCurrencyVND(depositSuggestion)} (bao gồm phí sàn ${formatCurrencyVND(PLATFORM_FEE_FLAT)} ăn từ cọc).`}
+                label='Tiền cọc tham gia đấu giá'
+                hint={`Đây là số tiền tối thiểu mà người dùng cần cọc trước để người mua có thể tham gia phiên đấu giá (10% giá bắt đầu)`}
               >
-                <NumberInput value={deposit} onChange={() => setDeposit} min={PLATFORM_FEE_FLAT} step={50_000} />
-                <LiveValue value={deposit} />
+                <Controller
+                  name='deposit'
+                  control={control}
+                  render={({ field }) => (
+                    <>
+                      <NumberInput
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder='Tiền cọc tối thiểu để người mua tham gia'
+                        disabled
+                      />
+                      <LiveValue value={field.value} />
+                    </>
+                  )}
+                />
+                {errors.deposit && <p className='text-xs text-red-600 mt-1'>{errors.deposit.message}</p>}
               </Field>
 
               {/* Ghi chú ngắn */}
               <Field label='Ghi chú (ngắn gọn)'>
-                <textarea
-                  rows={4}
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
-                  placeholder='VD: xe một chủ, pin vừa thay, còn hóa đơn...'
-                  className='mt-1 w-full rounded-xl border border-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900/20'
+                <Controller
+                  name='note'
+                  control={control}
+                  render={({ field }) => (
+                    <textarea
+                      rows={4}
+                      {...field}
+                      placeholder='VD: xe một chủ, pin vừa thay, còn hóa đơn...'
+                      className='mt-1 w-full rounded-xl border border-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900/20'
+                    />
+                  )}
                 />
+                {errors.note && <p className='text-xs text-red-600 mt-1'>{errors.note.message}</p>}
               </Field>
 
               {/* Submit */}
@@ -294,7 +347,7 @@ export default function AuctionRequest() {
                       : 'bg-gray-900 text-white hover:bg-gray-800'
                   )}
                 >
-                  {createRequestMutation.isPending ? (
+                  {createRequestMutation.isPending || isSubmitting ? (
                     <>
                       <Loader2 className='w-4 h-4 animate-spin' /> Đang gửi yêu cầu…
                     </>
@@ -361,13 +414,15 @@ function NumberInput({
   onChange,
   min,
   step,
-  placeholder
+  placeholder,
+  disabled
 }: {
   value: number | ''
   onChange: (v: number | '') => void
   min?: number
   step?: number
   placeholder?: string
+  disabled?: boolean
 }) {
   return (
     <div className='mt-1 relative'>
@@ -376,10 +431,11 @@ function NumberInput({
         inputMode='numeric'
         min={min}
         step={step}
-        value={value}
+        value={value as number | ''}
         onChange={(e) => onChange(e.target.value === '' ? '' : Number(e.target.value))}
         placeholder={placeholder}
         className='w-full rounded-xl border border-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900/20 pr-16'
+        disabled={disabled}
       />
       <span className='absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-500'>VND</span>
     </div>
@@ -388,7 +444,9 @@ function NumberInput({
 
 function LiveValue({ value }: { value: number | '' }) {
   return (
-    <div className='mt-1 text-xs text-gray-600'>{value === '' ? '—' : `≈ ${formatCurrencyVND(Number(value))}`}</div>
+    <div className='mt-1 text-xs text-gray-600'>
+      {value === '' ? '—' : `= ${formatCurrencyVND(Number(value), 'VND')}`}
+    </div>
   )
 }
 
