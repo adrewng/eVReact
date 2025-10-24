@@ -170,7 +170,7 @@ export default function AuctionRequest() {
                   <span className='font-semibold'>{pretty(values.buyNowPrice)}</span>
                 </li>
                 <li className='flex justify-between'>
-                  <span>Bước giá</span>
+                  <span>Bước giá tối thiểu</span>
                   <span className='font-semibold'>{pretty(values.bidIncrement)}</span>
                 </li>
                 <li className='flex justify-between'>
@@ -274,8 +274,8 @@ export default function AuctionRequest() {
                 {errors.buyNowPrice && <p className='text-xs text-red-600 mt-1'>{errors.buyNowPrice.message}</p>}
               </Field>
 
-              {/* Bước giá */}
-              <Field label='Bước giá' hint='Mỗi lần đặt giá kế tiếp phải ≥ (giá hiện tại + bước giá).'>
+              {/* Bước giá tối thiểu*/}
+              <Field label='Bước giá tối thiểu' hint='Mỗi lần đặt giá kế tiếp phải ≥ (giá hiện tại + bước giá).'>
                 <Controller
                   name='bidIncrement'
                   control={control}
@@ -286,7 +286,7 @@ export default function AuctionRequest() {
                         onChange={field.onChange}
                         min={1_000}
                         step={1_000}
-                        placeholder='Hãy nhập bước giá thiểu'
+                        placeholder='Hãy nhập bước giá tối thiểu thiểu'
                       />
                       <LiveValue value={field.value} />
                     </>
@@ -298,7 +298,7 @@ export default function AuctionRequest() {
               {/* Tiền cọc */}
               <Field
                 label='Tiền cọc tham gia đấu giá'
-                hint={`Đây là số tiền tối thiểu mà người dùng cần cọc trước để người mua có thể tham gia phiên đấu giá (10% giá bắt đầu)`}
+                hint={`Đây là số tiền tối thiểu mà người dùng cần cọc trước để người mua có thể tham gia phiên đấu giá (10% giá khởi điểm)`}
               >
                 <Controller
                   name='deposit'
@@ -308,7 +308,7 @@ export default function AuctionRequest() {
                       <NumberInput
                         value={field.value}
                         onChange={field.onChange}
-                        placeholder='Tiền cọc tối thiểu để người mua tham gia'
+                        placeholder='Tiền cọc tham gia (10% giá khởi điểm)'
                         disabled
                       />
                       <LiveValue value={field.value} />

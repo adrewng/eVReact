@@ -1,4 +1,4 @@
-import { Bell, ChevronDown, ChevronRight, Newspaper, UserPen } from 'lucide-react'
+import { Bell, ChevronDown, ChevronRight, Newspaper, ShoppingCart, UserPen } from 'lucide-react'
 import { useContext, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { path } from '~/constants/path'
@@ -27,6 +27,12 @@ const accountItems = [
     label: 'Posts',
     icon: Newspaper,
     path: path.accountPosts,
+    children: []
+  },
+  {
+    label: 'Đơn hàng',
+    icon: ShoppingCart,
+    path: path.accountOrders,
     children: []
   }
 ]

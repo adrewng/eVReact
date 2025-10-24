@@ -7,6 +7,7 @@ import { AppContext } from '~/contexts/app.context'
 import Dashboard from '~/layouts/Dashboard'
 import MainLayout from '~/layouts/MainLayout'
 import Account from '~/pages/Account/layouts/Account'
+import AccountOrders from '~/pages/Account/pages/AccountOrders'
 import AccountNotification from '~/pages/Account/pages/Notification/AccountNotification'
 import AccountPost from '~/pages/Account/pages/Posts/AccountPost'
 import AccountProfile from '~/pages/Account/pages/Profile/AccountProfile'
@@ -98,7 +99,8 @@ export default function useRouteElements() {
             { path: path.accountPosts, element: <AccountPost /> },
             { path: path.accountProfile, element: <AccountProfile /> },
             { path: path.accountNotification, element: <AccountNotification /> },
-            { path: path.accountTransaction, element: <AccountTransaction /> }
+            { path: path.accountTransaction, element: <AccountTransaction /> },
+            { path: path.accountOrders, element: <AccountOrders /> }
           ]
         },
         {

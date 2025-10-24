@@ -20,6 +20,7 @@ export const path = {
   accountPosts: '/account/posts',
   accountNotification: '/account/notification',
   accountProfile: '/account/profile',
+  accountOrders: '/account/orders',
   accountUpdateProfile: 'updateProfile',
   accountTransaction: '/account/transaction',
   accountAddress: '/account/payment',
