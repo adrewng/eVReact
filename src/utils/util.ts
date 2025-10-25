@@ -54,6 +54,7 @@ export const formatCurrencyVND = (val: string | number | undefined | null, unit?
   //    (dấu chấm) rồi thêm " ₫" phía sau
   return new Intl.NumberFormat('vi-VN').format(n) + ' ' + (unit ? unit : 'đ')
 }
+export const fmtDate = (s?: string) => (s ? new Date(s).toLocaleString('vi-VN') : '—')
 
 export const formatOwners = (val?: number | string) => {
   if (val === undefined || val === null || val === '') return undefined

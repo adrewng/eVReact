@@ -1,34 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ClipboardList, CreditCard, Download, MessageSquare, Receipt, RefreshCcw, Star, Undo2, X } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
-
+import orderApi from '~/apis/order.api'
 import { ORDER_TYPE_LABEL, ORDERSTATUS, type OrderStatus, type OrderType } from '~/constants/order'
 import useQueryConfig from '~/hooks/useQueryConfig'
+import type { Order } from '~/types/order.type'
 import { formatCurrencyVND } from '~/utils/util'
+import OrderCard from './components/OrderCard/OrderCard'
 import OrderDetail from './components/OrderDetail/OrderDetail'
 import Pagination from './components/Pagination'
-import StatusPill from './components/StatusPill'
 import Toolbar from './components/Toolbar'
 
-// dùng đúng type API của bạn
-import type { Order } from '~/types/order.type'
-
-const SHOP_NAME = 'Eviest'
 type StatusType = OrderStatus
-
 const makeCode = (id: number) => `OD${String(id).padStart(6, '0')}`
-const fmtDate = (s?: string) => (s ? new Date(s).toLocaleString('vi-VN') : '—')
 
 const DEMO_ORDERS: Order[] = [
-  // 1) ĐĂNG TIN — KHÔNG có xem xe
   {
     id: 101,
     type: 'post',
-    status: 'processing',
+    status: 'PROCESSING',
     price: 400000,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
-    seller: { id: 2, full_name: 'Nguyễn Nhật Trường', email: 'b@example.com', phone: '0909000002' },
+    buyer: { id: 2, full_name: 'Nguyễn Nhật Trường', email: 'b@example.com', phone: '0909000002' },
     post: {
       id: 5001,
       title: 'VF3 - Còn mới 99%',
@@ -56,24 +50,20 @@ const DEMO_ORDERS: Order[] = [
     },
     service: { id: 1, name: 'Đăng tin trả phí cho xe', description: 'Đăng tin trả phí cho xe', price: '400000' }
   },
-
   {
     id: 202,
     type: 'topup',
-    status: 'delivered',
+    status: 'SUCCESS',
     price: 1_000_000,
     created_at: new Date(Date.now() - 86400000).toISOString(),
     updated_at: new Date().toISOString(),
-    seller: { id: 1, full_name: 'Nguyễn A', email: 'a@example.com', phone: '0909000001' }
+    buyer: { id: 1, full_name: 'Nguyễn A', email: 'a@example.com', phone: '0909000001' }
   },
-
-  // 3) YÊU CẦU ĐẤU GIÁ — CÓ xem xe
   {
     id: 303,
-    type: 'auction_request',
-    status: 'shipping', // “Đang nhận báo giá”
+    type: 'auction',
+    status: 'SUCCESS',
     price: 50_000,
-
     viewingAppointment: {
       address: 'Vincom Thảo Điền, Q.2',
       time: new Date(Date.now() + 2 * 3600_000).toISOString(),
@@ -82,7 +72,6 @@ const DEMO_ORDERS: Order[] = [
       status: 'scheduled',
       notes: 'Mang giấy tờ xe bản photo.'
     },
-
     post: {
       id: 5001,
       title: 'VF3 - Còn mới 99%',
@@ -108,9 +97,7 @@ const DEMO_ORDERS: Order[] = [
         health: 'Tốt'
       }
     },
-
-    // Người bán: đây là dịch vụ của hệ thống → UI hiển thị "Eviest" (dù DB có thể lưu sellerId = user)
-    seller: { id: 1, full_name: 'Nguyễn A' },
+    buyer: { id: 1, full_name: 'Nguyễn A' },
     auction: {
       id: 9001,
       product_id: 1,
@@ -119,24 +106,23 @@ const DEMO_ORDERS: Order[] = [
       buyNowPrice: 13_500_000,
       bidIncrement: 200_000,
       deposit: 1_000_000,
-      winner: null,
-      winning_price: null,
+      winner: { id: 11, full_name: 'Trần Thị B' },
+      winning_price: 88_500_000,
       duration: '',
       isVerify: true,
       note: 'Gia hạn 5 phút nếu có bid trong 5 phút cuối.'
     },
-
     created_at: new Date(Date.now() - 2 * 86400000).toISOString(),
     updated_at: new Date().toISOString()
   },
   {
     id: 404,
     type: 'package',
-    status: 'processing',
+    status: 'PROCESSING',
     price: 990_000,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
-    seller: { id: 1, full_name: 'Nguyễn A', email: 'a@example.com', phone: '0909000001' },
+    buyer: { id: 1, full_name: 'Nguyễn A', email: 'a@example.com', phone: '0909000001' },
     service: {
       id: 11,
       name: 'Gói Đăng tin Pro (30 ngày)',
@@ -145,19 +131,14 @@ const DEMO_ORDERS: Order[] = [
       price: '990000',
       feature: 'Highlight listing, ưu tiên tìm kiếm',
       userUsageCount: 0,
-      sevice_ref: {
-        service_id: 11,
-        name: 'post_package_pro',
-        amount: 2
-      }
+      sevice_ref: { service_id: 11, name: 'post_package_pro', amount: 2 }
     }
   },
   {
     id: 702,
-    type: 'auction_bid',
-    status: 'processing', // hoặc 'delivered' nếu đã chốt & bàn giao
-    price: 1_000_000, // tiền cọc/đặt chỗ để tham gia
-    // Nếu người này thắng cuộc và đã có lịch bàn giao, có thể thêm:
+    type: 'deposit',
+    status: 'AUCTION_PROCESSING',
+    price: 1_000_000,
     handoverAppointment: {
       address: 'Kho xe Eviest, Q.12, TP.HCM',
       time: new Date(Date.now() + 3 * 86400000).toISOString(),
@@ -198,215 +179,34 @@ const DEMO_ORDERS: Order[] = [
     auction: {
       id: 8001,
       product_id: 6001,
-      startingBid: 70_000_000, // giá khởi điểm
-      original_price: 85_000_000, // giá tham khảo thị trường
-      buyNowPrice: 90_000_000, // giá mua ngay (nếu có)
-      bidIncrement: 500_000, // bước nhảy tối thiểu
-      deposit: 1_000_000, // tiền cọc khi tham gia
-      winner: { id: 11, full_name: 'Trần Thị B' }, // có thể null trước khi kết thúc
+      startingBid: 70_000_000,
+      original_price: 85_000_000,
+      buyNowPrice: 90_000_000,
+      bidIncrement: 500_000,
+      deposit: 1_000_000,
+      winner: { id: 11, full_name: 'Trần Thị B' },
       winning_price: 88_500_000,
-      duration: '3d', // hoặc số ms/giờ tuỳ backend
+      duration: '3d',
       isVerify: true,
       note: 'Gia hạn 5 phút nếu có bid cuối trong 5 phút cuối.'
     }
   }
 ]
 
-function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) => void }) {
-  const code = makeCode(o.id)
-  const viewingTime = o.viewingAppointment?.time
-  const handoverTime = o.handoverAppointment?.time
-
-  // helper cho case post
-  const product: any = o.post?.product
-  const productPrice = Number(product?.price || 0)
-  const categoryName = product?.category?.name as string | undefined
-
-  return (
-    <div className='rounded-2xl border border-gray-200 bg-white shadow-sm'>
-      <div className='flex items-center justify-between gap-3 border-b border-gray-100 p-4'>
-        <div className='flex items-center gap-2'>
-          <div className='font-medium'>{SHOP_NAME}</div>
-          <span className='mx-2 text-gray-300'>•</span>
-          <div className='text-sm text-gray-500'>
-            Mã: <span className='font-medium text-gray-800'>{code}</span>
-          </div>
-          <span className='mx-2 text-gray-300'>•</span>
-          <span className='rounded-lg bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700'>
-            {ORDER_TYPE_LABEL[o.type]}
-          </span>
-        </div>
-        <StatusPill status={o.status} />
-      </div>
-
-      <div className='p-4 text-sm'>
-        <div className='flex flex-col gap-1 text-gray-600'>
-          {/* THÔNG TIN CHUNG CHO ĐĂNG TIN */}
-          {o.type !== 'topup' && o.type !== 'auction_bid' && o.post && (
-            <div className='flex flex-col gap-0.5'>
-              {o.type === 'auction_request' && (
-                <div>
-                  <span className='text-gray-500'>Mã phiên đấu giá: </span>
-                  <span className='font-medium text-gray-800'>{o.auction?.id}</span>
-                </div>
-              )}
-              <div>
-                <span className='text-gray-500'>Mã bài đăng: </span>
-                <span className='font-medium text-gray-800'>{o.post.id}</span>
-              </div>
-              <div>
-                <span className='text-gray-500'>Giá sản phẩm: </span>
-                <span className='font-medium text-gray-800'>{formatCurrencyVND(productPrice)}</span>
-              </div>
-              <div>
-                <span className='text-gray-500'>Loại sản phẩm: </span>
-                <span className='font-medium text-gray-800'>{categoryName ?? '—'}</span>
-              </div>
-            </div>
-          )}
-          {o.type === 'auction_bid' && (
-            <div className='flex flex-col gap-0.5'>
-              <div>
-                <span className='text-gray-500'>Mã phiên đấu giá: </span>
-                <span className='font-medium text-gray-800'>{o.auction?.id}</span>
-              </div>
-              <div>
-                <span className='text-gray-500'>Giá thắng đấu giá: </span>
-                <span className='font-medium text-gray-800'>{formatCurrencyVND(o.auction?.winning_price)}</span>
-              </div>
-              <div>
-                <span className='text-gray-500'>Sản phẩm: </span>
-                <span className='font-medium text-gray-800'>{o.post?.product.model}</span>
-              </div>
-            </div>
-          )}
-          {/* CHỈ auction_request mới show lịch xem xe */}
-          {(o.type === 'auction_request' || o.type === 'auction_bid') && (
-            <>
-              {o.type === 'auction_request' && (
-                <div>
-                  <span className='text-gray-500'>Lịch xem xe: </span>
-                  <span className='font-medium'>
-                    {fmtDate(viewingTime)} • {o.viewingAppointment?.address ? o.viewingAppointment.address : '-'}
-                  </span>
-                </div>
-              )}
-              {handoverTime && (
-                <div>
-                  <span className='text-gray-500'>Hẹn bàn giao: </span>
-                  <span className='font-medium'>
-                    {fmtDate(handoverTime)} • {o.handoverAppointment?.address ?? '-'}
-                  </span>
-                </div>
-              )}
-            </>
-          )}
-          {o.type === 'package' && (
-            <div className='flex flex-col gap-0.5'>
-              <div>
-                <span className='text-gray-500'>Gói: </span>
-                <span className='font-medium text-gray-800'>{o.service?.name}</span>
-              </div>
-              <div>
-                <span className='text-gray-500'>Giá gói: </span>
-                <span className='font-medium text-gray-800'>{formatCurrencyVND(o.price)}</span>
-              </div>
-              <div>
-                <span className='text-gray-500'>Chức năng: </span>
-                <span className='font-medium text-gray-800'>{o.service?.description}</span>
-              </div>
-            </div>
-          )}
-
-          {o.type === 'topup' && (
-            <div className='flex flex-col gap-0.5'>
-              <div>
-                <span className='text-gray-500'>Nạp bao nhiêu: </span>
-                <span className='font-medium text-gray-800'>{formatCurrencyVND(o.price)}</span>
-              </div>
-              <div>
-                <span className='text-gray-500'>Phương thức nạp: </span>
-                <span className='font-medium text-gray-800'>PayOS</span>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className='flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 p-4'>
-        <div className='text-sm text-gray-600'>
-          Trạng thái: <span className='font-medium text-gray-800'>{ORDERSTATUS[o.status].label}</span>
-        </div>
-        <div className='text-right'>
-          <div className='text-xs text-gray-500'>Thành tiền</div>
-          <div className='text-lg font-semibold'>{formatCurrencyVND(Number(o.price) || 0)}</div>
-        </div>
-      </div>
-
-      <div className='flex flex-wrap items-center justify-end gap-2 p-4'>
-        <button
-          onClick={() => onOpen(o)}
-          className='rounded-xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'
-        >
-          <Receipt className='mr-2 inline h-4 w-4' /> Chi tiết
-        </button>
-
-        {o.status === 'awaiting_payment' && (
-          <>
-            <button className='rounded-xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'>
-              <X className='mr-2 inline h-4 w-4' /> Hủy
-            </button>
-            <button className='rounded-xl bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-black'>
-              <CreditCard className='mr-2 inline h-4 w-4' /> Thanh toán
-            </button>
-          </>
-        )}
-
-        {/* Chỉ auction_request cần chat hẹn/báo giá */}
-        {o.type === 'auction_request' && (o.status === 'processing' || o.status === 'shipping') && (
-          <button className='rounded-xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'>
-            <MessageSquare className='mr-2 inline h-4 w-4' /> Trao đổi lịch hẹn
-          </button>
-        )}
-
-        {o.type === 'auction_request' && o.status === 'shipping' && (
-          <>
-            <button className='rounded-xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'>
-              <ClipboardList className='mr-2 inline h-4 w-4' /> Xem báo giá
-            </button>
-            <button className='rounded-xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'>
-              <Undo2 className='mr-2 inline h-4 w-4' /> Hủy yêu cầu
-            </button>
-          </>
-        )}
-
-        {o.status === 'delivered' && (
-          <>
-            <button className='rounded-2xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'>
-              <Download className='mr-2 inline h-4 w-4' /> Biên nhận
-            </button>
-            {o.type !== 'topup' && (
-              <button className='rounded-2xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'>
-                <Star className='mr-2 inline h-4 w-4' /> Đánh giá dịch vụ
-              </button>
-            )}
-          </>
-        )}
-
-        {o.status === 'refund' && (
-          <button className='rounded-2xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'>
-            <RefreshCcw className='mr-2 inline h-4 w-4' /> Theo dõi hoàn tiền
-          </button>
-        )}
-      </div>
-    </div>
-  )
-}
-
-/* ======================= PAGE ======================= */
-
-const TYPE_OPTIONS: Array<'all' | OrderType> = ['all', 'post', 'package', 'topup', 'auction_request', 'auction_bid']
-const STATUS_OPTIONS: Array<'all' | StatusType> = ['all', ...(Object.keys(ORDERSTATUS) as StatusType[])]
+const TYPE_OPTIONS: Array<'all' | OrderType> = ['all', 'post', 'package', 'topup', 'auction', 'deposit']
+const STATUS_OPTIONS: Array<'all' | StatusType> = [
+  'all',
+  'PENDING',
+  'PROCESSING',
+  'VERIFYING',
+  'SUCCESS',
+  'FAILED',
+  'CANCELLED',
+  'REFUND',
+  'AUCTION_PROCESSING',
+  'AUCTION_SUCCESS',
+  'AUCTION_FAILED'
+]
 
 export default function MyOrdersPage() {
   const [q, setQ] = useState('')
@@ -418,6 +218,12 @@ export default function MyOrdersPage() {
   const [current, setCurrent] = useState<Order | null>(null)
 
   const source: Order[] = DEMO_ORDERS
+
+  const { data: orderData } = useQuery({
+    queryKey: ['order'],
+    queryFn: () => orderApi.getOrdersByUser()
+  })
+  const data = orderData?.data?.data
 
   const filtered = useMemo(() => {
     let list = source
@@ -438,10 +244,10 @@ export default function MyOrdersPage() {
   const totals = useMemo(
     () => ({
       all: source.length,
-      awaiting: source.filter((o) => o.status === 'awaiting_payment').length,
-      delivered: source.filter((o) => o.status === 'delivered').length,
+      awaiting: source.filter((o) => o.status === 'PENDING').length,
+      delivered: source.filter((o) => o.status === 'SUCCESS').length,
       spend: source
-        .filter((o) => o.status !== 'cancelled' && o.status !== 'refund')
+        .filter((o) => o.status !== 'CANCELLED' && o.status !== 'REFUND' && o.status !== 'FAILED')
         .reduce((a, o) => a + (Number(o.price) || 0), 0)
     }),
     [source]
@@ -508,7 +314,7 @@ export default function MyOrdersPage() {
           >
             {STATUS_OPTIONS.map((s) => (
               <option key={s} value={s}>
-                {s === 'all' ? 'Tất cả trạng thái' : ORDERSTATUS[s].label}
+                {s === 'all' ? 'Tất cả trạng thái' : ORDERSTATUS[s as StatusType].label}
               </option>
             ))}
           </select>
@@ -537,7 +343,7 @@ export default function MyOrdersPage() {
           Hiển thị <span className='font-medium'>{slice.length}</span> /{' '}
           <span className='font-medium'>{filtered.length}</span> đơn
         </div>
-        <Pagination pageSize={6} queryConfig={queryConfig} />
+        <Pagination pageSize={data?.pagination?.page_size ?? 1} queryConfig={queryConfig} />
       </div>
 
       {/* Drawer */}

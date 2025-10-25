@@ -2,17 +2,16 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import classNames from 'classnames'
 import { ArrowLeft, Banknote, CheckCircle2, Clock, FileText, Info, Loader2, ShieldCheck, Upload } from 'lucide-react'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import auctionApi from '~/apis/auction.api'
 import postApi from '~/apis/post.api'
 import { path } from '~/constants/path'
 import { auctionSchema, type AuctionSchema } from '~/schemas/auction.schema'
+import type { AuctionType } from '~/types/auction.type'
 import { formatCurrencyVND, getIdFromNameId } from '~/utils/util'
-
-// const DEFAULT_BID_INCREMENT = 200_000
-const PLATFORM_FEE_FLAT = 1_000_000
-const MIN_DEPOSIT_SUGGEST = 2_000_000
 
 type FormValue = Pick<AuctionSchema, 'product_id' | 'bidIncrement' | 'buyNowPrice' | 'deposit' | 'note' | 'startingBid'>
 const schema = auctionSchema.pick(['product_id', 'bidIncrement', 'buyNowPrice', 'deposit', 'note', 'startingBid'])
@@ -21,6 +20,9 @@ export default function AuctionRequest() {
   const { nameid } = useParams()
   const id = getIdFromNameId(nameid as string)
 
+  const requestMutation = useMutation({
+    mutationFn: (body: FormValue) => auctionApi.createAuctionRequest(body as AuctionType)
+  })
   const {
     control,
     handleSubmit,
@@ -48,11 +50,6 @@ export default function AuctionRequest() {
 
   const post = productDetail?.data.data
 
-  // Suggestion (can be extended to depend on post later)
-  const depositSuggestion = useMemo(() => {
-    return Math.max(MIN_DEPOSIT_SUGGEST, PLATFORM_FEE_FLAT)
-  }, [])
-
   const startingPrice = getValues('startingBid')
   useEffect(() => {
     if (startingPrice) {
@@ -60,16 +57,7 @@ export default function AuctionRequest() {
     }
   }, [startingPrice, setValue])
 
-  // Submit mutation
-  const createRequestMutation = useMutation({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mutationFn: (payload: FormData) => postApi.addPost(payload as any),
-    onSuccess: () => {
-      navigate(path.accountPosts)
-    }
-  })
-
-  const disabled = isLoading || !post || !isValid || isSubmitting || createRequestMutation.isPending
+  const disabled = isLoading || !post || !isValid || isSubmitting || requestMutation.isPending
 
   // Helpers
   const pretty = (n?: number | '' | null) =>
@@ -78,9 +66,17 @@ export default function AuctionRequest() {
   const values = watch()
 
   const onSubmit = (data: FormValue) => {
-    console.log('data: ', data)
-    // 👉 Bật dòng dưới để gọi API thật
-    // createRequestMutation.mutate(form)
+    console.log(data)
+    requestMutation.mutate(data, {
+      onSuccess: () => {
+        toast.success('Gữi yêu cầu thành công')
+        navigate(path.accountOrders)
+      },
+      onError: () => {
+        toast.error('Gữi yêu cầu không thành công')
+        navigate(-1)
+      }
+    })
   }
 
   return (
@@ -177,6 +173,10 @@ export default function AuctionRequest() {
                   <span>Tiền cọc</span>
                   <span className='font-semibold'>{pretty(values.deposit)}</span>
                 </li>
+                <li className='flex justify-between'>
+                  <span>Tiền phí dịch vụ</span>
+                  <span className='font-semibold'>{pretty(Number(post?.product?.price ?? 0) * 0.005)}</span>
+                </li>
               </ul>
             </SectionCard>
 
@@ -185,7 +185,7 @@ export default function AuctionRequest() {
               <ul className='space-y-2 text-sm text-gray-700'>
                 <RuleItem
                   icon={<CheckCircle2 className='w-4 h-4' />}
-                  text={`Cọc tối thiểu: ${formatCurrencyVND(depositSuggestion)} (bao gồm phí sàn ${formatCurrencyVND(PLATFORM_FEE_FLAT)}).`}
+                  text={`Cọc tối thiểu nên là 10% giá trị khởi điểm`}
                 />
                 <RuleItem
                   icon={<Clock className='w-4 h-4' />}
@@ -347,7 +347,7 @@ export default function AuctionRequest() {
                       : 'bg-gray-900 text-white hover:bg-gray-800'
                   )}
                 >
-                  {createRequestMutation.isPending || isSubmitting ? (
+                  {requestMutation.isPending || isSubmitting ? (
                     <>
                       <Loader2 className='w-4 h-4 animate-spin' /> Đang gửi yêu cầu…
                     </>

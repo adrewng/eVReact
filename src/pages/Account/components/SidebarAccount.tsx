@@ -1,4 +1,4 @@
-import { Bell, ChevronDown, ChevronRight, Newspaper, ShoppingCart, UserPen } from 'lucide-react'
+import { Bell, ChevronDown, ChevronRight, Gavel, Newspaper, ShoppingCart, UserPen } from 'lucide-react'
 import { useContext, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { path } from '~/constants/path'
@@ -6,33 +6,39 @@ import { AppContext } from '~/contexts/app.context'
 
 const accountItems = [
   {
-    label: 'Notifications',
+    label: 'Thông báo',
     icon: Bell,
     path: path.accountNotification,
     children: []
   },
   {
-    label: 'My Profile',
+    label: 'Tài khoản của bạn',
     icon: UserPen,
     path: path.accountProfile,
     children: [
-      { label: 'Profile', path: path.accountProfile },
-      { label: 'Transaction', path: path.accountTransaction },
+      { label: 'Trang cá nhân', path: path.accountProfile },
+      { label: 'Biến động số dư', path: path.accountTransaction }
       // { label: 'Address', path: path.accountAddress },
       // { label: 'Password Changing', path: path.accountChangePassword },
-      { label: 'Privacy Setting', path: path.accountPrivacySetting }
+      // { label: 'Privacy Setting', path: path.accountPrivacySetting }
     ]
-  },
-  {
-    label: 'Posts',
-    icon: Newspaper,
-    path: path.accountPosts,
-    children: []
   },
   {
     label: 'Đơn hàng',
     icon: ShoppingCart,
     path: path.accountOrders,
+    children: []
+  },
+  {
+    label: 'Bài viết',
+    icon: Newspaper,
+    path: path.accountPosts,
+    children: []
+  },
+  {
+    label: 'Đấu giá',
+    icon: Gavel,
+    path: path.accountAuction,
     children: []
   }
 ]
