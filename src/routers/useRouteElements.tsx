@@ -7,6 +7,7 @@ import { AppContext } from '~/contexts/app.context'
 import Dashboard from '~/layouts/Dashboard'
 import MainLayout from '~/layouts/MainLayout'
 import Account from '~/pages/Account/layouts/Account'
+import AccountAuction from '~/pages/Account/pages/AccountAuctions/AccountAuctions'
 import AccountOrders from '~/pages/Account/pages/AccountOrders'
 import AccountNotification from '~/pages/Account/pages/Notification/AccountNotification'
 import AccountPost from '~/pages/Account/pages/Posts/AccountPost'
@@ -100,7 +101,8 @@ export default function useRouteElements() {
             { path: path.accountProfile, element: <AccountProfile /> },
             { path: path.accountNotification, element: <AccountNotification /> },
             { path: path.accountTransaction, element: <AccountTransaction /> },
-            { path: path.accountOrders, element: <AccountOrders /> }
+            { path: path.accountOrders, element: <AccountOrders /> },
+            { path: path.accountAuction, element: <AccountAuction /> }
           ]
         },
         {

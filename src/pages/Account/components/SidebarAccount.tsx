@@ -1,6 +1,8 @@
+import { useMutation } from '@tanstack/react-query'
 import { Bell, ChevronDown, ChevronRight, Gavel, Newspaper, ShoppingCart, UserPen } from 'lucide-react'
 import { useContext, useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import { authApi } from '~/apis/auth.api'
 import { path } from '~/constants/path'
 import { AppContext } from '~/contexts/app.context'
 
@@ -45,7 +47,12 @@ const accountItems = [
 
 export default function SidebarAccount() {
   const [openMenu, setOpenMenu] = useState<string | null>('My Profile')
-  const { profile } = useContext(AppContext)
+  const { profile, setIsAuthenticated } = useContext(AppContext)
+  const logoutMutation = useMutation({
+    mutationFn: authApi.logout,
+    onSuccess: () => setIsAuthenticated(false)
+  })
+  const handleLogout = () => logoutMutation.mutate()
 
   const isActiveParent = (item: (typeof accountItems)[0]) => {
     if (item.children.length === 0) {
@@ -147,8 +154,11 @@ export default function SidebarAccount() {
       </nav>
       {/* Footer */}
       <div className='p-4 border-t border-gray-200'>
-        <button className='w-full px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-xl transition-all duration-200'>
-          Settings
+        <button
+          onClick={handleLogout}
+          className='w-full px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-xl transition-all duration-200'
+        >
+          Đăng xuất
         </button>
       </div>
     </div>

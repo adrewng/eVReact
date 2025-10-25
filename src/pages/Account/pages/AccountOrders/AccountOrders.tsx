@@ -260,94 +260,96 @@ export default function MyOrdersPage() {
   const queryConfig = useQueryConfig()
 
   return (
-    <div className='mx-auto max-w-5xl p-4 md:p-8'>
-      <div className='mb-6'>
-        <div className='text-xs uppercase tracking-wider text-gray-500'>Tài khoản của tôi</div>
-        <h1 className='text-3xl font-bold tracking-tight'>Đơn hàng của tôi</h1>
-      </div>
-
-      {/* Quick stats */}
-      <div className='grid grid-cols-2 gap-3 md:grid-cols-4'>
-        <div className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm'>
-          <div className='text-sm text-gray-500'>Tất cả đơn</div>
-          <div className='mt-1 text-2xl font-semibold'>{totals.all}</div>
-        </div>
-        <div className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm'>
-          <div className='text-sm text-gray-500'>Chờ thanh toán</div>
-          <div className='mt-1 text-2xl font-semibold'>{totals.awaiting}</div>
-        </div>
-        <div className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm'>
-          <div className='text-sm text-gray-500'>Hoàn tất</div>
-          <div className='mt-1 text-2xl font-semibold'>{totals.delivered}</div>
-        </div>
-        <div className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm'>
-          <div className='text-sm text-gray-500'>Tổng chi tiêu (ước tính)</div>
-          <div className='mt-1 text-2xl font-semibold'>{formatCurrencyVND(totals.spend)}</div>
-        </div>
-      </div>
-
-      {/* Filter bar */}
-      <div className='mt-6 flex flex-wrap items-center gap-2'>
-        <div className='flex w-full flex-col gap-2 md:w-auto md:flex-row'>
-          <select
-            value={typeFilter}
-            onChange={(e) => {
-              setTypeFilter(e.target.value as any)
-              setPage(1)
-            }}
-            className='rounded-2xl border border-gray-200 bg-white px-3 py-2 text-sm'
-          >
-            {TYPE_OPTIONS.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt === 'all' ? 'Tất cả loại' : ORDER_TYPE_LABEL[opt as OrderType]}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={statusFilter}
-            onChange={(e) => {
-              setStatusFilter(e.target.value as any)
-              setPage(1)
-            }}
-            className='rounded-2xl border border-gray-200 bg-white px-3 py-2 text-sm'
-          >
-            {STATUS_OPTIONS.map((s) => (
-              <option key={s} value={s}>
-                {s === 'all' ? 'Tất cả trạng thái' : ORDERSTATUS[s as StatusType].label}
-              </option>
-            ))}
-          </select>
+    <div className='flex-1 bg-white min-h-screen'>
+      <div className='max-w-7xl mx-auto p-6 space-y-6'>
+        <div className='mb-6'>
+          <div className='text-xs uppercase tracking-wider text-gray-500'>Tài khoản của tôi</div>
+          <h1 className='text-3xl font-bold tracking-tight'>Đơn hàng của tôi</h1>
         </div>
 
-        <div className='ml-auto w-full md:w-96'>
-          <Toolbar q={q} setQ={setQ} />
-        </div>
-      </div>
-
-      {/* Orders list */}
-      <div className='mt-6 grid grid-cols-1 gap-4'>
-        {slice.map((o) => (
-          <OrderCard key={o.id} o={o} onOpen={openDrawer} />
-        ))}
-        {slice.length === 0 && (
-          <div className='rounded-2xl border border-dashed border-gray-300 p-10 text-center text-sm text-gray-500'>
-            Không có đơn phù hợp.
+        {/* Quick stats */}
+        <div className='grid grid-cols-2 gap-3 md:grid-cols-4'>
+          <div className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm'>
+            <div className='text-sm text-gray-500'>Tất cả đơn</div>
+            <div className='mt-1 text-2xl font-semibold'>{totals.all}</div>
           </div>
-        )}
-      </div>
-
-      {/* Footer / Pagination */}
-      <div className='mt-4 flex items-center justify-between text-sm text-gray-500'>
-        <div>
-          Hiển thị <span className='font-medium'>{slice.length}</span> /{' '}
-          <span className='font-medium'>{filtered.length}</span> đơn
+          <div className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm'>
+            <div className='text-sm text-gray-500'>Chờ thanh toán</div>
+            <div className='mt-1 text-2xl font-semibold'>{totals.awaiting}</div>
+          </div>
+          <div className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm'>
+            <div className='text-sm text-gray-500'>Hoàn tất</div>
+            <div className='mt-1 text-2xl font-semibold'>{totals.delivered}</div>
+          </div>
+          <div className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm'>
+            <div className='text-sm text-gray-500'>Tổng chi tiêu (ước tính)</div>
+            <div className='mt-1 text-2xl font-semibold'>{formatCurrencyVND(totals.spend)}</div>
+          </div>
         </div>
-        <Pagination pageSize={data?.pagination?.page_size ?? 1} queryConfig={queryConfig} />
-      </div>
 
-      {/* Drawer */}
-      <OrderDetail open={open} onClose={() => setOpen(false)} order={current} />
+        {/* Filter bar */}
+        <div className='mt-6 flex flex-wrap items-center gap-2'>
+          <div className='flex w-full flex-col gap-2 md:w-auto md:flex-row'>
+            <select
+              value={typeFilter}
+              onChange={(e) => {
+                setTypeFilter(e.target.value as any)
+                setPage(1)
+              }}
+              className='rounded-2xl border border-gray-200 bg-white px-3 py-2 text-sm'
+            >
+              {TYPE_OPTIONS.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt === 'all' ? 'Tất cả loại' : ORDER_TYPE_LABEL[opt as OrderType]}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={statusFilter}
+              onChange={(e) => {
+                setStatusFilter(e.target.value as any)
+                setPage(1)
+              }}
+              className='rounded-2xl border border-gray-200 bg-white px-3 py-2 text-sm'
+            >
+              {STATUS_OPTIONS.map((s) => (
+                <option key={s} value={s}>
+                  {s === 'all' ? 'Tất cả trạng thái' : ORDERSTATUS[s as StatusType].label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className='ml-auto w-full md:w-96'>
+            <Toolbar q={q} setQ={setQ} />
+          </div>
+        </div>
+
+        {/* Orders list */}
+        <div className='mt-6 grid grid-cols-1 gap-4'>
+          {slice.map((o) => (
+            <OrderCard key={o.id} o={o} onOpen={openDrawer} />
+          ))}
+          {slice.length === 0 && (
+            <div className='rounded-2xl border border-dashed border-gray-300 p-10 text-center text-sm text-gray-500'>
+              Không có đơn phù hợp.
+            </div>
+          )}
+        </div>
+
+        {/* Footer / Pagination */}
+        <div className='mt-4 flex items-center justify-between text-sm text-gray-500'>
+          <div>
+            Hiển thị <span className='font-medium'>{slice.length}</span> /{' '}
+            <span className='font-medium'>{filtered.length}</span> đơn
+          </div>
+          <Pagination pageSize={data?.pagination?.page_size ?? 1} queryConfig={queryConfig} />
+        </div>
+
+        {/* Drawer */}
+        <OrderDetail open={open} onClose={() => setOpen(false)} order={current} />
+      </div>
     </div>
   )
 }

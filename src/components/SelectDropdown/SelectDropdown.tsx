@@ -35,7 +35,7 @@ export default function SelectDropdown({
 
   // Fallback nếu value là undefined hoặc null
   const displayValue = value || ''
-  const displaySelectedOption = options.find((o) => o.value === displayValue)
+  const displaySelectedOption = options.find((o) => o.value == displayValue)
 
   // đóng khi click ra ngoài
   useEffect(() => {
