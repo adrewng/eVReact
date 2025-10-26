@@ -33,8 +33,8 @@ export default function Header() {
           </div>
 
           <nav className='hidden md:flex items-center gap-8 flex-1 justify-center'>
-            <Link to={path.landingPage} className='text-sm font-medium text-black hover:text-black transition-colors'>
-              Tính năng
+            <Link to={path.auction} className='text-sm font-medium text-black hover:text-black transition-colors'>
+              Đấu giá
             </Link>
 
             <Link to={path.home} className='text-sm font-medium  text-black hover:text-black transition-colors'>

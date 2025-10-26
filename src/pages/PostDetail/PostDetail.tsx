@@ -38,6 +38,7 @@ import { formatCurrencyVND, formatOwners, getIdFromNameId, isVehicle } from '~/u
 import Gallery from './components/Gallery'
 import MarketPriceRange from './components/MarketPriceRange'
 import SpecRow from './components/SpecRow'
+import AuctionBox from './components/AuctionBox/AuctionBox'
 
 export default function PostDetail() {
   const { nameid } = useParams()
@@ -214,6 +215,7 @@ export default function PostDetail() {
 
             {/* Right column */}
             <aside className='space-y-4 lg:sticky lg:top-24'>
+              <AuctionBox product_id={id} />
               {/* Price & actions */}
               <div className='rounded-2xl border border-zinc-100 bg-white/90 p-5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/70'>
                 <div className='mb-1 text-xs uppercase tracking-wide text-zinc-500'>Giá bán</div>

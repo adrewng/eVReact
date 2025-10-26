@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import {
-  BarChart2,
   Bell,
+  CreditCard,
   FileText,
   Home,
   LogOutIcon,
@@ -21,11 +21,11 @@ import logoUrl from '~/shared/logo.svg'
 
 const menuItems = [
   { label: 'Dashboard', icon: Home, path: path.adminDashboard },
-  { label: 'Analytics', icon: BarChart2, path: 'home' },
+  { label: 'Transaction', icon: CreditCard, path: path.adminTransactions },
   { label: 'Posts', icon: FileText, path: path.adminPosts },
   { label: 'Orders', icon: ShoppingCart, badge: 14 },
-  { label: 'User', icon: Users, badge: 23, path: 'home' },
-  { label: 'Campaign', icon: Megaphone, badge: 1, path: 'home' }
+  { label: 'User', icon: Users, badge: 23, path: path.adminUsers },
+  { label: 'Campaign', icon: Megaphone, badge: 1, path: path.adminAuctions }
 ]
 
 const generalItems = [
@@ -48,7 +48,7 @@ export default function Sidebar() {
     onSuccess: () => setIsAuthenticated(false)
   })
   return (
-    <div className='w-64 h-screen flex flex-col p-4 bg-white shadow-md'>
+    <div className='h-full flex flex-col p-4 bg-white shadow-md border-r border-gray-200'>
       {/* Logo */}
       <div className='flex-shrink-0 w-[120px] h-[60px] mx-2'>
         <Link to={path.adminDashboard} className='inline-flex items-center'>

@@ -1,6 +1,6 @@
 import postApi from '~/apis/post.api'
 import { Badge } from '~/components/ui/badge'
-import type { QueryConfig } from '~/pages/PostManagement/PostManagement'
+import type { QueryConfig } from '~/pages/admin/PostManagement/PostManagement'
 // import Button from '../Button'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'

@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query'
-import { CheckCircle, Clock, CreditCard, DollarSign, Package, Plus, TrendingUp, Wallet, Zap } from 'lucide-react'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { CreditCard, DollarSign, Package, Wallet, CheckCircle, Clock, TrendingUp, Plus, Zap } from 'lucide-react'
 import { useState } from 'react'
 import transactionApi from '~/apis/transaction.api'
 import TransactionHistory from './components/TransactionHistory'
@@ -141,6 +141,13 @@ export default function AccountTransaction() {
   const transactions = transactionsData?.data.data
   console.log(transactionsData)
 
+  const topUpWallet = useMutation({
+    mutationFn: transactionApi.topUpWallet
+  })
+  const handleTopUp = () => {
+    topUpWallet.mutate()
+  }
+
   return (
     <div className='flex-1 bg-white min-h-screen'>
       <div className='max-w-7xl mx-auto px-6 py-8 space-y-8'>
@@ -150,7 +157,10 @@ export default function AccountTransaction() {
             <h1 className='text-4xl font-bold text-gray-900 mb-2'>Payment & Billing</h1>
             <p className='text-gray-600'>Manage your transactions, wallet balance and subscriptions</p>
           </div>
-          <button className='flex items-center gap-2 px-5 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-medium shadow-lg transition-all'>
+          <button
+            onClick={handleTopUp}
+            className='flex items-center gap-2 px-5 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-medium shadow-lg transition-all'
+          >
             <Plus className='w-5 h-5' /> Top Up Wallet
           </button>
         </div>

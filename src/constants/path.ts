@@ -1,6 +1,7 @@
 export const path = {
   landingPage: '/',
   home: '/all',
+  auction: '/auction',
   vehicle: '/vehicle',
   battery: '/battery',
   login: '/login',
@@ -34,6 +35,7 @@ export const path = {
   adminListings: '/admin/listings',
   adminUsers: '/admin/users',
   adminTransactions: '/admin/transactions',
+  adminAuctions: '/admin/auctions',
   adminReports: '/admin/reports',
   adminSettings: '/admin/settings'
 } as const
