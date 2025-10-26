@@ -1,6 +1,8 @@
-import { FaCog, FaHeart, FaUsers } from 'react-icons/fa'
+import { Battery, Car } from 'lucide-react'
+import { FaHeart, FaUsers } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import { path } from '~/constants/path'
+import { CategoryType } from '~/types/category.type'
 import type { PostType } from '~/types/post.type'
 import { formatCurrencyVND, generateNameId } from '~/utils/util'
 
@@ -18,7 +20,6 @@ export default function PostCard({ post }: PropType) {
         />
       </div>
 
-      {/* Content */}
       <div className='flex flex-col flex-1'>
         <div className='flex items-start justify-between p-4'>
           <div className='min-w-0'>
@@ -30,16 +31,28 @@ export default function PostCard({ post }: PropType) {
           </div>
         </div>
 
-        <div className='mt-auto flex items-center justify-between p-4'>
-          <div className='flex items-center gap-4 text-sm text-zinc-700'>
-            <div className='inline-flex items-center gap-1'>
+        <div className='mt-auto flex items-center justify-between p-4 gap-3'>
+          <div className='flex items-center gap-3 min-w-0 text-sm text-zinc-700'>
+            <div className='inline-flex items-center gap-1 shrink-0'>
               <FaUsers /> {post.product.year}
             </div>
-            <div className='inline-flex items-center gap-1'>
-              <FaCog /> {post.product.category.typeSlug}
-            </div>
+            <span className='shrink-0 rounded-full border px-2 py-0.5 text-xs font-medium capitalize inline-flex items-center gap-1.5'>
+              {post.product.category.typeSlug === CategoryType.vehicle ? (
+                <>
+                  <Car className='h-3.5 w-3.5' />
+                  Xe
+                </>
+              ) : (
+                <>
+                  <Battery className='h-3.5 w-3.5' />
+                  Pin
+                </>
+              )}
+            </span>
           </div>
-          <div className='font-semibold'>{formatCurrencyVND(post.product.price)}</div>
+          <div className='font-semibold text-sm sm:text-base whitespace-nowrap shrink-0 text-right'>
+            {formatCurrencyVND(post.product.price)}
+          </div>
         </div>
       </div>
     </Link>
