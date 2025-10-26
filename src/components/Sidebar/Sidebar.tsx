@@ -3,10 +3,12 @@ import {
   Bell,
   CreditCard,
   FileText,
+  Gavel,
   Home,
   LogOutIcon,
   Megaphone,
   MessageSquare,
+  Package,
   Settings,
   ShoppingCart,
   Users
@@ -25,13 +27,13 @@ const menuItems = [
   { label: 'Posts', icon: FileText, path: path.adminPosts },
   { label: 'Orders', icon: ShoppingCart, badge: 14 },
   { label: 'User', icon: Users, badge: 23, path: path.adminUsers },
-  { label: 'Campaign', icon: Megaphone, badge: 1, path: path.adminAuctions }
+  { label: 'Auction', icon: Gavel, badge: 1, path: path.adminAuctions },
+  { label: 'Package', icon: Package, path: path.adminPackages }
 ]
 
 const generalItems = [
   { label: 'Notifications', icon: Bell, path: path.adminDashboard },
-  { label: 'Feedback', icon: MessageSquare, path: path.adminDashboard },
-  { label: 'Settings', icon: Settings, path: path.adminDashboard }
+  { label: 'Feedback', icon: MessageSquare, path: path.adminDashboard }
 ]
 
 export default function Sidebar() {

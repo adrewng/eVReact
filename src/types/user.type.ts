@@ -64,6 +64,19 @@ export interface ProfileData {
   refresh_token: string
 }
 
+export interface UserGetByAdmin {
+  id: number
+  status: string
+  full_name: string
+  email: string
+  phone: string
+  reputation: number
+  total_credit: string
+  created_at: string
+  role_id: number
+  refresh_token: string
+}
+
 export interface BodyUpdateProfile {
   email: string
   avatar: string

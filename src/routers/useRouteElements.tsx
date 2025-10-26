@@ -138,7 +138,8 @@ export default function useRouteElements() {
                 { path: path.adminPosts, element: <PostManagement /> },
                 { path: path.adminUsers, element: <UserManagement /> },
                 { path: path.adminTransactions, element: <TransactionManagment /> },
-                { path: path.adminAuctions, element: <AuctionManagement /> }
+                { path: path.adminAuctions, element: <AuctionManagement /> },
+                { path: path.adminPackages, element: <AuctionManagement /> }
               ]
             }
           ]

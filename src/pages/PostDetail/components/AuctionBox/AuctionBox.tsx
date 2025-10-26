@@ -2,7 +2,7 @@ import { Clock, Gavel, Zap, Plus, Minus } from 'lucide-react'
 import { JoinABidButton } from './JoinABidButton'
 import { useQuery } from '@tanstack/react-query'
 import auctionApi from '~/apis/auction.api'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { io, Socket } from 'socket.io-client'
 import { AppContext } from '~/contexts/app.context'
 
