@@ -25,7 +25,7 @@ const menuItems = [
   { label: 'Posts', icon: FileText, path: path.adminPosts },
   { label: 'Orders', icon: ShoppingCart, badge: 14 },
   { label: 'User', icon: Users, badge: 23, path: path.adminUsers },
-  { label: 'Campaign', icon: Megaphone, badge: 1, path: 'home' }
+  { label: 'Campaign', icon: Megaphone, badge: 1, path: path.adminAuctions }
 ]
 
 const generalItems = [
@@ -48,7 +48,7 @@ export default function Sidebar() {
     onSuccess: () => setIsAuthenticated(false)
   })
   return (
-    <div className='w-64 h-screen flex flex-col p-4 bg-white shadow-md'>
+    <div className='h-full flex flex-col p-4 bg-white shadow-md border-r border-gray-200'>
       {/* Logo */}
       <div className='flex-shrink-0 w-[120px] h-[60px] mx-2'>
         <Link to={path.adminDashboard} className='inline-flex items-center'>

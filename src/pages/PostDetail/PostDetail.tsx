@@ -215,19 +215,7 @@ export default function PostDetail() {
 
             {/* Right column */}
             <aside className='space-y-4 lg:sticky lg:top-24'>
-              <AuctionBox
-                startPrice={2188400000}
-                currentPrice={2588400000}
-                step={100000000}
-                buyNowPrice={3000000000}
-                endTime={new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString()}
-                onPlaceBid={() => {
-                  console.log('đã đặt gi')
-                }}
-                onBuyNow={() => {
-                  console.log('Buy successfully')
-                }}
-              />
+              <AuctionBox product_id={id} />
               {/* Price & actions */}
               <div className='rounded-2xl border border-zinc-100 bg-white/90 p-5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/70'>
                 <div className='mb-1 text-xs uppercase tracking-wide text-zinc-500'>Giá bán</div>

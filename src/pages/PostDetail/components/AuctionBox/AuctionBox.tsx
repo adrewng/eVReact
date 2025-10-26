@@ -1,5 +1,12 @@
-import React, { useState, useEffect } from 'react'
 import { Clock, Gavel, Zap, Plus, Minus } from 'lucide-react'
+import { JoinABidButton } from './JoinABidButton'
+import { useQuery } from '@tanstack/react-query'
+import auctionApi from '~/apis/auction.api'
+import { useContext, useEffect, useState } from 'react'
+import { io, Socket } from 'socket.io-client'
+import { AppContext } from '~/contexts/app.context'
+
+const SERVER_URL = 'http://localhost:3000'
 
 // Mock Button component
 const Button = ({ children, className, ...props }) => (
@@ -9,65 +16,111 @@ const Button = ({ children, className, ...props }) => (
 )
 
 interface AuctionBoxProps {
-  startPrice: number
-  currentPrice: number
-  step: number
-  buyNowPrice?: number
-  endTime: string
-  onPlaceBid?: (amount: number) => void
-  onBuyNow?: () => void
+  product_id: string
 }
 
-export default function AuctionBox({
-  startPrice,
-  currentPrice,
-  step,
-  buyNowPrice,
-  endTime,
-  onPlaceBid,
-  onBuyNow
-}: AuctionBoxProps) {
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
-  const [bidAmount, setBidAmount] = useState(currentPrice + step)
+export default function AuctionBox({ product_id }: AuctionBoxProps) {
+  const [socket, setSocket] = useState<Socket | null>(null)
+  const [timeLeft, setTimeLeft] = useState<number>(0)
+  const [bidAmount, setBidAmount] = useState<number>(0)
   const [isEnded, setIsEnded] = useState(false)
+  const [currentPrice, setCurrentPrice] = useState<number>(0)
+  const [winnerId, setWinnerId] = useState<number | null>(null)
 
+  const jwtToken = localStorage.getItem('access-token')
+
+  // Fetch thông tin auction ban đầu
+  const { data: auctionData } = useQuery({
+    queryKey: ['auction-info', product_id],
+    queryFn: () => auctionApi.getAuctionByProduct(Number(product_id))
+  })
+
+  const auctionInfo = auctionData?.data?.data
+  const auctionId = auctionInfo?.id
+  const step = Number(auctionInfo?.step || 0)
+  const startingPrice = Number(auctionInfo?.starting_price || 0)
+  const targetPrice = Number(auctionInfo?.target_price || 0)
+
+  // --- Socket connect & join ---
   useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date().getTime()
-      const end = new Date(endTime).getTime()
-      const diff = end - now
+    if (!auctionId || !jwtToken) return
 
-      if (diff <= 0) {
-        setIsEnded(true)
-        clearInterval(interval)
-        return
-      }
+    const s = io(`${SERVER_URL}/auction`, {
+      auth: { token: jwtToken },
+      transports: ['websocket', 'polling']
+    })
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000)
+    // Khi connect
+    s.on('connect', () => {
+      console.log('✅ Connected to auction socket')
+      s.emit('auction:join', { auctionId })
+    })
 
-      setTimeLeft({ days, hours, minutes, seconds })
-    }, 1000)
+    // Nhận thông tin khi join thành công
+    s.on('auction:joined', (data) => {
+      console.log('📥 Joined auction', data)
+      setCurrentPrice(data.auction?.winning_price || startingPrice)
+      setTimeLeft(data.remainingTime)
+    })
 
-    return () => clearInterval(interval)
-  }, [endTime])
+    // Cập nhật giá mới
+    s.on('auction:bid_update', (data) => {
+      console.log('💰 Bid update:', data)
+      setCurrentPrice(data.winningPrice)
+      setWinnerId(data.winnerId)
+    })
 
-  const handleIncrease = () => {
-    setBidAmount((prev) => prev + step)
-  }
+    // Cập nhật thời gian
+    s.on('auction:time_update', (data) => {
+      setTimeLeft(data.remainingTime)
+    })
 
+    // Auction đóng
+    s.on('auction:closed', (data) => {
+      console.log('🎉 Auction closed:', data)
+      setIsEnded(true)
+      setWinnerId(data.winnerId)
+    })
+
+    // Lỗi
+    s.on('auction:error', (data) => {
+      console.error('Auction error:', data.message)
+    })
+
+    setSocket(s)
+
+    return () => {
+      s.disconnect()
+    }
+  }, [auctionId, jwtToken])
+
+  // --- update initial bidAmount ---
+  useEffect(() => {
+    if (auctionInfo) {
+      const initial = currentPrice > 0 ? currentPrice + step : startingPrice
+      setBidAmount(initial)
+    }
+  }, [auctionInfo, currentPrice])
+
+  // --- Tăng giảm giá ---
+  const handleIncrease = () => setBidAmount((prev) => prev + step)
   const handleDecrease = () => {
-    if (bidAmount > currentPrice + step) {
-      setBidAmount((prev) => prev - step)
-    }
+    const minBid = currentPrice > 0 ? currentPrice + step : startingPrice
+    setBidAmount((prev) => Math.max(prev - step, minBid))
   }
 
-  const handleConfirmBid = () => {
-    if (onPlaceBid && bidAmount >= currentPrice + step) {
-      onPlaceBid(bidAmount)
-    }
+  // --- Đặt giá ---
+  const handlePlaceBid = () => {
+    if (!socket || !auctionId) return
+    socket.emit('auction:bid', { auctionId, bidAmount })
+    console.log(`📤 Placed bid: ${bidAmount}`)
+  }
+
+  // --- Format thời gian ---
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60)
+    const s = seconds % 60
+    return `${m}:${String(s).padStart(2, '0')}`
   }
 
   const TimeBlock = ({ value, label }) => (
@@ -76,9 +129,12 @@ export default function AuctionBox({
         <span className='text-4xl font-semibold tabular-nums'>{String(value).padStart(2, '0')}</span>
         <span className='text-xs text-zinc-500 mt-1.5 font-medium'>{label}</span>
       </div>
-      {/* <span className='text-xs text-zinc-500 mt-1.5 font-medium'>{label}</span> */}
     </div>
   )
+
+  // --- Tách timeLeft ra phút/giây để render ---
+  const minutes = Math.floor(timeLeft / 60)
+  const seconds = timeLeft % 60
 
   return (
     <div className='rounded-2xl border border-zinc-100 bg-white/90 p-5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/70'>
@@ -87,6 +143,7 @@ export default function AuctionBox({
         <Gavel className='h-5 w-5 text-zinc-900' />
         <h2 className='text-lg font-semibold'>Đấu giá</h2>
       </div>
+
       {/* Countdown */}
       <div className='pb-3'>
         <div className='mb-3 flex items-center gap-2 text-xs uppercase tracking-wide text-zinc-500'>
@@ -96,33 +153,37 @@ export default function AuctionBox({
 
         {!isEnded ? (
           <div className='flex items-center justify-center gap-3'>
-            <TimeBlock value={timeLeft.days} label='Days' />
+            <TimeBlock value={minutes} label='Minutes' />
             <span className='text-2xl font-bold text-zinc-900 mb-6'>:</span>
-            <TimeBlock value={timeLeft.hours} label='Hours' />
-            <span className='text-2xl font-bold text-zinc-900 mb-6'>:</span>
-            <TimeBlock value={timeLeft.minutes} label='Minutes' />
+            <TimeBlock value={seconds} label='Seconds' />
           </div>
         ) : (
-          <div className='text-center text-xl font-bold text-red-600'>Đấu giá đã kết thúc</div>
+          <div className='text-center text-xl font-bold text-red-600'>
+            Đấu giá đã kết thúc
+            {winnerId && <p className='text-sm mt-2 text-zinc-700'>🏆 Người thắng: User {winnerId}</p>}
+          </div>
         )}
       </div>
+
       {/* Price Info */}
       <hr className='my-4 border-zinc-900 pb-2' />
       <div className='mb-5 space-y-2 text-sm'>
         <div className='flex items-center justify-between text-zinc-600'>
           <span>Giá khởi điểm:</span>
-          <span className='font-bold text-lg text-zinc-900'>{startPrice.toLocaleString('vi-VN')}đ</span>
+          <span className='font-bold text-lg text-zinc-900'>{startingPrice.toLocaleString('vi-VN')}đ</span>
         </div>
         <div className='flex items-center justify-between text-zinc-600'>
-          <span>Giá chốt:</span>
-          <span className='font-bold text-lg text-zinc-900'>{startPrice.toLocaleString('vi-VN')}đ</span>
+          <span>Bước nhảy:</span>
+          <span className='font-bold text-lg text-zinc-900'>{step.toLocaleString('vi-VN')}đ</span>
         </div>
-        <div className='flex items-center justify-between border-t border-zinc-100 '>
+        <div className='flex items-center justify-between border-t border-zinc-100'>
           <span className='text-zinc-600'>Giá hiện tại:</span>
           <span className='text-xl font-bold text-zinc-900'>{currentPrice.toLocaleString('vi-VN')}đ</span>
         </div>
       </div>
+
       <hr className='my-4 border-zinc-900 pt-3' />
+
       {/* Bid Input */}
       {!isEnded && (
         <>
@@ -138,7 +199,6 @@ export default function AuctionBox({
               </Button>
 
               <div className='flex flex-1 items-center justify-center rounded-xl border border-zinc-300 bg-white px-3 shadow-sm'>
-                <Plus className='mr-2 h-4 w-4 shrink-0 text-zinc-400' />
                 <input
                   type='text'
                   value={bidAmount.toLocaleString('vi-VN')}
@@ -158,24 +218,20 @@ export default function AuctionBox({
 
           {/* Action Buttons */}
           <div className='space-y-2'>
+            <JoinABidButton deposit={auctionInfo?.deposit} auction_id={auctionInfo?.id} />
             <Button
-              onClick={handleConfirmBid}
+              onClick={handlePlaceBid}
               disabled={bidAmount < currentPrice + step}
-              className='flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-3 font-medium text-white shadow-sm transition hover:translate-y-[-1px] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0'
+              className='flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-3 font-medium text-white shadow-sm transition hover:translate-y-[-1px] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50'
             >
               <Gavel className='h-5 w-5' />
               Đặt giá
             </Button>
 
-            {buyNowPrice && (
-              <Button
-                onClick={onBuyNow}
-                className='flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-300 bg-white px-4 py-3 font-medium text-zinc-900 shadow-sm transition hover:bg-zinc-50'
-              >
-                <Zap className='h-5 w-5' />
-                Mua ngay • {buyNowPrice.toLocaleString('vi-VN')}đ
-              </Button>
-            )}
+            <Button className='flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-300 bg-white px-4 py-3 font-medium text-zinc-900 shadow-sm transition hover:bg-zinc-50'>
+              <Zap className='h-5 w-5' />
+              Mua ngay • {targetPrice.toLocaleString('vi-VN')}đ
+            </Button>
           </div>
         </>
       )}

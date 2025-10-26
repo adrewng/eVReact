@@ -5,6 +5,9 @@ import http from '~/utils/http'
 const transactionApi = {
   getUserTransaction() {
     return http.get<SuccessResponse<Transactions>>('/api/order/get-transaction-detail')
+  },
+  topUpWallet() {
+    return http.post('/api/payment/topup')
   }
 }
 

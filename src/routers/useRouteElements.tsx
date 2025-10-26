@@ -28,6 +28,8 @@ import VehicleList from '~/pages/VehicleList'
 import UserManagement from '~/pages/admin/UserManagement/UserManagement'
 import TransactionManagment from '~/pages/admin/TransactionManagement/TransactionManagment'
 import Home from '~/pages/admin/Home/Home'
+import AllAuctionList from '~/pages/AllAuctionList/AllAuctionList'
+import AuctionManagement from '~/pages/admin/AuctionManagement/AuctionManagement'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
@@ -74,7 +76,8 @@ export default function useRouteElements() {
             { path: path.pricing, element: <PricingPage /> },
             { path: path.checkout, element: <CheckoutPage /> },
             { path: path.postDetail, element: <PostDetail /> },
-            { path: path.updatePostReject, element: <UpdateRejectedPostMock /> }
+            { path: path.updatePostReject, element: <UpdateRejectedPostMock /> },
+            { path: path.auction, element: <AllAuctionList /> }
           ]
         }
       ]
@@ -126,7 +129,8 @@ export default function useRouteElements() {
                 { path: 'dashboard', element: <Home /> },
                 { path: path.adminPosts, element: <PostManagement /> },
                 { path: path.adminUsers, element: <UserManagement /> },
-                { path: path.adminTransactions, element: <TransactionManagment /> }
+                { path: path.adminTransactions, element: <TransactionManagment /> },
+                { path: path.adminAuctions, element: <AuctionManagement /> }
               ]
             }
           ]

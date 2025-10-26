@@ -8,8 +8,13 @@ interface Props {
 
 export default function Dashboard({ children }: Props) {
   return (
-    <div className='flex h-screen bg-gray-100'>
-      <Sidebar />
+    <div className='flex flex-1 bg-gray-100'>
+      <div className='w-64 flex-shrink-0'>
+        <div className='sticky top-0 h-screen overflow-y-auto'>
+          <Sidebar />
+        </div>
+      </div>
+
       {children}
       <Outlet />
     </div>
