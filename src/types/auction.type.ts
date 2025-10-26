@@ -18,7 +18,6 @@ export interface Auction {
 export interface AuctionList {
   data: Auction[]
 }
-import type { User } from './user.type'
 
 export interface AuctionType {
   id: number

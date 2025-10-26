@@ -22,6 +22,7 @@ const auctionApi = {
     return http.post('/api/payment/auction-deposit', body)
   },
   startAuction(auctionId: number) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return http.post<SuccessResponse<any>>('/api/auction/start', { auctionId })
   },
   createAuctionRequest(body: AuctionType) {
@@ -30,17 +31,14 @@ const auctionApi = {
   getMySessions() {
     return http.get<SuccessResponse<AuctionUserList>>(URL_GET_OWN_AUCTION)
   },
-  async getMyParticipations() {
-    await delay(200)
-    return { data: { data: DEMO_PARTICIPATIONS } }
+  getMyParticipations() {
+    return http.get<SuccessResponse<AuctionUserList>>(URL_GET_PARTICIPATED_AUCTION)
   },
   verifyAuctionByAdmin(auctionId: number, duration: number) {
     return http.post('/api/admin/verify-auction', {
       auctionId,
       duration
     })
-  getMyParticipations() {
-    return http.get<SuccessResponse<AuctionUserList>>(URL_GET_PARTICIPATED_AUCTION)
   }
 }
 
