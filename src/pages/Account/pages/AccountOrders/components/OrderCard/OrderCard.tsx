@@ -1,5 +1,5 @@
 import { ClipboardList, CreditCard, MessageSquare, Receipt, RefreshCcw, Undo2, X } from 'lucide-react'
-import { ORDER_TYPE_LABEL, ORDERSTATUS, type OrderStatus } from '~/constants/order'
+import { ORDER_TYPE_LABEL, ORDERSTATUS } from '~/constants/order'
 import { CategoryType } from '~/types/category.type'
 import type { Order } from '~/types/order.type'
 import { fmtDate, formatCurrencyVND } from '~/utils/util'
@@ -7,12 +7,16 @@ import StatusPill from '../StatusPill'
 
 const SHOP_NAME = 'Eviest'
 const makeCode = (id: number) => `OD${String(id).padStart(6, '0')}`
-type StatusType = OrderStatus
+type TrackingKey = keyof typeof ORDERSTATUS
 
 export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) => void }) {
   const code = makeCode(o.id)
   const viewingTime = o.viewingAppointment?.time
   const handoverTime = o.handoverAppointment?.time
+
+  // Đảm bảo có default để tránh crash khi dữ liệu xấu
+  const tracking: TrackingKey = (o.tracking ?? 'PENDING') as TrackingKey
+
   return (
     <div className='rounded-2xl border border-gray-200 bg-white shadow-sm'>
       <div className='flex items-center justify-between gap-3 border-b border-gray-100 p-4'>
@@ -27,7 +31,10 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
             {ORDER_TYPE_LABEL[o.type]}
           </span>
         </div>
-        <StatusPill status={o.status as StatusType} />
+
+        {/* Status pill theo tracking */}
+        {/* Nếu StatusPill hiện nhận prop "status", bạn có thể truyền thẳng tracking */}
+        <StatusPill status={tracking} />
       </div>
 
       <div className='p-4 text-sm'>
@@ -39,14 +46,13 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
                 <span className='font-medium text-gray-800'>{o.auction?.id ?? '—'}</span>
               </div>
               <div>
-                <span className='text-gray-500'>Giá khởi điểm </span>
-                <span className='font-medium text-gray-800'>{o.auction?.startingBid}</span>
+                <span className='text-gray-500'>Giá khởi điểm: </span>
+                <span className='font-medium text-gray-800'>{formatCurrencyVND(o.auction?.startingBid)}</span>
               </div>
               <div>
-                <span className='text-gray-500'>Mã sản phẩm đấu giá </span>
+                <span className='text-gray-500'>Mã sản phẩm đấu giá: </span>
                 <span className='font-medium text-gray-800'>{o.post?.product.id}</span>
               </div>
-
               <div>
                 <span className='text-gray-500'>Giá mua ngay sản phẩm: </span>
                 <span className='font-medium text-gray-800'>{formatCurrencyVND(o.auction?.buyNowPrice)}</span>
@@ -55,7 +61,7 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
                 <div>
                   <span className='text-gray-500'>Ngày kiểm duyệt xe: </span>
                   <span className='font-medium'>
-                    {fmtDate(viewingTime)} • {o.viewingAppointment?.address ? o.viewingAppointment.address : '-'}
+                    {fmtDate(viewingTime)} • {o.viewingAppointment?.address ?? '-'}
                   </span>
                 </div>
               )}
@@ -82,6 +88,7 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
               </div>
             </div>
           )}
+
           {o.type === 'post' && (
             <div className='flex flex-col gap-0.5'>
               <div>
@@ -98,13 +105,13 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
                   {o.post?.product.category.typeSlug === CategoryType.vehicle ? 'Xe' : 'Pin'}
                 </span>
               </div>
-
               <div>
                 <span className='text-gray-500'>Giá sản phẩm: </span>
                 <span className='font-medium text-gray-800'>{formatCurrencyVND(o.post?.product.price)}</span>
               </div>
             </div>
           )}
+
           {o.type === 'package' && (
             <div className='flex flex-col gap-0.5'>
               <div>
@@ -112,14 +119,13 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
                 <span className='font-medium text-gray-800'>{o.service?.name}</span>
               </div>
               <div>
-                <span className='text-gray-500'>Quyền lời: </span>
+                <span className='text-gray-500'>Quyền lợi: </span>
                 <span className='font-medium text-gray-800'>{o.service?.feature}</span>
               </div>
               <div>
-                <span className='text-gray-500'>Mô tả </span>
+                <span className='text-gray-500'>Mô tả: </span>
                 <span className='font-medium text-gray-800'>{o.service?.description}</span>
               </div>
-
               <div>
                 <span className='text-gray-500'>Giá sản phẩm: </span>
                 <span className='font-medium text-gray-800'>{formatCurrencyVND(o.service?.price)}</span>
@@ -131,7 +137,7 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
 
       <div className='flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 p-4'>
         <div className='text-sm text-gray-600'>
-          Trạng thái: <span className='font-medium text-gray-800'>{ORDERSTATUS[o.status as StatusType].label}</span>
+          Trạng thái: <span className='font-medium text-gray-800'>{ORDERSTATUS[tracking].label}</span>
         </div>
         <div className='text-right'>
           <div className='text-xs text-gray-500'>Thành tiền</div>
@@ -140,7 +146,8 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
       </div>
 
       <div className='flex flex-wrap items-center justify-end gap-2 p-4'>
-        {o.status === 'PENDING' && (
+        {/* Điều kiện nút dựa trên tracking */}
+        {tracking === 'PENDING' && (
           <>
             <button className='rounded-xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'>
               <X className='mr-2 inline h-4 w-4' /> Hủy
@@ -151,34 +158,22 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
           </>
         )}
 
-        {o.type === 'auction' && (o.status === 'PROCESSING' || o.status === 'VERIFYING') && (
-          <>
-            <button className='rounded-xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'>
-              <MessageSquare className='mr-2 inline h-4 w-4' /> Trao đổi lịch hẹn
-            </button>
-            <button className='rounded-xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'>
-              <ClipboardList className='mr-2 inline h-4 w-4' /> Xem báo giá
-            </button>
-            <button className='rounded-xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'>
-              <Undo2 className='mr-2 inline h-4 w-4' /> Hủy yêu cầu
-            </button>
-          </>
-        )}
-
-        {/* {o.status === 'SUCCESS' && (
-          <>
-            <button className='rounded-2xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'>
-              <Download className='mr-2 inline h-4 w-4' /> Biên nhận
-            </button>
-            {o.type !== 'topup' && (
-              <button className='rounded-2xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'>
-                <Star className='mr-2 inline h-4 w-4' /> Đánh giá dịch vụ
+        {o.type === 'auction' &&
+          (tracking === 'PROCESSING' || tracking === 'VERIFYING' || tracking === 'AUCTION_PROCESSING') && (
+            <>
+              <button className='rounded-xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'>
+                <MessageSquare className='mr-2 inline h-4 w-4' /> Trao đổi lịch hẹn
               </button>
-            )}
-          </>
-        )} */}
+              <button className='rounded-xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'>
+                <ClipboardList className='mr-2 inline h-4 w-4' /> Xem báo giá
+              </button>
+              <button className='rounded-xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'>
+                <Undo2 className='mr-2 inline h-4 w-4' /> Hủy yêu cầu
+              </button>
+            </>
+          )}
 
-        {o.status === 'REFUND' && (
+        {tracking === 'REFUND' && (
           <button className='rounded-2xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'>
             <RefreshCcw className='mr-2 inline h-4 w-4' /> Theo dõi hoàn tiền
           </button>

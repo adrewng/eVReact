@@ -19,7 +19,7 @@ export default function OrderDetail({
   order: Order | null
 }) {
   const steps = getStepsByType(order?.type)
-  const activeKey = order && mapStatusToStepKey(order.type, order.status as OrderStatus)
+  const activeKey = order && mapStatusToStepKey(order.type, order.tracking as OrderStatus)
   const activeIndex = Math.max(
     0,
     steps.findIndex((s) => s.key === activeKey)
@@ -49,7 +49,7 @@ export default function OrderDetail({
                 <div className='text-2xl font-semibold'>Đơn hàng #{String(order.id)}</div>
                 <div className='mt-1 text-sm text-gray-500'>
                   Trạng thái:{' '}
-                  <span className='font-medium text-gray-800'>{ORDERSTATUS[order.status as OrderStatus].label}</span>
+                  <span className='font-medium text-gray-800'>{ORDERSTATUS[order.tracking as OrderStatus].label}</span>
                 </div>
                 <div className='mt-1 text-sm text-gray-500'>Tạo ngày {fmtDate(order.created_at)}</div>
               </div>
@@ -101,7 +101,7 @@ export default function OrderDetail({
               </div>
               <div className='px-4 pb-3 text-sm text-gray-500'>
                 Trạng thái:{' '}
-                <span className='font-medium text-gray-800'>{ORDERSTATUS[order.status as OrderStatus].label}</span>
+                <span className='font-medium text-gray-800'>{ORDERSTATUS[order.tracking as OrderStatus].label}</span>
               </div>
             </div>
           </motion.div>

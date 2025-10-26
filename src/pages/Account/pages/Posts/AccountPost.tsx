@@ -114,7 +114,7 @@ export default function AccountPost() {
                       className={`px-2.5 py-1 rounded-full text-xs font-semibold shadow-sm backdrop-blur ${
                         post.status === 'approved'
                           ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
-                          : post.status === 'processing'
+                          : post.status === 'pending'
                             ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-200'
                             : post.status === 'rejected'
                               ? 'bg-rose-50 text-rose-700 ring-1 ring-rose-200'
@@ -123,7 +123,7 @@ export default function AccountPost() {
                     >
                       {post.status === 'approved'
                         ? 'Đã duyệt'
-                        : post.status === 'processing'
+                        : post.status === 'pending'
                           ? 'Đang xử lý'
                           : post.status === 'rejected'
                             ? 'Từ chối'

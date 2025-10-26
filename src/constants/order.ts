@@ -11,7 +11,6 @@ export type OrderStatus =
   | 'FAILED' // thất bại
   | 'CANCELLED' // đã huỷ
   | 'REFUND' // hoàn tiền (nếu có)
-  // Nhánh "Tham gia đấu giá"
   | 'AUCTION_PROCESSING'
   | 'AUCTION_SUCCESS'
   | 'AUCTION_FAILED'
@@ -73,7 +72,7 @@ export function getStepsByType(type?: Order['type'], status?: OrderStatus): Step
     case 'auction':
       return [
         { key: 'PENDING', title: 'Thanh toán phí' },
-        { key: 'PROCESSING', title: 'Đợi Admin liên hệ' },
+        // { key: 'PROCESSING', title: 'Đợi Admin liên hệ' },
         { key: 'VERIFYING', title: STEP_TITLES.VERIFYING },
         { key: 'RESULT', title: STEP_TITLES.RESULT }
       ]

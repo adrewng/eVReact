@@ -7,7 +7,8 @@ import type { User } from './user.type'
 export interface Order {
   id: number
   type: OrderType
-  status: keyof typeof ORDERSTATUS
+  status: string
+  tracking: keyof typeof ORDERSTATUS
   price: string | number
   viewingAppointment?: {
     address: string
@@ -41,4 +42,12 @@ export interface OrderList {
     limit: number
     page_size: number
   }
+}
+
+export interface OrderListConfig {
+  page?: number | string
+  limit?: number | string
+  tracking?: keyof typeof ORDERSTATUS
+  type?: OrderType
+  orderId?: number | string
 }

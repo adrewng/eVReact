@@ -115,8 +115,8 @@ export const DEMO_PARTICIPATIONS: Participation[] = [
       bidIncrement: 200_000,
       deposit: 500_000,
       currentPrice: 25_600_000,
-      bid_count: 19,
-      myTopBid: 25_400_000 // moved vào session theo type mới
+      bid_count: 19, //bỏ
+      myTopBid: 25_400_000
     },
     result: 'PENDING'
   },

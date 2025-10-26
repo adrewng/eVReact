@@ -12,11 +12,17 @@ const RANGE = 1
 
 export default function Pagination({ queryConfig, pageSize, pathName }: Props) {
   const page = Number(queryConfig.page) || 1
-  const { pathname } = useLocation() // để fallback khi không truyền pathName
+  const { pathname } = useLocation()
 
-  // Tạo object "to" cho <Link/>, giữ nguyên CSS hiện có
+  // ----- Styles gom sẵn để không lệch -----
+  const baseBtn =
+    'inline-flex items-center justify-center h-9 min-w-[2.25rem] rounded-lg px-3 text-sm font-medium transition-colors'
+  const btnActive = 'bg-gray-900 text-white shadow-sm'
+  const btnDefault = 'border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 shadow-sm'
+  const btnDisabled = 'border bg-white text-gray-400 cursor-not-allowed opacity-60 shadow-sm'
+  const dotStyle = 'inline-flex items-center justify-center h-9 min-w-[2.25rem] rounded-lg px-3 text-gray-400'
+
   const makeTo = (pageNumber: number) => ({
-    // nếu có pathName thì dùng, không thì giữ nguyên route hiện tại
     pathname: pathName ?? pathname,
     search: createSearchParams({ ...queryConfig, page: String(pageNumber) }).toString()
   })
@@ -29,8 +35,8 @@ export default function Pagination({ queryConfig, pageSize, pathName }: Props) {
       if (!dotBefore) {
         dotBefore = true
         return (
-          <span key={`dot-before-${index}`} className='mx-2 bg-white px-3 py-2 shadow-sm'>
-            ...
+          <span key={`dot-before-${index}`} className={dotStyle} aria-hidden='true'>
+            …
           </span>
         )
       }
@@ -41,8 +47,8 @@ export default function Pagination({ queryConfig, pageSize, pathName }: Props) {
       if (!dotAfter) {
         dotAfter = true
         return (
-          <span key={`dot-after-${index}`} className='mx-2 bg-white px-3 py-2 shadow-sm'>
-            ...
+          <span key={`dot-after-${index}`} className={dotStyle} aria-hidden='true'>
+            …
           </span>
         )
       }
@@ -54,7 +60,7 @@ export default function Pagination({ queryConfig, pageSize, pathName }: Props) {
       .map((_, index) => {
         const pageNumber = index + 1
 
-        // Điều kiện để return về ...
+        // Điều kiện tạo "..."
         if (page <= RANGE * 2 + 1 && pageNumber > page + RANGE && pageNumber < pageSize - RANGE + 1) {
           return renderDotAfter(index)
         } else if (page > RANGE * 2 + 1 && page < pageSize - RANGE * 2) {
@@ -68,14 +74,13 @@ export default function Pagination({ queryConfig, pageSize, pathName }: Props) {
         }
 
         // Link số trang
+        const isActive = pageNumber === page
         return (
           <Link
             to={makeTo(pageNumber)}
             key={pageNumber}
-            className={classNames('mx-1 flex items-center cursor-pointer h-9 min-w-9 rounded px-3 text-sm shadow-sm', {
-              'bg-gray-900 text-white': pageNumber === page,
-              'border border-gray-200 bg-white hover:bg-gray-50': pageNumber !== page
-            })}
+            aria-current={isActive ? 'page' : undefined}
+            className={classNames(baseBtn, isActive ? btnActive : btnDefault)}
           >
             {pageNumber}
           </Link>
@@ -87,12 +92,14 @@ export default function Pagination({ queryConfig, pageSize, pathName }: Props) {
   const isLast = page === pageSize
 
   return (
-    <div className='mt-6 flex flex-wrap justify-center'>
+    <nav className='mt-6 flex flex-wrap items-center justify-center gap-2' aria-label='Pagination'>
       {/* Prev */}
       {isFirst ? (
-        <span className='mx-2 cursor-not-allowed rounded border bg-white/60 px-3 py-2 shadow-sm'>Trước</span>
+        <span className={classNames(baseBtn, btnDisabled)} aria-disabled='true'>
+          Trước
+        </span>
       ) : (
-        <Link to={makeTo(page - 1)} className='mx-2 cursor-pointer rounded border bg-white px-3 py-2 shadow-sm'>
+        <Link to={makeTo(page - 1)} className={classNames(baseBtn, btnDefault)}>
           Trước
         </Link>
       )}
@@ -101,12 +108,14 @@ export default function Pagination({ queryConfig, pageSize, pathName }: Props) {
 
       {/* Next */}
       {isLast ? (
-        <span className='mx-2 cursor-not-allowed rounded border bg-white/60 px-3 py-2 shadow-sm'>Sau</span>
+        <span className={classNames(baseBtn, btnDisabled)} aria-disabled='true'>
+          Sau
+        </span>
       ) : (
-        <Link to={makeTo(page + 1)} className='mx-2 cursor-pointer rounded border bg-white px-3 py-2 shadow-sm'>
+        <Link to={makeTo(page + 1)} className={classNames(baseBtn, btnDefault)}>
           Sau
         </Link>
       )}
-    </div>
+    </nav>
   )
 }
