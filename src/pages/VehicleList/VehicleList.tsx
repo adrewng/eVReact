@@ -44,9 +44,6 @@ export default function VehicleList() {
           >
             {/* Sticky wrapper: dính dưới header/sortbar ~0rem (top-0) */}
             <div className='sticky top-0 self-start overflow-hidden'>
-              {/* Nội dung filter dài sẽ tự cuộn trong khung sticky */}
-              {/* <div className='max-h-[calc(100vh-6rem)] overflow-y-auto'> */}
-              {/* Khi width=0, chặn tương tác */}
               <div className={classNames('w-[22rem]', !isFilterOpen && 'pointer-events-none')}>
                 <VehicleFilter queryConfig={queryConfig} categorySlug={categorySlug} />
               </div>

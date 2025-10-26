@@ -11,15 +11,10 @@ import { formatCurrencyVND } from '~/utils/util'
 
 type Props = {
   profile: ProfileData['user'] | undefined
-  // refetch: (options?: RefetchOptions & RefetchQueryFilters) => Promise<QueryObserverResult<ProfileData>>
   refetch: (
     options?: RefetchOptions
   ) => Promise<QueryObserverResult<AxiosResponse<SuccessResponse<ProfileData>, unknown, object>, Error>>
 }
-
-// type FormData = Pick<UserSchema, 'full_name' | 'email' | 'phone' | 'avatar' | 'address'>
-
-// const profileSchema = userSchema.pick(['full_name', 'address', 'avatar', 'email', 'phone'])
 
 export default function ProfileOverview(props: Props) {
   const { profile, refetch } = props
@@ -61,22 +56,14 @@ export default function ProfileOverview(props: Props) {
           avatar: string
         }
       )
-
-      const { data: newData } = await refetch()
-      console.log('data sau khi refetch', newData)
+      await refetch()
       setIsEdit(false)
     },
-    onError: (error) => {
-      console.log('Cập nhật thất bại!', error)
-      // const axiosError = error as AxiosError
-      // console.error('❌ onError', axiosError.response?.data || axiosError.message)
-      // console.log('Chi tiết lỗi:', (error.response?.data as any).data)
-    }
+    onError: () => {}
   })
+
   const handleToggleEdit = () => {
-    // Nếu đang ở edit mode thì submit
     if (isEdit) {
-      console.log('Submitting...', formData)
       updateProfileMutation.mutate(formData as BodyUpdateProfile)
     }
     setIsEdit((prev) => !prev)
@@ -84,13 +71,13 @@ export default function ProfileOverview(props: Props) {
 
   return (
     <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-      {/* Personal Information */}
       <div className='bg-white border border-gray-200 rounded-2xl p-6 hover:border-gray-900 transition-all'>
         <div className='flex items-center justify-between mb-6'>
-          <h2 className='text-xl font-bold text-gray-900'>Personal Information</h2>
+          <h2 className='text-xl font-bold text-gray-900'>Thông tin cá nhân</h2>
           <button
             onClick={handleToggleEdit}
             className='w-9 h-9 hover:bg-gray-100 rounded-lg flex items-center justify-center transition-colors'
+            aria-label={isEdit ? 'Lưu thông tin' : 'Chỉnh sửa thông tin'}
           >
             {isEdit ? <Check size={18} className='text-green-600' /> : <Edit2 size={16} className='text-gray-600' />}
           </button>
@@ -99,7 +86,7 @@ export default function ProfileOverview(props: Props) {
         <div className='space-y-5'>
           <div className='grid grid-cols-2 gap-5'>
             <div>
-              <label className='text-xs font-medium text-gray-500 uppercase tracking-wider block mb-2'>Full Name</label>
+              <label className='text-xs font-medium text-gray-500 uppercase tracking-wider block mb-2'>Họ và tên</label>
               {isEdit ? (
                 <input
                   type='text'
@@ -113,7 +100,7 @@ export default function ProfileOverview(props: Props) {
               )}
             </div>
             <div>
-              <label className='text-xs font-medium text-gray-500 uppercase tracking-wider block mb-2'>Gender</label>
+              <label className='text-xs font-medium text-gray-500 uppercase tracking-wider block mb-2'>Giới tính</label>
               {isEdit ? (
                 <input
                   type='text'
@@ -129,10 +116,9 @@ export default function ProfileOverview(props: Props) {
           </div>
 
           <div className='grid grid-cols-2 gap-5'>
-            {/*  */}
             <div>
               <label className='text-xs font-medium text-gray-500 uppercase tracking-wider block mb-2'>
-                Phone Number
+                Số điện thoại
               </label>
               {isEdit ? (
                 <input
@@ -147,9 +133,7 @@ export default function ProfileOverview(props: Props) {
               )}
             </div>
             <div>
-              <label className='text-xs font-medium text-gray-500 uppercase tracking-wider block mb-2'>
-                Email Address
-              </label>
+              <label className='text-xs font-medium text-gray-500 uppercase tracking-wider block mb-2'>Email</label>
               {isEdit ? (
                 <input
                   type='text'
@@ -165,7 +149,7 @@ export default function ProfileOverview(props: Props) {
           </div>
 
           <div>
-            <label className='text-xs font-medium text-gray-500 uppercase tracking-wider block mb-2'>Address</label>
+            <label className='text-xs font-medium text-gray-500 uppercase tracking-wider block mb-2'>Địa chỉ</label>
             {isEdit ? (
               <input
                 type='text'
@@ -181,45 +165,23 @@ export default function ProfileOverview(props: Props) {
         </div>
       </div>
 
-      {/* Wallet Overview */}
       <div className='bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 text-white flex flex-col justify-between'>
         <div>
           <div className='flex items-center justify-between mb-8'>
             <div>
-              <p className='text-sm text-gray-400 mb-2'>Available Balance</p>
+              <p className='text-sm text-gray-400 mb-2'>Số dư khả dụng</p>
               <h2 className='text-4xl font-bold'>{formatCurrencyVND(profile?.total_credit)}</h2>
             </div>
             <div className='flex gap-3'>
               <button className='px-5 py-2.5 bg-white text-gray-900 rounded-xl font-medium hover:bg-gray-100 transition-all'>
-                Withdraw
+                Rút tiền
               </button>
               <button className='px-5 py-2.5 bg-white/10 hover:bg-white/20 rounded-xl font-medium transition-all'>
-                Top Up
+                Nạp tiền
               </button>
             </div>
           </div>
         </div>
-
-        {/* Transaction History */}
-        {/* <div>
-          <h3 className='text-lg font-semibold mb-4 text-white/90'>Recent Transactions</h3>
-          <ul className='space-y-3'>
-            {profile?.recentTransactions.slice(0, 3).map((tx: any, index: number) => (
-              <li
-                key={index}
-                className='flex items-center justify-between bg-white/5 rounded-xl px-4 py-3 border border-white/10'
-              >
-                <div>
-                  <p className='text-sm font-medium text-white'>{tx.description}</p>
-                  <p className='text-xs text-gray-400'>{new Date(tx.date).toLocaleDateString()}</p>
-                </div>
-                <p className={`text-sm font-semibold ${tx.amount > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                  {tx.amount > 0 ? '+' : ''}₫{Math.abs(tx.amount).toLocaleString()}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div> */}
       </div>
     </div>
   )

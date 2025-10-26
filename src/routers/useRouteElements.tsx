@@ -7,11 +7,14 @@ import { AppContext } from '~/contexts/app.context'
 import Dashboard from '~/layouts/Dashboard'
 import MainLayout from '~/layouts/MainLayout'
 import Account from '~/pages/Account/layouts/Account'
+import AccountAuction from '~/pages/Account/pages/AccountAuctions/AccountAuctions'
+import AccountOrders from '~/pages/Account/pages/AccountOrders'
 import AccountNotification from '~/pages/Account/pages/Notification/AccountNotification'
 import AccountPost from '~/pages/Account/pages/Posts/AccountPost'
 import AccountProfile from '~/pages/Account/pages/Profile/AccountProfile'
 import AccountTransaction from '~/pages/Account/pages/Transaction/AccountTransaction'
 import AllProductList from '~/pages/AllProductList'
+import AuctionRequest from '~/pages/Auction/AuctionRequest'
 import BatteryList from '~/pages/BatteryList'
 import CheckoutPage from '~/pages/CheckoutPage/CheckoutPage'
 
@@ -62,8 +65,9 @@ function RoleGuard({ role }: { role: 'customer' | 'admin' | 'staff' }) {
 
 export default function useRouteElements() {
   const element = useRoutes([
+    // Public
     {
-      path: path.landingPage,
+      path: path.landingPage, // '/'
       element: <RedirectAdminFromPublic />,
       children: [
         { index: true, element: <LandingPage /> },
@@ -82,16 +86,18 @@ export default function useRouteElements() {
         }
       ]
     },
+    // Rejected
     {
-      path: path.landingPage,
+      path: '/',
       element: <RejectedRoute />,
       children: [
         { path: path.login, element: <Login /> },
         { path: path.register, element: <Register /> }
       ]
     },
+    // Protected
     {
-      path: path.landingPage,
+      path: '/',
       element: <ProtectedRoute />,
       children: [
         {
@@ -101,7 +107,9 @@ export default function useRouteElements() {
             { path: path.accountPosts, element: <AccountPost /> },
             { path: path.accountProfile, element: <AccountProfile /> },
             { path: path.accountNotification, element: <AccountNotification /> },
-            { path: path.accountTransaction, element: <AccountTransaction /> }
+            { path: path.accountTransaction, element: <AccountTransaction /> },
+            { path: path.accountOrders, element: <AccountOrders /> },
+            { path: path.accountAuction, element: <AccountAuction /> }
           ]
         },
         {
@@ -138,13 +146,19 @@ export default function useRouteElements() {
         {
           path: path.payment,
           element: <Fragment />
+        },
+        {
+          path: path.landingPage,
+          element: <MainLayout />,
+          children: [
+            { path: path.requestAution, element: <AuctionRequest /> },
+            { path: path.updatePostReject, element: <UpdateRejectedPostMock /> }
+          ]
         }
       ]
     },
-    {
-      path: '*',
-      element: <PageNotFound />
-    }
+    // 404
+    { path: '*', element: <PageNotFound /> }
   ])
   return element
 }
