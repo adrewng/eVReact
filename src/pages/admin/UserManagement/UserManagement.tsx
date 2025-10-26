@@ -24,6 +24,8 @@ import { Badge } from '~/components/ui/badge'
 import { IconTrendingDown, IconTrendingUp } from '@tabler/icons-react'
 import { UserBarChart } from './components/UserBarChart'
 import UserStatCards from './components/UserStatCards'
+import { useQuery } from '@tanstack/react-query'
+import userApi from '~/apis/user.api'
 
 // Mock data
 const userStats = {
@@ -111,6 +113,14 @@ export default function UserManagement() {
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
+  const { data: userData } = useQuery({
+    queryKey: ['user-list'],
+    queryFn: userApi.getAllUser
+  })
+
+  const userList = userData?.data.data
+  console.log('user list -', userList)
+
   return (
     <div className='min-h-screen flex-1 bg-background'>
       {/* Main Content */}
@@ -142,37 +152,40 @@ export default function UserManagement() {
                   <tr className='border-b border-border'>
                     <th className='text-left py-3 px-4 font-semibold'>Name</th>
                     <th className='text-left py-3 px-4 font-semibold'>Email</th>
-                    <th className='text-left py-3 px-4 font-semibold'>Type</th>
+                    <th className='text-left py-3 px-4 font-semibold'>Phone</th>
                     <th className='text-left py-3 px-4 font-semibold'>Status</th>
                     <th className='text-left py-3 px-4 font-semibold'>Join Date</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredUsers.map((user) => (
-                    <tr key={user.id} className='border-b border-border hover:bg-muted/50'>
-                      <td className='py-3 px-4'>{user.name}</td>
-                      <td className='py-3 px-4 text-muted-foreground'>{user.email}</td>
-                      <td className='py-3 px-4'>
-                        <span className='px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800'>
-                          {user.type}
-                        </span>
-                      </td>
-                      <td className='py-3 px-4'>
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            user.status === 'Verified'
-                              ? 'bg-green-100 text-green-800'
-                              : user.status === 'Pending'
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-red-100 text-red-800'
-                          }`}
-                        >
-                          {user.status}
-                        </span>
-                      </td>
-                      <td className='py-3 px-4 text-muted-foreground'>{user.joinDate}</td>
-                    </tr>
-                  ))}
+                  {userList &&
+                    userList.map((user) => (
+                      <tr key={user.id} className='border-b border-border hover:bg-muted/50'>
+                        <td className='py-3 px-4'>{user.full_name}</td>
+                        <td className='py-3 px-4 text-muted-foreground'>{user.email}</td>
+                        <td className='py-3 px-4'>
+                          <span className='px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800'>
+                            {user.phone}
+                          </span>
+                        </td>
+                        <td className='py-3 px-4'>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              user.status === 'active'
+                                ? 'bg-green-100 text-green-800'
+                                : user.status === 'Pending'
+                                  ? 'bg-yellow-100 text-yellow-800'
+                                  : 'bg-red-100 text-red-800'
+                            }`}
+                          >
+                            {user.status}
+                          </span>
+                        </td>
+                        <td className='py-3 px-4 text-muted-foreground'>
+                          {new Date(user.created_at).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>

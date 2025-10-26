@@ -35,6 +35,7 @@ export const path = {
   adminListings: '/admin/listings',
   adminUsers: '/admin/users',
   adminTransactions: '/admin/transactions',
+  adminPackages: '/admin/packages',
   adminAuctions: '/admin/auctions',
   adminReports: '/admin/reports',
   adminSettings: '/admin/settings'
