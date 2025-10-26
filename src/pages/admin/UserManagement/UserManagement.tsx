@@ -105,8 +105,6 @@ export default function UserManagement() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedRegion, setSelectedRegion] = useState(null)
 
-  const 
-
   const filteredUsers = recentUsers.filter(
     (user) =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
