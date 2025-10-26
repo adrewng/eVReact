@@ -37,7 +37,7 @@ export function formatNumberToSocialStyle(value: number) {
     .replace('.', ',')
     .toLowerCase()
 }
-export const formatCurrencyVND = (val: string | number | undefined | null) => {
+export const formatCurrencyVND = (val: string | number | undefined | null, unit?: string) => {
   // 1) Nếu không có giá trị → trả chuỗi rỗng
   if (val === undefined || val === null) return ''
   // 2) Nếu là string và *trông có vẻ đã có phân tách hàng nghìn*
@@ -52,8 +52,9 @@ export const formatCurrencyVND = (val: string | number | undefined | null) => {
   if (Number.isNaN(n)) return String(val)
   // 5) Dùng Intl với locale 'vi-VN' để nhóm hàng nghìn theo kiểu Việt Nam
   //    (dấu chấm) rồi thêm " ₫" phía sau
-  return new Intl.NumberFormat('vi-VN').format(n) + ' ₫'
+  return new Intl.NumberFormat('vi-VN').format(n) + ' ' + (unit ? unit : 'đ')
 }
+export const fmtDate = (s?: string) => (s ? new Date(s).toLocaleString('vi-VN') : '—')
 
 export const formatOwners = (val?: number | string) => {
   if (val === undefined || val === null || val === '') return undefined

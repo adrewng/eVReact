@@ -11,7 +11,6 @@ const RANGE = 2
 export default function PaginationAdmin(props: Props) {
   const { queryConfig, pageSize } = props
   const page = Number(queryConfig.page)
-  console.log(page)
 
   const renderPagination = () => {
     let dotAfter = false

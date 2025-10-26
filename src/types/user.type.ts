@@ -14,7 +14,6 @@ export interface User {
   createdAt?: string
   updateAt?: string
   isVerify?: boolean
-  // 🆕 Các trường thêm vào từ ProfileData.user
   gender?: string
   balance?: number
   verificationStatus?: string

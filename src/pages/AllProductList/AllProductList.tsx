@@ -30,26 +30,21 @@ export default function AllProductList() {
       />
 
       <div className='pb-8 md:pb-10'>
-        {/* DESKTOP layout (lg+): sidebar animate width, list animate x */}
         <div className='hidden lg:grid lg:grid-cols-[auto_minmax(0,1fr)] gap-8'>
-          {/* Sidebar (desktop) - always mounted, width animate 0 <-> SIDEBAR_W */}
           <motion.aside
             aria-hidden={!isFilterOpen}
-            animate={{ width: isFilterOpen ? 352 : 0 }}
+            animate={{ width: isFilterOpen ? 384 : 0 }}
             initial={false}
             transition={{ duration: isFilterOpen ? 0.34 : 0.28, ease: [0.22, 0.61, 0.36, 1] }}
-            className='w-[22rem]' // do not add overflow-hidden here (we want sticky content to be visible)
+            className='w-[24rem]'
           >
             <div className='sticky top-0 self-start overflow-hidden'>
-              <div className='max-h-[calc(100vh-6rem)] overflow-y-auto'>
-                <div className={classNames('w-[22rem]', !isFilterOpen && 'pointer-events-none')}>
-                  <FilterSidebar queryConfig={queryConfig} categories={categories} />
-                </div>
+              <div className={classNames('w-[24rem]', !isFilterOpen && 'pointer-events-none')}>
+                <FilterSidebar queryConfig={queryConfig} categories={categories} />
               </div>
             </div>
           </motion.aside>
 
-          {/* List (desktop) */}
           <motion.section
             initial={false}
             animate={{
@@ -109,7 +104,6 @@ export default function AllProductList() {
           </motion.section>
         </div>
 
-        {/* MOBILE/TABLET (< lg): overlay drawer from left */}
         <div className='lg:hidden'>
           <div className='min-w-0 px-4'>
             <div className='grid grid-cols-1 gap-4 sm:gap-6'>

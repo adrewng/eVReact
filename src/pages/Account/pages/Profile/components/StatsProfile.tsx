@@ -21,9 +21,8 @@ export default function StatsProfile(props: Props) {
       value: profile?.total_transactions || 0,
       icon: Zap,
       color: 'text-gray-900',
-      path: path.accountPayment
+      path: path.accountTransaction
     }
-    // { label: 'Member Since', value: profileData.memberSince, icon: Calendar, color: 'text-gray-900' }
   ]
   return (
     <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
