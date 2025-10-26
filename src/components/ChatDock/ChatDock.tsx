@@ -67,14 +67,14 @@ export default function ChatDock() {
         ref={btnRef}
         onClick={() => setOpen((o) => !o)}
         className={clsx(
-          'fixed bottom-6 right-6 z-[60]',
-          'h-14 w-14 rounded-full shadow-xl border border-black/5',
+          'fixed bottom-5 right-5 z-[60]',
+          'h-12 w-12 rounded-full shadow-xl border border-black/5',
           'bg-white hover:bg-zinc-50 transition-colors',
           'grid place-items-center'
         )}
         aria-label={open ? 'Đóng chat AI' : 'Mở chat AI'}
       >
-        <MessageCircle className='h-6 w-6' />
+        <MessageCircle className='h-5 w-5' />
         <span className='sr-only'>Chat AI</span>
         <span className='absolute -top-1 -right-1 text-[10px] rounded-full px-1.5 py-0.5 bg-black text-white'>AI</span>
       </button>
@@ -90,7 +90,7 @@ export default function ChatDock() {
                 exit={{ opacity: 0 }}
                 className='fixed inset-0 z-[59] pointer-events-none'
               >
-                {/* Panel cố định kích thước */}
+                {/* Panel gọn cố định kích thước */}
                 <motion.div
                   ref={panelRef}
                   role='dialog'
@@ -101,22 +101,22 @@ export default function ChatDock() {
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                   className={clsx(
                     'pointer-events-auto',
-                    'fixed bottom-24 right-6',
-                    'w-[24rem] h-[34rem] flex flex-col', // << kích thước cố định
-                    // Nếu muốn co trên mobile nhỏ, thêm: 'max-w-[92vw] max-h-[80vh]'
+                    'fixed bottom-20 right-5',
+                    // kích thước nhỏ + ràng buộc an toàn trên màn nhỏ
+                    'w-[19rem] h-[26rem] max-w-[92vw] max-h-[80vh] flex flex-col',
                     'rounded-2xl shadow-2xl border border-black/5 bg-white overflow-hidden'
                   )}
                 >
                   {/* Header */}
                   <div className='flex items-center justify-between px-4 py-2 border-b'>
                     <div className='flex items-center gap-2'>
-                      <div className='h-6 w-6 rounded-full bg-gradient-to-tr from-amber-300 to-emerald-300' />
-                      <div className='font-medium'>EViest AI</div>
+                      <div className='h-5 w-5 rounded-full bg-gradient-to-tr from-amber-300 to-emerald-300' />
+                      <div className='font-medium text-sm'>EViest AI</div>
                     </div>
                     <div className='flex items-center gap-1'>
                       <button
                         onClick={() => setOpen(false)}
-                        className='p-2 rounded-lg hover:bg-zinc-100'
+                        className='p-1.5 rounded-lg hover:bg-zinc-100'
                         aria-label='Thu nhỏ'
                         title='Thu nhỏ'
                       >
@@ -124,7 +124,7 @@ export default function ChatDock() {
                       </button>
                       <button
                         onClick={() => setOpen(false)}
-                        className='p-2 rounded-lg hover:bg-zinc-100'
+                        className='p-1.5 rounded-lg hover:bg-zinc-100'
                         aria-label='Đóng'
                         title='Đóng'
                       >
@@ -133,7 +133,7 @@ export default function ChatDock() {
                     </div>
                   </div>
 
-                  {/* Messages: chiếm phần còn lại, scroll được */}
+                  {/* Messages */}
                   <div className='px-3 py-3 space-y-2 flex-1 overflow-y-auto'>
                     {messages.map((m) => (
                       <div key={m.id} className={clsx('flex', m.role === 'user' ? 'justify-end' : 'justify-start')}>
@@ -164,11 +164,11 @@ export default function ChatDock() {
                         value={draft}
                         onChange={(e) => setDraft(e.target.value)}
                         placeholder='Hỏi AI điều gì đó...'
-                        className='flex-1 rounded-xl border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-zinc-900/10'
+                        className='flex-1 rounded-xl border px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-zinc-900/10'
                       />
                       <button
                         type='submit'
-                        className='inline-flex items-center gap-1 rounded-xl border px-3 py-2 text-sm hover:bg-zinc-50'
+                        className='inline-flex items-center gap-1 rounded-xl border px-2.5 py-1.5 text-sm hover:bg-zinc-50'
                         aria-label='Gửi'
                       >
                         <Send className='h-4 w-4' />
