@@ -1,4 +1,4 @@
-import type { Auction, AuctionList } from '~/types/auction.type'
+import type { Auction, AuctionList, AuctionType, Participation } from '~/types/auction.type'
 import type { SuccessResponse } from '~/types/util.type'
 import http from '~/utils/http'
 
@@ -18,18 +18,9 @@ const auctionApi = {
     return http.post('/api/payment/auction-deposit', body)
   },
   startAuction(auction_id: number) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return http.post<SuccessResponse<any>>('/api/auction/start', { auction_id })
-  }
-}
-
-import type { AuctionType, Participation } from '~/types/auction.type'
-import type { SuccessResponse } from '~/types/util.type'
-import http from '~/utils/http'
-
-const URL_CREATE_AUCTION_REQUEST = 'api/payment/auction-fee'
-const delay = (ms: number) => new Promise((r) => setTimeout(r, ms))
-
-export const auctionApi = {
+  },
   createAuctionRequest(body: AuctionType) {
     return http.post<SuccessResponse<AuctionType>>(URL_CREATE_AUCTION_REQUEST, body)
   },
@@ -42,6 +33,9 @@ export const auctionApi = {
     return { data: { data: DEMO_PARTICIPATIONS } }
   }
 }
+
+const URL_CREATE_AUCTION_REQUEST = 'api/payment/auction-fee'
+const delay = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 const now = Date.now()
 const h = (n: number) => 3600_000 * n
