@@ -51,19 +51,19 @@ export default function AccountOrders() {
         <div className='grid grid-cols-2 gap-3 md:grid-cols-4'>
           <div className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm'>
             <div className='text-sm text-gray-500'>Tất cả đơn</div>
-            <div className='mt-1 text-2xl font-semibold'>0</div>
+            <div className='mt-1 text-2xl font-semibold'>{data?.static.total ?? 0}</div>
           </div>
           <div className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm'>
             <div className='text-sm text-gray-500'>Chờ thanh toán</div>
-            <div className='mt-1 text-2xl font-semibold'>0</div>
+            <div className='mt-1 text-2xl font-semibold'>{data?.static.total_pending ?? 0}</div>
           </div>
           <div className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm'>
-            <div className='text-sm text-gray-500'>Hoàn tất</div>
-            <div className='mt-1 text-2xl font-semibold'>0</div>
+            <div className='text-sm text-gray-500'>Đã thanh toán</div>
+            <div className='mt-1 text-2xl font-semibold'>{data?.static.total_paid}</div>
           </div>
           <div className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm'>
             <div className='text-sm text-gray-500'>Tổng chi tiêu (ước tính)</div>
-            <div className='mt-1 text-2xl font-semibold'>{formatCurrencyVND(0)}</div>
+            <div className='mt-1 text-2xl font-semibold'>{formatCurrencyVND(data?.static.total_spent ?? 0)}</div>
           </div>
         </div>
 
@@ -142,7 +142,7 @@ export default function AccountOrders() {
         </div>
 
         <div className='mt-6 grid grid-cols-1 gap-4'>
-          {!isLoading && (data ?? []).map((o: Order) => <OrderCard key={o.id} o={o} onOpen={openDrawer} />)}
+          {!isLoading && (data?.orders ?? []).map((o: Order) => <OrderCard key={o.id} o={o} onOpen={openDrawer} />)}
 
           {!isLoading && (data?.orders?.length ?? 0) === 0 && (
             <div className='rounded-2xl border border-dashed border-gray-300 p-10 text-center text-sm text-gray-500'>
@@ -158,7 +158,7 @@ export default function AccountOrders() {
         </div>
 
         {/* Giữ Pagination, đọc từ API */}
-        <Pagination pageSize={data?.pagination?.page_size ?? 1} queryConfig={queryConfig} />
+        <Pagination pageSize={data?.pagination?.page ?? 1} queryConfig={queryConfig} />
 
         <OrderDetail open={open} onClose={() => setOpen(false)} order={current} />
       </div>

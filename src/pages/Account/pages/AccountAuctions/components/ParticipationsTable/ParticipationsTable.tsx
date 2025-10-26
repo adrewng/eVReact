@@ -66,9 +66,9 @@ export default function ParticipationsTable({ rows, emptyText }: { rows: Partici
                       <span className='rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-700'>Đang chờ</span>
                     )}
                   </div>
-                  {typeof s.myTopBid === 'number' && (
+                  {typeof s.topBid === 'number' && (
                     <div className='mt-1 text-xs text-gray-500'>
-                      Giá cao nhất của tôi: {formatCurrencyVND(s.myTopBid)}
+                      Giá cao nhất của tôi: {formatCurrencyVND(s.topBid)}
                     </div>
                   )}
                 </td>

@@ -19,13 +19,11 @@ export const auctionApi = {
   }
 }
 
-// ===== MOCK DATA
 const now = Date.now()
 const h = (n: number) => 3600_000 * n
 const iso = (t: number) => new Date(t).toISOString()
 
 export const DEMO_MY_SESSIONS: AuctionType[] = [
-  // DRAFT: phiên đang soạn, chưa public
   {
     id: 91000,
     product_id: 4001,
@@ -38,8 +36,7 @@ export const DEMO_MY_SESSIONS: AuctionType[] = [
     buyNowPrice: 0,
     bidIncrement: 100_000,
     deposit: 300_000,
-    currentPrice: null,
-    bid_count: 0,
+    topBid: null,
     note: 'Chưa đủ ảnh, chờ bổ sung hồ sơ'
   },
   {
@@ -115,8 +112,7 @@ export const DEMO_PARTICIPATIONS: Participation[] = [
       bidIncrement: 200_000,
       deposit: 500_000,
       currentPrice: 25_600_000,
-      bid_count: 19, //bỏ
-      myTopBid: 25_400_000
+      topBid: 25_400_000
     },
     result: 'PENDING'
   },
@@ -151,8 +147,7 @@ export const DEMO_PARTICIPATIONS: Participation[] = [
       bidIncrement: 2_000_000,
       deposit: 10_000_000,
       currentPrice: 401_000_000,
-      bid_count: 12,
-      myTopBid: 401_000_000
+      topBid: 401_000_000
     },
     result: 'WIN'
   }

@@ -8,7 +8,7 @@ export interface AuctionType {
   startingBid: number // giá khỏi điểm
   original_price: number
   buyNowPrice: number // giá mua ngay
-  myTopBid?: number
+  topBid?: number | null
 
   bidIncrement: number // bước nhảy tối thiểu
   deposit: number // tiền cọc cần thanh toán trước khi tham gia

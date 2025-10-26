@@ -42,6 +42,12 @@ export interface OrderList {
     limit: number
     page_size: number
   }
+  static: {
+    total: number
+    total_pending: number | string
+    total_paid: number | string
+    total_spent: number
+  }
 }
 
 export interface OrderListConfig {

@@ -54,9 +54,9 @@ export default function SessionsTable({ rows, emptyText }: { rows: AuctionType[]
                 {typeof s.buyNowPrice === 'number' && s.buyNowPrice > 0 && (
                   <div className='text-xs text-gray-500'>Mua ngay: {formatCurrencyVND(s.buyNowPrice)}</div>
                 )}
-                {typeof s.bid_count === 'number' && s.bid_count > 0 && (
+                {/* {typeof s.bid_count === 'number' && s.bid_count > 0 && (
                   <div className='text-xs text-gray-500 mt-0.5'>{s.bid_count} lượt đặt</div>
-                )}
+                )} */}
               </td>
               <td className='px-4 py-3'>
                 <StatusPill status={(s.status ?? 'SCHEDULED') as SessionStatus} />
