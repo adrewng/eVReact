@@ -21,13 +21,11 @@ function App() {
     return () => LocalStorageEventTarget.removeEventListener('clearLS', reset)
   }, [reset])
 
-  // ✅ Chỉ mở modal khi: đang ở /payment/result **và** đúng callback PayOS
   useEffect(() => {
     const onPaymentResultPage = pathname === '/payment/result'
     setOpen(onPaymentResultPage && isPayOSCallback(search))
   }, [pathname, search])
 
-  // Cho modal nút Đóng → quay về trang next (nếu có) hoặc '/'
   const handleClose = () => {
     const sp = new URLSearchParams(search)
     const next = sp.get('next') || '/'
@@ -36,7 +34,6 @@ function App() {
     setOpen(false)
   }
 
-  // Bổ sung next mặc định nếu BE chưa set (để modal luôn biết về đâu)
   const patchedSearch = useMemo(() => {
     const sp = new URLSearchParams(search)
     if (!sp.get('next')) sp.set('next', path.home)

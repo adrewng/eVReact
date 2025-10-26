@@ -31,11 +31,11 @@ export default function SessionsTable({ rows, emptyText }: { rows: AuctionType[]
                 <div className='text-xs text-gray-500'>Mã phiên: #{s.id}</div>
               </td>
               <td className='px-4 py-3'>
-                {s.status === 'DRAFT' ? (
+                {s.status === 'draft' ? (
                   <div className='text-sm text-gray-500 italic'>Chưa lên lịch</div>
                 ) : (
                   <div className='text-sm text-gray-800'>
-                    {fmtDate(s.start_at)} → {fmtDate(s.end_at)}
+                    {fmtDate(s.startAt)} → {fmtDate(s.endAt)}
                   </div>
                 )}
               </td>
@@ -59,7 +59,7 @@ export default function SessionsTable({ rows, emptyText }: { rows: AuctionType[]
                 )} */}
               </td>
               <td className='px-4 py-3'>
-                <StatusPill status={(s.status ?? 'SCHEDULED') as SessionStatus} />
+                <StatusPill status={(s.status ?? 'scheduled') as SessionStatus} />
               </td>
               <td className='px-4 py-3 text-right'>
                 <Link
