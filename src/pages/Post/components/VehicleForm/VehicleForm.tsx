@@ -170,30 +170,32 @@ export default function VehicleForm({ aiMin, aiMax, outOfAiRange }: Props) {
                 placeholder='Nhập giá bán'
                 errorMsg={errors.price?.message}
               />
-              <div
-                id='price-hint'
-                className={classNames(
-                  'text-xs rounded-xl px-2 pb-4 inline-flex items-center gap-2',
-                  outOfAiRange
-                    ? 'bg-amber-50 text-amber-800 ring-1 ring-amber-200'
-                    : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
-                )}
-              >
-                <span className='font-medium'>Gợi ý AI:</span>
-                <span>{aiMin && aiMax ? `${aiMin.toLocaleString()} – ${aiMax.toLocaleString()} đ` : '—'}</span>
-                {aiMin && aiMax && (
-                  <button
-                    type='button'
-                    onClick={() => {
-                      const mid = Math.round((aiMin + aiMax) / 2)
-                      field.onChange(mid)
-                    }}
-                    className='ml-2 underline underline-offset-2'
-                  >
-                    Dùng mức giữa
-                  </button>
-                )}
-              </div>
+              {aiMin && aiMax && (
+                <div
+                  id='price-hint'
+                  className={classNames(
+                    'text-xs rounded-xl px-2 pb-4 inline-flex items-center gap-2',
+                    outOfAiRange
+                      ? 'bg-amber-50 text-amber-800 ring-1 ring-amber-200'
+                      : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
+                  )}
+                >
+                  <span className='font-medium'>Gợi ý AI:</span>
+                  <span>{aiMin && aiMax ? `${aiMin.toLocaleString()} – ${aiMax.toLocaleString()} đ` : '—'}</span>
+                  {aiMin && aiMax && (
+                    <button
+                      type='button'
+                      onClick={() => {
+                        const mid = Math.round((aiMin + aiMax) / 2)
+                        field.onChange(mid)
+                      }}
+                      className='ml-2 underline underline-offset-2'
+                    >
+                      Dùng mức giữa
+                    </button>
+                  )}
+                </div>
+              )}
             </>
           )}
         />

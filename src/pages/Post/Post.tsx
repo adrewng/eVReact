@@ -55,7 +55,6 @@ const PostPage = () => {
     setValue,
     formState: { errors }
   } = methods
-  console.log('error', errors)
   const { saveNow, clear, isRestored } = useFormPersist(methods, {
     storageKeyBase: 'draft:post',
     partitionKey: selectedCategory?.typeSlug

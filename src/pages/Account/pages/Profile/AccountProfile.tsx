@@ -9,16 +9,18 @@ import ProfileSecurity from './components/ProfileSecurity'
 import StatsProfile from './components/StatsProfile'
 
 export default function AccountProfile() {
-  const [activeTab, setActiveTab] = useState('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'security'>('overview')
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [file, setFile] = useState<File>()
   const [isEditAvatar, setIsEditAvatar] = useState(false)
   const { setProfile } = useContext(AppContext)
 
+  // Ảnh xem trước khi chọn file
   const previewImage = useMemo(() => {
     return file ? URL.createObjectURL(file) : ''
   }, [file])
 
+  // Lấy hồ sơ người dùng
   const { data: profileData, refetch } = useQuery({
     queryKey: ['profile'],
     queryFn: () => accountApi.getProfile(),
@@ -28,6 +30,7 @@ export default function AccountProfile() {
   })
   const profile = profileData?.data.data.user
 
+  // Chọn file ảnh đại diện
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const avatar = event.target.files?.[0]
     setFile(avatar)
@@ -39,36 +42,30 @@ export default function AccountProfile() {
     setIsEditAvatar(!isEditAvatar)
   }
 
+  // Upload ảnh đại diện
   const uploadAvatarMutation = useMutation({
     mutationFn: (data: FormData) => accountApi.updateAvatar(data),
     onSuccess: async (response) => {
-      console.log('Cập nhật thành công!', response)
+      console.log('✅ Cập nhật ảnh đại diện thành công!', response)
       setProfile(response.data.data)
       setProfileToLS(response.data.data)
       const { data: newData } = await refetch()
-      console.log('data sau khi refetch', newData)
+      console.log('Dữ liệu sau khi refetch', newData)
     },
     onError: (error) => {
-      console.log('Cập nhật thất bại!', error)
-      // const axiosError = error as AxiosError
-      // console.error('❌ onError', axiosError.response?.data || axiosError.message)
-      // console.log('Chi tiết lỗi:', (error.response?.data as any).data)
+      console.log('❌ Cập nhật ảnh đại diện thất bại!', error)
     }
   })
+
   const handleUploadAvatar = () => {
-    if (!file) return
-
+    if (!file || !profile) return
     const formData = new FormData()
-    if (profile) {
-      formData.append('avatar', file)
-      // ----
-      formData.append('full_name', profile.full_name)
-      formData.append('email', profile.email)
-      formData.append('gender', profile.gender)
-      formData.append('phone', profile.phone)
-      formData.append('address', profile.address)
-    }
-
+    formData.append('avatar', file)
+    formData.append('full_name', profile.full_name)
+    formData.append('email', profile.email)
+    formData.append('gender', profile.gender)
+    formData.append('phone', profile.phone)
+    formData.append('address', profile.address)
     const uploadRes = uploadAvatarMutation.mutate(formData)
     console.log(uploadRes)
   }
@@ -77,19 +74,21 @@ export default function AccountProfile() {
     <div className='min-h-screen bg-white flex-1'>
       {profile && (
         <div className='max-w-7xl mx-auto px-6 py-8 space-y-8'>
+          {/* Tiêu đề trang */}
           <div>
-            <h1 className='text-4xl font-bold text-gray-900 mb-2'>My profile</h1>
-            <p className='text-gray-600'>Manage your profile information, security and payment.</p>
+            <h1 className='text-4xl font-bold text-gray-900 mb-2'>Hồ sơ của tôi</h1>
+            <p className='text-gray-600'>Quản lý thông tin cá nhân, bảo mật và thanh toán.</p>
           </div>
-          {/* Header */}
+
+          {/* Khu vực đầu trang */}
           <div className='flex items-start justify-between'>
             <div className='flex items-start gap-6'>
-              {/* Profile Image */}
+              {/* Ảnh đại diện */}
               <div className='relative group'>
                 <div className='w-24 h-24 rounded-2xl overflow-hidden bg-gray-100 ring-2 ring-gray-200'>
                   <img
                     src={previewImage || profile.avatar || 'https://picsum.photos/32'}
-                    alt='Profile'
+                    alt='Ảnh đại diện'
                     className='w-full h-full object-cover'
                   />
                 </div>
@@ -99,7 +98,8 @@ export default function AccountProfile() {
                   className='hidden'
                   ref={fileInputRef}
                   onChange={onFileChange}
-                ></input>
+                />
+
                 {!isEditAvatar ? (
                   <button
                     className='absolute -bottom-2 -right-2 w-8 h-8 bg-gray-900 hover:bg-gray-800 text-white rounded-lg flex items-center justify-center transition-all shadow-lg'
@@ -107,6 +107,7 @@ export default function AccountProfile() {
                       handleEditClick()
                       handleUpload()
                     }}
+                    aria-label='Chọn ảnh đại diện'
                   >
                     <Edit2 size={14} />
                   </button>
@@ -117,20 +118,21 @@ export default function AccountProfile() {
                       handleEditClick()
                       handleUploadAvatar()
                     }}
+                    aria-label='Lưu ảnh đại diện'
                   >
                     <Check size={14} />
                   </button>
                 )}
               </div>
 
-              {/* Name & Status */}
+              {/* Tên & trạng thái */}
               <div>
                 <div className='flex items-center gap-3 mb-2'>
                   <h1 className='text-3xl font-bold text-gray-900'>{profile.full_name}</h1>
                   {profile.verificationStatus && (
                     <div className='flex items-center gap-1 px-3 py-1 bg-gray-100 rounded-full'>
                       <Shield className='w-4 h-4 text-gray-900' />
-                      <span className='text-xs font-medium text-gray-900'>Verified</span>
+                      <span className='text-xs font-medium text-gray-900'>Đã xác minh</span>
                     </div>
                   )}
                 </div>
@@ -152,13 +154,13 @@ export default function AccountProfile() {
             </div>
           </div>
 
-          {/* Stats Cards */}
+          {/* Thống kê */}
           <StatsProfile profile={profile} />
 
-          {/* Navigation Tabs */}
+          {/* Tabs điều hướng */}
           <div className='border-b border-gray-200'>
             <div className='flex gap-8'>
-              {['overview', 'security'].map((tab) => (
+              {(['overview', 'security'] as const).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -166,16 +168,16 @@ export default function AccountProfile() {
                     activeTab === tab ? 'text-gray-900' : 'text-gray-500 hover:text-gray-900'
                   }`}
                 >
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                  {activeTab === tab && <div className='absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900'></div>}
+                  {tab === 'overview' ? 'Tổng quan' : 'Bảo mật'}
+                  {activeTab === tab && <div className='absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900' />}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Content Section */}
-          {activeTab == 'overview' && <ProfileOverview profile={profile} refetch={refetch} />}
-          {activeTab == 'security' && <ProfileSecurity />}
+          {/* Nội dung theo tab */}
+          {activeTab === 'overview' && <ProfileOverview profile={profile} refetch={refetch} />}
+          {activeTab === 'security' && <ProfileSecurity />}
         </div>
       )}
     </div>
