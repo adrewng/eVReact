@@ -1,6 +1,6 @@
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { persistQueryClient, removeOldestQuery } from '@tanstack/react-query-persist-client'
 import { compress, decompress } from 'lz-string'
 import { StrictMode } from 'react'
@@ -52,7 +52,7 @@ createRoot(document.getElementById('root')!).render(
         <AppProvider>
           <App />
         </AppProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </QueryClientProvider>
     </BrowserRouter>
   </StrictMode>

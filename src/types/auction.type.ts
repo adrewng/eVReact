@@ -1,3 +1,5 @@
+import type { User } from './user.type'
+export type SessionStatus = 'draft' | 'scheduled' | 'live' | 'ended' | 'cancelled'
 export interface Auction {
   id: number
   product_id: number
@@ -13,19 +15,17 @@ export interface Auction {
   note: string
   status: string
 }
-
 export interface AuctionList {
   data: Auction[]
 }
 import type { User } from './user.type'
 
-export type SessionStatus = 'DRAFT' | 'SCHEDULED' | 'LIVE' | 'ENDED' | 'CANCELLED'
 export interface AuctionType {
   id: number
   product_id: number
 
   startingBid: number // giá khỏi điểm
-  original_price: number
+  originalPrice: number
   buyNowPrice: number // giá mua ngay
   topBid?: number | null
 
@@ -35,15 +35,14 @@ export interface AuctionType {
   winner?: User | null
   winning_price?: string | number | null // decimal(15,2)
 
-  start_at?: string
-  end_at?: string
+  startAt?: string
+  endAt?: string
   duration?: string | number
 
   isVerify?: boolean
 
   note?: string // ghi chú,
   title?: string
-  thumbnail?: string
 
   status?: SessionStatus
   currentPrice?: number | null
@@ -51,6 +50,21 @@ export interface AuctionType {
 }
 
 export type Participation = {
-  session: AuctionType
-  result?: 'PENDING' | 'WIN' | 'LOSE'
+  auction: AuctionType
+  result?: 'pending' | 'win' | 'lose'
+}
+
+export interface AuctionUserList {
+  auctions: Participation[] | AuctionType[]
+  pagination: {
+    page: number
+    limit: number
+    page_size: number
+  }
+  static: {
+    ownAuctions: number
+    ownLiveAuctions: number
+    participationAuctions: number
+    participationLiveAuctions: number
+  }
 }

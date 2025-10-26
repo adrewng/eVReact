@@ -26,7 +26,7 @@ export default function ParticipationsTable({ rows, emptyText }: { rows: Partici
             </tr>
           )}
           {rows.map((p) => {
-            const s = p.session
+            const s = p.auction
             return (
               <tr key={s.id} className='hover:bg-gray-50'>
                 <td className='px-4 py-3'>
@@ -35,7 +35,7 @@ export default function ParticipationsTable({ rows, emptyText }: { rows: Partici
                 </td>
                 <td className='px-4 py-3'>
                   <div className='text-sm text-gray-800'>
-                    {fmtDate(s.start_at)} → {fmtDate(s.end_at)}
+                    {fmtDate(s.startAt)} → {fmtDate(s.endAt)}
                   </div>
                 </td>
                 <td className='px-4 py-3'>
@@ -56,13 +56,13 @@ export default function ParticipationsTable({ rows, emptyText }: { rows: Partici
                 </td>
                 <td className='px-4 py-3'>
                   <div className='text-sm'>
-                    {p.result === 'WIN' && (
+                    {p.result === 'win' && (
                       <span className='rounded-md bg-emerald-100 px-2 py-0.5 text-xs text-emerald-700'>Thắng</span>
                     )}
-                    {p.result === 'LOSE' && (
+                    {p.result === 'lose' && (
                       <span className='rounded-md bg-rose-100 px-2 py-0.5 text-xs text-rose-700'>Trượt</span>
                     )}
-                    {(!p.result || p.result === 'PENDING') && (
+                    {(!p.result || p.result === 'pending') && (
                       <span className='rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-700'>Đang chờ</span>
                     )}
                   </div>
