@@ -22,7 +22,6 @@ export default function AuctionCard({ auction }: { auction: AuctionType }) {
 
   let statusDisplay
   if (now < start) {
-    // chưa bắt đầu
     const startDate = new Date(auction.startTime).toLocaleString('vi-VN', {
       hour: '2-digit',
       minute: '2-digit',

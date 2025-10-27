@@ -6,10 +6,8 @@ import {
   Gavel,
   Home,
   LogOutIcon,
-  Megaphone,
   MessageSquare,
   Package,
-  Settings,
   ShoppingCart,
   Users
 } from 'lucide-react'

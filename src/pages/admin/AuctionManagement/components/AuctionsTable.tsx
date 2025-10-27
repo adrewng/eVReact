@@ -52,14 +52,13 @@ export default function AuctionsTable({ filters }: { filters: FilterProps }) {
       toast.info('Chưa chọn xác minh phiên đấu giá!')
     }
   }
-  const handleUpdateAuction = (auctionId: number, duration: number) => {
-    if (isVerify) {
-      updateAuction.mutate({ auctionId, duration })
-    }
-  }
+  // const handleUpdateAuction = (auctionId: number, duration: number) => {
+  //   if (isVerify) {
+  //     updateAuction.mutate({ auctionId, duration })
+  //   }
+  // }
 
   const auctions = allAuctionData?.data?.data || []
-  console.log('auction -', auctions)
 
   // Lọc
   let filteredAuctions = auctions

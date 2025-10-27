@@ -1,10 +1,9 @@
-import { motion } from 'framer-motion'
-import AuctionCard from './components/AuctionCard'
 import { useQuery } from '@tanstack/react-query'
+import { motion } from 'framer-motion'
 import auctionApi from '~/apis/auction.api'
 import type { Auction } from '~/types/auction.type'
+import AuctionCard from './components/AuctionCard'
 
-// ⚙️ Mock data đấu giá (có startDate & endDate)
 const mockAuctions = [
   {
     id: 1,
@@ -103,7 +102,7 @@ export default function AllAuctionList() {
   })
 
   console.log('all-auction', allAuctionData)
-  const allAuction = allAuctionData?.data.data
+  // const allAuction = allAuctionData?.data.data
   const pageLoading = false
   const pageData = { auctions: mockAuctions }
 

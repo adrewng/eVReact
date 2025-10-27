@@ -24,7 +24,7 @@ interface DepositModalProps {
 }
 
 export default function DepositModal({ open, onClose, deposit, auction_id }: DepositModalProps) {
-  const [loading, setLoading] = useState(false)
+  const [loading] = useState(false)
   // const navigate = useNavigate()
 
   const payDeposit = useMutation({

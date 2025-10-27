@@ -2,6 +2,8 @@ import type { User } from './user.type'
 export type SessionStatus = 'draft' | 'verified' | 'live' | 'ended' | 'cancelled'
 export interface Auction {
   id: number
+  title?: string
+  image?: string
   product_id: number
   seller_id: number
   starting_price: string
