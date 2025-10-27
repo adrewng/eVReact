@@ -1,10 +1,10 @@
 'use client'
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
 import auctionApi from '~/apis/auction.api'
 import type { Auction } from '~/types/auction.type'
-import { toast } from 'react-toastify'
 
 interface FilterProps {
   status: string
@@ -17,14 +17,17 @@ export default function AuctionsTable({ filters }: { filters: FilterProps }) {
   const [editingAuction, setEditingAuction] = useState<Auction | null>(null)
   const [duration, setDuration] = useState<number>(0)
   const [isVerify, setIsVerify] = useState<boolean>(false)
-
+  const qc = useQueryClient()
   const { data: allAuctionData } = useQuery({
     queryKey: ['all-auction'],
     queryFn: auctionApi.getAllAuction
   })
 
   const startAuction = useMutation({
-    mutationFn: (auction_id: number) => auctionApi.startAuction(auction_id)
+    mutationFn: (auction_id: number) => auctionApi.startAuction(auction_id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['all-auction'] })
+    }
   })
   const handleStartAuction = (auction_id: number) => {
     startAuction.mutate(auction_id)
@@ -35,6 +38,7 @@ export default function AuctionsTable({ filters }: { filters: FilterProps }) {
       auctionApi.verifyAuctionByAdmin(auctionId, duration),
     onSuccess: () => {
       toast.success('Xác minh phiên đấu giá thành công!')
+      qc.invalidateQueries({ queryKey: ['all-auction'] })
       setEditingAuction(null)
     },
     onError: () => {
@@ -78,6 +82,7 @@ export default function AuctionsTable({ filters }: { filters: FilterProps }) {
     const badges = {
       live: { bg: 'bg-blue-50', text: 'text-blue-700', label: 'Live' },
       draft: { bg: 'bg-amber-50', text: 'text-amber-700', label: 'Draft' },
+      verified: { bg: 'bg-green-50', text: 'text-blue-700', label: 'Verified' },
       ended: { bg: 'bg-slate-50', text: 'text-slate-700', label: 'Ended' }
     }
     return badges[status as keyof typeof badges] || badges.ended

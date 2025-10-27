@@ -1,5 +1,5 @@
 import type { User } from './user.type'
-export type SessionStatus = 'draft' | 'scheduled' | 'live' | 'ended' | 'cancelled'
+export type SessionStatus = 'draft' | 'verified' | 'live' | 'ended' | 'cancelled'
 export interface Auction {
   id: number
   product_id: number
