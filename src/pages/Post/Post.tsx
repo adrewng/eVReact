@@ -176,7 +176,6 @@ const PostPage = () => {
       },
       onError: (error) => {
         if (isAxiosPaymentRequiredError<{ checkoutUrl: string }>(error)) {
-          console.log(error)
           const url = error.response?.data?.checkoutUrl
           if (typeof url === 'string' && /^https?:\/\//.test(url)) {
             // window.location.replace(url) // nếu muốn chặn nút Back

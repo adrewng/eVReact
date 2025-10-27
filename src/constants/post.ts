@@ -12,7 +12,7 @@ export const tabs = [
   { id: 'pending', label: 'Đang chờ', param: 'status', statusQuery: 'pending' },
   { id: 'approved', label: 'Đã đăng', param: 'status', statusQuery: 'approved' },
   { id: 'rejected', label: 'Từ chối', param: 'status', statusQuery: 'rejected' },
-  { id: 'unverified', label: 'Chưa kiểm duyệt', param: 'status_verify', statusQuery: 'unverified' },
-  { id: 'verifying', label: 'Đang kiểm duyệt', param: 'status_verify', statusQuery: 'verifying' },
-  { id: 'verified', label: 'Đã kiểm duyệt', param: 'status_verify', statusQuery: 'verified' }
+  { id: 'auctioning', label: 'Đang đấu giá', param: 'status', statusQuery: 'auctioning' },
+  { id: 'auctioned', label: 'Đã đấu gia', param: 'status', statusQuery: 'auctioned' },
+  { id: 'sold', label: 'Đã bán', param: 'status', statusQuery: 'sold' }
 ]

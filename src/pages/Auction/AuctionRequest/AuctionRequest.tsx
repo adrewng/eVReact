@@ -1,6 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import classNames from 'classnames'
+
 import { ArrowLeft, Banknote, CheckCircle2, Clock, FileText, Info, Loader2, ShieldCheck, Upload } from 'lucide-react'
 import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -11,7 +12,7 @@ import postApi from '~/apis/post.api'
 import { path } from '~/constants/path'
 import { auctionSchema, type AuctionSchema } from '~/schemas/auction.schema'
 import type { AuctionType } from '~/types/auction.type'
-import { formatCurrencyVND, getIdFromNameId } from '~/utils/util'
+import { formatCurrencyVND, getIdFromNameId, isAxiosPaymentRequiredError } from '~/utils/util'
 
 type FormValue = Pick<AuctionSchema, 'product_id' | 'bidIncrement' | 'buyNowPrice' | 'deposit' | 'note' | 'startingBid'>
 const schema = auctionSchema.pick(['product_id', 'bidIncrement', 'buyNowPrice', 'deposit', 'note', 'startingBid'])
@@ -66,13 +67,20 @@ export default function AuctionRequest() {
   const values = watch()
 
   const onSubmit = (data: FormValue) => {
-    console.log(data)
     requestMutation.mutate(data, {
       onSuccess: () => {
         toast.success('Gữi yêu cầu thành công')
         navigate(path.accountOrders)
       },
-      onError: () => {
+      onError: (error) => {
+        if (isAxiosPaymentRequiredError<{ checkoutUrl: string }>(error)) {
+          const url = error.response?.data?.data?.checkoutUrl
+          if (typeof url === 'string' && /^https?:\/\//.test(url)) {
+            window.location.assign(url)
+          } else {
+            console.error('Invalid checkoutUrl:', url)
+          }
+        }
         toast.error('Gữi yêu cầu không thành công')
         navigate(-1)
       }

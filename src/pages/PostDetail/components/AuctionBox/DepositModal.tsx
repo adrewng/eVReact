@@ -1,20 +1,19 @@
 'use client'
 
+import { useMutation } from '@tanstack/react-query'
+import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'react-toastify'
+import auctionApi from '~/apis/auction.api'
+import { Button } from '~/components/ui/button'
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
-  DialogFooter
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
 } from '~/components/ui/dialog'
-import { Button } from '~/components/ui/button'
-import { Loader2 } from 'lucide-react'
-import { useMutation } from '@tanstack/react-query'
-import auctionApi from '~/apis/auction.api'
-import { useNavigate } from 'react-router-dom'
-import { path } from '~/constants/path'
 import { isAxiosPaymentRequiredError } from '~/utils/util'
 
 interface DepositModalProps {
@@ -26,7 +25,7 @@ interface DepositModalProps {
 
 export default function DepositModal({ open, onClose, deposit, auction_id }: DepositModalProps) {
   const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
 
   const payDeposit = useMutation({
     mutationFn: (auction_id: number) => auctionApi.payDeposit(auction_id)
@@ -35,7 +34,9 @@ export default function DepositModal({ open, onClose, deposit, auction_id }: Dep
   const handleConfirm = () => {
     payDeposit.mutate(auction_id as number, {
       onSuccess: () => {
-        navigate(path.postDetail)
+        // const post = data.data.data
+        onClose()
+        // navigate(`${path.post}/${generateNameId({ name: post.title, id: post.product_id })}`)
       },
       onError: (error) => {
         if (isAxiosPaymentRequiredError<{ checkoutUrl: string }>(error)) {
@@ -46,7 +47,8 @@ export default function DepositModal({ open, onClose, deposit, auction_id }: Dep
             alert('Không thể chuyển đến trang thanh toán.')
           }
         } else {
-          alert('Đã có lỗi xảy ra. Vui lòng thử lại.')
+          onClose()
+          toast.error('Bạn đã cọc rồi!')
         }
       }
     })
