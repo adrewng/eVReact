@@ -2,116 +2,99 @@
 
 import { useState } from 'react'
 // import Link from 'next/link'
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell
-} from 'recharts'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardAction, CardFooter } from '~/components/ui/card'
+import { useQuery } from '@tanstack/react-query'
+import { Search } from 'lucide-react'
+import userApi from '~/apis/user.api'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
-import { Users, TrendingUp, Shield, Search, ChevronLeft, type LucideIcon } from 'lucide-react'
-import { Badge } from '~/components/ui/badge'
-import { IconTrendingDown, IconTrendingUp } from '@tabler/icons-react'
 import { UserBarChart } from './components/UserBarChart'
 import UserStatCards from './components/UserStatCards'
-import { useQuery } from '@tanstack/react-query'
-import userApi from '~/apis/user.api'
 
-// Mock data
-const userStats = {
-  totalUsers: 3421,
-  activeUsers: 2847,
-  newUsersThisMonth: 342,
-  verifiedUsers: 2156
-}
+// // Mock data
+// const userStats = {
+//   totalUsers: 3421,
+//   activeUsers: 2847,
+//   newUsersThisMonth: 342,
+//   verifiedUsers: 2156
+// }
 
-const userGrowthData = [
-  { month: 'Jan', total: 1200, verified: 800 },
-  { month: 'Feb', total: 1450, verified: 950 },
-  { month: 'Mar', total: 1680, verified: 1100 },
-  { month: 'Apr', total: 2100, verified: 1400 },
-  { month: 'May', total: 2650, verified: 1750 },
-  { month: 'Jun', total: 3421, verified: 2156 }
-]
+// const userGrowthData = [
+//   { month: 'Jan', total: 1200, verified: 800 },
+//   { month: 'Feb', total: 1450, verified: 950 },
+//   { month: 'Mar', total: 1680, verified: 1100 },
+//   { month: 'Apr', total: 2100, verified: 1400 },
+//   { month: 'May', total: 2650, verified: 1750 },
+//   { month: 'Jun', total: 3421, verified: 2156 }
+// ]
 
-const userTypeDistribution = [
-  { name: 'Buyers', value: 60, color: '#3b82f6' },
-  { name: 'Sellers', value: 30, color: '#10b981' },
-  { name: 'Dealers', value: 10, color: '#f59e0b' }
-]
+// const userTypeDistribution = [
+//   { name: 'Buyers', value: 60, color: '#3b82f6' },
+//   { name: 'Sellers', value: 30, color: '#10b981' },
+//   { name: 'Dealers', value: 10, color: '#f59e0b' }
+// ]
 
-const usersByRegion = [
-  { region: 'North', users: 680, active: 580 },
-  { region: 'South', users: 720, active: 620 },
-  { region: 'East', users: 890, active: 750 },
-  { region: 'West', users: 1131, active: 897 }
-]
+// const usersByRegion = [
+//   { region: 'North', users: 680, active: 580 },
+//   { region: 'South', users: 720, active: 620 },
+//   { region: 'East', users: 890, active: 750 },
+//   { region: 'West', users: 1131, active: 897 }
+// ]
 
-const recentUsers = [
-  {
-    id: 1,
-    name: 'Nguyễn Văn A',
-    email: 'nguyena@example.com',
-    type: 'Buyer',
-    status: 'Verified',
-    joinDate: '2024-06-15'
-  },
-  { id: 2, name: 'Trần Thị B', email: 'tranb@example.com', type: 'Seller', status: 'Pending', joinDate: '2024-06-14' },
-  { id: 3, name: 'Phạm Văn C', email: 'phamc@example.com', type: 'Dealer', status: 'Verified', joinDate: '2024-06-13' },
-  { id: 4, name: 'Lê Thị D', email: 'led@example.com', type: 'Buyer', status: 'Verified', joinDate: '2024-06-12' },
-  {
-    id: 5,
-    name: 'Hoàng Văn E',
-    email: 'hoange@example.com',
-    type: 'Seller',
-    status: 'Suspended',
-    joinDate: '2024-06-11'
-  }
-]
+// const recentUsers = [
+//   {
+//     id: 1,
+//     name: 'Nguyễn Văn A',
+//     email: 'nguyena@example.com',
+//     type: 'Buyer',
+//     status: 'Verified',
+//     joinDate: '2024-06-15'
+//   },
+//   { id: 2, name: 'Trần Thị B', email: 'tranb@example.com', type: 'Seller', status: 'Pending', joinDate: '2024-06-14' },
+//   { id: 3, name: 'Phạm Văn C', email: 'phamc@example.com', type: 'Dealer', status: 'Verified', joinDate: '2024-06-13' },
+//   { id: 4, name: 'Lê Thị D', email: 'led@example.com', type: 'Buyer', status: 'Verified', joinDate: '2024-06-12' },
+//   {
+//     id: 5,
+//     name: 'Hoàng Văn E',
+//     email: 'hoange@example.com',
+//     type: 'Seller',
+//     status: 'Suspended',
+//     joinDate: '2024-06-11'
+//   }
+// ]
 
-const StatCard = ({
-  title,
-  value,
-  icon: Icon,
-  color
-}: {
-  title: string
-  value: string | number
-  icon: LucideIcon
-  color?: string
-}) => (
-  <Card>
-    <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-      <CardTitle className='text-sm font-medium'>{title}</CardTitle>
-      <div className={`p-2 rounded-lg ${color}`}>
-        <Icon className='h-4 w-4 text-white' />
-      </div>
-    </CardHeader>
-    <CardContent>
-      <div className='text-2xl font-bold'>{value}</div>
-    </CardContent>
-  </Card>
-)
+// const StatCard = ({
+//   title,
+//   value,
+//   icon: Icon,
+//   color
+// }: {
+//   title: string
+//   value: string | number
+//   icon: LucideIcon
+//   color?: string
+// }) => (
+//   <Card>
+//     <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+//       <CardTitle className='text-sm font-medium'>{title}</CardTitle>
+//       <div className={`p-2 rounded-lg ${color}`}>
+//         <Icon className='h-4 w-4 text-white' />
+//       </div>
+//     </CardHeader>
+//     <CardContent>
+//       <div className='text-2xl font-bold'>{value}</div>
+//     </CardContent>
+//   </Card>
+// )
 
 export default function UserManagement() {
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedRegion, setSelectedRegion] = useState(null)
+  // const [selectedRegion, setSelectedRegion] = useState(null)
 
-  const filteredUsers = recentUsers.filter(
-    (user) =>
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // const filteredUsers = recentUsers.filter(
+  //   (user) =>
+  //     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  // )
 
   const { data: userData } = useQuery({
     queryKey: ['user-list'],

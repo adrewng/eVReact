@@ -2,9 +2,9 @@ export const postStatus = {
   all: 'all',
   pending: 'pending',
   published: 'published',
-  rejected: 'rejected',
-  certified: 'certified',
-  certifying: 'certifying'
+  auctioning: 'auctioning',
+  auctioned: 'auctioned',
+  sold: 'sold'
 } as const
 
 export const tabs = [

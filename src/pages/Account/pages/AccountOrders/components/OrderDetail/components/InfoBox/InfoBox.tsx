@@ -131,7 +131,7 @@ export function ServiceDetail({ order }: { order: Order }) {
             <DetailRow label='Giá mua ngay' value={a.buyNowPrice ? formatCurrencyVND(a.buyNowPrice) : '—'} />
             <DetailRow
               label='Giá đăng bán'
-              value={a.original_price ? formatCurrencyVND(Number(a.original_price)) : '—'}
+              value={a.originalPrice ? formatCurrencyVND(Number(a.originalPrice)) : '—'}
             />
             {a.winning_price && <DetailRow label='Giá thắng' value={formatCurrencyVND(Number(a.winning_price))} />}
             {a.winner && <DetailRow label='Người chiến thắng' value={a.winner.full_name} />}

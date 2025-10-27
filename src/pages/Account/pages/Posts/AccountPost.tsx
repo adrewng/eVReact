@@ -127,9 +127,13 @@ export default function AccountPost() {
                           ? 'Đang xử lý'
                           : post.status === 'rejected'
                             ? 'Từ chối'
-                            : post.status === 'draft'
-                              ? 'Nháp'
-                              : 'Không rõ'}
+                            : post.status === 'auctioning'
+                              ? 'Đang đấu giá'
+                              : post.status === 'auctioned'
+                                ? 'Đã đấu giá'
+                                : post.status === 'sold'
+                                  ? 'Đã bán'
+                                  : 'Không rõ'}
                     </span>
                   </div>
 

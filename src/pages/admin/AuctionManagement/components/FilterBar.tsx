@@ -8,6 +8,7 @@ interface FilterBarProps {
     search: string
     sortBy: string
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setFilters: (filters: any) => void
 }
 

@@ -2,23 +2,22 @@
 
 import { useState } from 'react'
 // import Link from 'next/link'
+import { CheckCircle, DollarSign, Search, TrendingUp, type LucideIcon } from 'lucide-react'
 import {
-  BarChart,
+  Area,
+  AreaChart,
   Bar,
-  XAxis,
-  YAxis,
+  BarChart,
   CartesianGrid,
-  Tooltip,
   Legend,
   ResponsiveContainer,
-  AreaChart,
-  Area
+  Tooltip,
+  XAxis,
+  YAxis
 } from 'recharts'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
 import { Button } from '~/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
-import { DollarSign, TrendingUp, CheckCircle, Search, ChevronLeft, type LucideIcon } from 'lucide-react'
-import { Link } from 'react-router-dom'
 
 // Mock data
 const transactionStats = {

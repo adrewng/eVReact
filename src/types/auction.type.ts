@@ -14,6 +14,11 @@ export interface Auction {
   step: string
   note: string
   status: string
+  start_at: string
+  end_at: string
+  image: string
+  title: string
+  location: string
 }
 export interface AuctionList {
   data: Auction[]

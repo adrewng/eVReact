@@ -6,13 +6,14 @@ import { toast } from 'react-toastify'
 import auctionApi from '~/apis/auction.api'
 import type { Auction } from '~/types/auction.type'
 
-interface FilterProps {
-  status: string
-  search: string
-  sortBy: string
-}
+// interface FilterProps {
+//   status: string
+//   search: string
+//   sortBy: string
+// }
 
-export default function AuctionsTable({ filters }: { filters: FilterProps }) {
+// export default function AuctionsTable({ filters }: { filters: FilterProps }) {
+export default function AuctionsTable() {
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const [editingAuction, setEditingAuction] = useState<Auction | null>(null)
   const [duration, setDuration] = useState<number>(0)
@@ -52,23 +53,22 @@ export default function AuctionsTable({ filters }: { filters: FilterProps }) {
       toast.info('Chưa chọn xác minh phiên đấu giá!')
     }
   }
-  const handleUpdateAuction = (auctionId: number, duration: number) => {
-    if (isVerify) {
-      updateAuction.mutate({ auctionId, duration })
-    }
-  }
+  // const handleUpdateAuction = (auctionId: number, duration: number) => {
+  //   if (isVerify) {
+  //     updateAuction.mutate({ auctionId, duration })
+  //   }
+  // }
 
-  const auctions = allAuctionData?.data?.data || []
-  console.log('auction -', auctions)
+  const auctions = allAuctionData?.data?.data
 
   // Lọc
-  let filteredAuctions = auctions
-  if (filters.status !== 'all') {
-    filteredAuctions = filteredAuctions.filter((a) => a.status === filters.status)
-  }
-  if (filters.search) {
-    filteredAuctions = filteredAuctions.filter((a) => a.note.toLowerCase().includes(filters.search.toLowerCase()))
-  }
+  // let filteredAuctions = auctions
+  // if (filters.status !== 'all') {
+  //   filteredAuctions = filteredAuctions.filter((a) => a.status === filters.status)
+  // }
+  // if (filters.search) {
+  //   filteredAuctions = filteredAuctions.filter((a) => a.note.toLowerCase().includes(filters.search.toLowerCase()))
+  // }
 
   const handleEdit = (auction: Auction) => {
     setEditingAuction(auction)
@@ -103,88 +103,89 @@ export default function AuctionsTable({ filters }: { filters: FilterProps }) {
 
       {/* Rows */}
       <div className='divide-y divide-slate-200'>
-        {filteredAuctions.map((auction: Auction) => {
-          const badge = getStatusBadge(auction.status)
-          const isExpanded = expandedId === auction.id
+        {auctions &&
+          auctions.map((auction: Auction) => {
+            const badge = getStatusBadge(auction.status)
+            const isExpanded = expandedId === auction.id
 
-          return (
-            <div key={auction.id}>
-              {/* Hàng chính */}
-              <div
-                onClick={() => setExpandedId(isExpanded ? null : auction.id)}
-                className='grid grid-cols-1 gap-4 px-6 py-4 transition hover:bg-slate-50 sm:grid-cols-12 sm:items-center cursor-pointer'
-              >
-                <div className='col-span-1 sm:col-span-4'>
-                  <p className='font-medium text-slate-900 line-clamp-1'>{auction.note}</p>
-                  <p className='mt-1 text-xs text-slate-500'>Mã sản phẩm: {auction.product_id}</p>
-                </div>
+            return (
+              <div key={auction.id}>
+                {/* Hàng chính */}
+                <div
+                  onClick={() => setExpandedId(isExpanded ? null : auction.id)}
+                  className='grid grid-cols-1 gap-4 px-6 py-4 transition hover:bg-slate-50 sm:grid-cols-12 sm:items-center cursor-pointer'
+                >
+                  <div className='col-span-1 sm:col-span-4'>
+                    <p className='font-medium text-slate-900 line-clamp-1'>{auction.note}</p>
+                    <p className='mt-1 text-xs text-slate-500'>Mã sản phẩm: {auction.product_id}</p>
+                  </div>
 
-                <div className='col-span-1 sm:col-span-2'>
-                  <p className='text-sm font-semibold text-slate-900'>{formatMoney(auction.starting_price)}</p>
-                </div>
+                  <div className='col-span-1 sm:col-span-2'>
+                    <p className='text-sm font-semibold text-slate-900'>{formatMoney(auction.starting_price)}</p>
+                  </div>
 
-                <div className='col-span-1 sm:col-span-2'>
-                  <p className='text-sm font-semibold text-emerald-700'>{formatMoney(auction.target_price)}</p>
-                </div>
+                  <div className='col-span-1 sm:col-span-2'>
+                    <p className='text-sm font-semibold text-emerald-700'>{formatMoney(auction.target_price)}</p>
+                  </div>
 
-                <div className='col-span-1 sm:col-span-2'>
-                  <span
-                    className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${badge.bg} ${badge.text}`}
-                  >
-                    {badge.label}
-                  </span>
-                </div>
+                  <div className='col-span-1 sm:col-span-2'>
+                    <span
+                      className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${badge.bg} ${badge.text}`}
+                    >
+                      {badge.label}
+                    </span>
+                  </div>
 
-                <div className='col-span-1 sm:col-span-2 flex justify-end gap-2 cursor-default'>
-                  <button
-                    onClick={() => handleEdit(auction)}
-                    className='rounded-lg bg-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-300 transition-colors'
-                  >
-                    Chỉnh Sửa
-                  </button>
-                  <button
-                    onClick={() => handleStartAuction(auction.id)}
-                    className='rounded-lg bg-red-500 px-3 py-2 text-xs font-medium text-white hover:bg-red-600 transition-colors'
-                  >
-                    Bắt Đầu
-                  </button>
-                </div>
-              </div>
-
-              {/* Chi tiết mở rộng */}
-              {isExpanded && (
-                <div className='border-t border-slate-200 bg-slate-50 px-6 py-4'>
-                  <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
-                    <div>
-                      <p className='text-xs font-semibold uppercase text-slate-600'>Bước Giá</p>
-                      <p className='mt-1 text-sm text-slate-900'>{formatMoney(auction.step)}</p>
-                    </div>
-                    <div>
-                      <p className='text-xs font-semibold uppercase text-slate-600'>Tiền Cọc</p>
-                      <p className='mt-1 text-sm text-slate-900'>{formatMoney(auction.deposit)}</p>
-                    </div>
-                    <div>
-                      <p className='text-xs font-semibold uppercase text-slate-600'>Thời Lượng</p>
-                      <p className='mt-1 text-sm text-slate-900'>{auction.duration} giờ</p>
-                    </div>
-                    <div>
-                      <p className='text-xs font-semibold uppercase text-slate-600'>Người Bán</p>
-                      <p className='mt-1 text-sm text-slate-900'>ID {auction.seller_id}</p>
-                    </div>
-                    {auction.winning_price && (
-                      <div>
-                        <p className='text-xs font-semibold uppercase text-slate-600'>Giá Trúng Thầu</p>
-                        <p className='mt-1 text-sm font-semibold text-emerald-600'>
-                          {formatMoney(auction.winning_price)}
-                        </p>
-                      </div>
-                    )}
+                  <div className='col-span-1 sm:col-span-2 flex justify-end gap-2 cursor-default'>
+                    <button
+                      onClick={() => handleEdit(auction)}
+                      className='rounded-lg bg-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-300 transition-colors'
+                    >
+                      Chỉnh Sửa
+                    </button>
+                    <button
+                      onClick={() => handleStartAuction(auction.id)}
+                      className='rounded-lg bg-red-500 px-3 py-2 text-xs font-medium text-white hover:bg-red-600 transition-colors'
+                    >
+                      Bắt Đầu
+                    </button>
                   </div>
                 </div>
-              )}
-            </div>
-          )
-        })}
+
+                {/* Chi tiết mở rộng */}
+                {isExpanded && (
+                  <div className='border-t border-slate-200 bg-slate-50 px-6 py-4'>
+                    <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
+                      <div>
+                        <p className='text-xs font-semibold uppercase text-slate-600'>Bước Giá</p>
+                        <p className='mt-1 text-sm text-slate-900'>{formatMoney(auction.step)}</p>
+                      </div>
+                      <div>
+                        <p className='text-xs font-semibold uppercase text-slate-600'>Tiền Cọc</p>
+                        <p className='mt-1 text-sm text-slate-900'>{formatMoney(auction.deposit)}</p>
+                      </div>
+                      <div>
+                        <p className='text-xs font-semibold uppercase text-slate-600'>Thời Lượng</p>
+                        <p className='mt-1 text-sm text-slate-900'>{auction.duration} giờ</p>
+                      </div>
+                      <div>
+                        <p className='text-xs font-semibold uppercase text-slate-600'>Người Bán</p>
+                        <p className='mt-1 text-sm text-slate-900'>ID {auction.seller_id}</p>
+                      </div>
+                      {auction.winning_price && (
+                        <div>
+                          <p className='text-xs font-semibold uppercase text-slate-600'>Giá Trúng Thầu</p>
+                          <p className='mt-1 text-sm font-semibold text-emerald-600'>
+                            {formatMoney(auction.winning_price)}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          })}
       </div>
 
       {/* Modal chỉnh sửa */}

@@ -1,34 +1,24 @@
 'use client'
 
-import { useState } from 'react'
 // import Link from 'next/link'
 import {
-  BarChart,
   Bar,
-  LineChart,
-  Line,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
+  BarChart,
   CartesianGrid,
-  Tooltip,
+  Cell,
   Legend,
-  ResponsiveContainer
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis
 } from 'recharts'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
-import { Button } from '~/components/ui/button'
-import {
-  TrendingUp,
-  Users,
-  DollarSign,
-  Zap,
-  AlertCircle,
-  ArrowUpRight,
-  ArrowDownRight,
-  type LucideIcon
-} from 'lucide-react'
+
+import { AlertCircle, ArrowDownRight, ArrowUpRight, DollarSign, Users, Zap, type LucideIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 // Mock data
@@ -100,7 +90,7 @@ const StatCard = ({
 )
 
 export default function Home() {
-  const [selectedCategory, setSelectedCategory] = useState(null)
+  // const [selectedCategory, setSelectedCategory] = useState(null)
 
   return (
     <div className='min-h-screen bg-background flex-1'>

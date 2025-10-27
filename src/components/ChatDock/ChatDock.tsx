@@ -7,7 +7,7 @@ import aiApi from '~/apis/ai.api'
 type Msg = { id: string; role: 'user' | 'assistant' | 'system'; text: string }
 
 export default function ChatDock() {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState<boolean>(false)
   const [messages, setMessages] = useState<Msg[]>([
     { id: 'hello', role: 'assistant', text: 'Chào bạn! Mình có thể giúp gì hôm nay?' }
   ])

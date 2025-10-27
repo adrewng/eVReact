@@ -73,7 +73,7 @@ export default function AuctionRequest() {
         navigate(path.accountOrders)
       },
       onError: (error) => {
-        if (isAxiosPaymentRequiredError<{ checkoutUrl: string }>(error)) {
+        if (isAxiosPaymentRequiredError<{ data: { checkoutUrl: string } }>(error)) {
           const url = error.response?.data?.data?.checkoutUrl
           if (typeof url === 'string' && /^https?:\/\//.test(url)) {
             window.location.assign(url)
