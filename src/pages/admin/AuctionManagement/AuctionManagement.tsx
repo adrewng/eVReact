@@ -1,10 +1,8 @@
-'use client'
-
 import { useState } from 'react'
-import StatsOverview from './components/StatsOverview'
 import AuctionCharts from './components/AuctionCharts'
-import FilterBar from './components/FilterBar'
 import AuctionsTable from './components/AuctionsTable'
+import FilterBar from './components/FilterBar'
+import StatsOverview from './components/StatsOverview'
 
 export default function AuctionManagement() {
   const [filters, setFilters] = useState({
@@ -40,7 +38,8 @@ export default function AuctionManagement() {
         {/* Filter & Table Section */}
         <div className='mt-8 space-y-6'>
           <FilterBar filters={filters} setFilters={setFilters} />
-          <AuctionsTable filters={filters} />
+          {/* <AuctionsTable filters={filters} /> */}
+          <AuctionsTable />
         </div>
       </div>
     </main>

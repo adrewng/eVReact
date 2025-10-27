@@ -1,28 +1,17 @@
-import { Clock, Gavel, MapPin } from 'lucide-react'
+import { Clock, MapPin } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { path } from '~/constants/path'
+import type { Auction } from '~/types/auction.type'
 import { formatCurrencyVND } from '~/utils/util'
 
-interface AuctionType {
-  id: number
-  title: string
-  image: string
-  currentPrice: number
-  stepPrice: number
-  totalBids: number
-  startTime: string
-  endTime: string
-  location: string
-}
-
-export default function AuctionCard({ auction }: { auction: AuctionType }) {
+export default function AuctionCard({ auction }: { auction: Auction }) {
   const now = Date.now()
-  const start = new Date(auction.startTime).getTime()
-  const end = new Date(auction.endTime).getTime()
+  const start = new Date(auction.start_at).getTime()
+  const end = new Date(auction.duration).getTime()
 
   let statusDisplay
   if (now < start) {
-    const startDate = new Date(auction.startTime).toLocaleString('vi-VN', {
+    const startDate = new Date(auction.start_at).toLocaleString('vi-VN', {
       hour: '2-digit',
       minute: '2-digit',
       day: '2-digit',
@@ -37,9 +26,9 @@ export default function AuctionCard({ auction }: { auction: AuctionType }) {
     // đang diễn ra
     statusDisplay = (
       <div className='inline-flex items-center gap-7'>
-        <div className='inline-flex items-center gap-1'>
+        {/* <div className='inline-flex items-center gap-1'>
           <Gavel size={16} /> {auction.totalBids} lượt
-        </div>
+        </div> */}
         <div className=' text-red-600 font-semibold animate-pulse '>
           <span className='inline-block w-2 h-2 bg-red-600 rounded-full animate-ping'></span>
           <span className='pl-2'>Đang diễn ra</span>
@@ -72,6 +61,7 @@ export default function AuctionCard({ auction }: { auction: AuctionType }) {
             <div className='font-semibold truncate leading-tight'>{auction.title}</div>
             <div className='text-sm truncate text-zinc-600 flex items-center gap-1'>
               <MapPin size={14} /> {auction.location}
+              {/* <MapPin size={14} /> {'Haha'} */}
             </div>
           </div>
         </div>
@@ -82,12 +72,12 @@ export default function AuctionCard({ auction }: { auction: AuctionType }) {
 
           <div className='flex items-center justify-between font-semibold text-zinc-900'>
             <span>Giá hiện tại:</span>
-            <span>{formatCurrencyVND(auction.currentPrice)}</span>
+            <span>{formatCurrencyVND(auction.winning_price)}</span>
           </div>
 
           <div className='flex items-center justify-between text-xs text-zinc-500'>
             <span>Bước giá:</span>
-            <span>{formatCurrencyVND(auction.stepPrice)}</span>
+            <span>{formatCurrencyVND(auction.step)}</span>
           </div>
         </div>
       </div>

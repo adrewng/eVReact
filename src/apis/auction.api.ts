@@ -1,4 +1,4 @@
-import type { Auction, AuctionList, AuctionType, AuctionUserList } from '~/types/auction.type'
+import type { Auction, AuctionType, AuctionUserList } from '~/types/auction.type'
 import type { SuccessResponse } from '~/types/util.type'
 import http from '~/utils/http'
 
@@ -8,7 +8,7 @@ const URL_GET_PARTICIPATED_AUCTION = 'api/auction/participated'
 
 const auctionApi = {
   getAllAuction() {
-    return http.get<SuccessResponse<AuctionList>>('/api/auction/get-all')
+    return http.get<SuccessResponse<Auction[]>>('/api/auction/get-all')
   },
   getAuctionByProduct(product_id: number) {
     return http.get<SuccessResponse<Auction>>('/api/auction/get-by-product', {
@@ -26,7 +26,7 @@ const auctionApi = {
     return http.post<SuccessResponse<any>>('/api/auction/start', { auctionId })
   },
   createAuctionRequest(body: AuctionType) {
-    return http.post<SuccessResponse<AuctionType>>(URL_CREATE_AUCTION_REQUEST, body)
+    return http.post<SuccessResponse<{ data: AuctionType }>>(URL_CREATE_AUCTION_REQUEST, body)
   },
   getMySessions() {
     return http.get<SuccessResponse<AuctionUserList>>(URL_GET_OWN_AUCTION)

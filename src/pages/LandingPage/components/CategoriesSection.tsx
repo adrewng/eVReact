@@ -1,4 +1,3 @@
-import React from 'react'
 import { motion } from 'framer-motion'
 import { Battery, Bike, Car } from 'lucide-react'
 import bike from '../../../assets/electricBike.jpg'
