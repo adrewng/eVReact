@@ -19,6 +19,7 @@ export const path = {
   //account
   account: '/account',
   accountPosts: '/account/posts',
+  accountFavorite: '/account/favorite-post',
   accountNotification: '/account/notification',
   accountProfile: '/account/profile',
   accountOrders: '/account/orders',

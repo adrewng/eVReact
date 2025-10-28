@@ -82,3 +82,13 @@ const removeSpecialCharacter = (str: string) =>
 export const generateNameId = ({ name, id }: { name: string; id: string | number }) => {
   return removeSpecialCharacter(name).replace(/\s/g, '-') + `-i-${id}`
 }
+
+export const getTimeAgo = (timestamp: string) => {
+  const now = new Date()
+  const time = new Date(timestamp)
+  const diff = Math.floor((now.getTime() - time.getTime()) / 1000)
+  if (diff < 60) return 'Vừa xong'
+  if (diff < 3600) return `${Math.floor(diff / 60)} phút trước`
+  if (diff < 86400) return `${Math.floor(diff / 3600)} giờ trước`
+  return `${Math.floor(diff / 86400)} ngày trước`
+}
