@@ -7,7 +7,7 @@ import auctionApi from '~/apis/auction.api'
 import { AppContext } from '~/contexts/app.context'
 import { JoinABidButton } from './JoinABidButton'
 
-const SERVER_URL = import.meta.env.VITE_API_URL || 'https://electriccarmanagement-swp.up.railway.app'
+const SERVER_URL = import.meta.env.VITE_API_URL
 
 // Button component
 interface ButtonProps {
