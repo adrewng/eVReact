@@ -4,6 +4,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import auctionApi from '~/apis/auction.api'
+import contractApi from '~/apis/contract.api'
+import type { FormContract } from '~/types/admin/contract.type'
 import type { Auction } from '~/types/auction.type'
 
 // interface FilterProps {
@@ -16,14 +18,28 @@ import type { Auction } from '~/types/auction.type'
 export default function AuctionsTable() {
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const [editingAuction, setEditingAuction] = useState<Auction | null>(null)
+  const [contractAuction, setContractAuction] = useState<Auction | null>(null)
+
   const [duration, setDuration] = useState<number>(0)
   const [isVerify, setIsVerify] = useState<boolean>(false)
+  const [form, setForm] = useState<FormContract>({
+    seller_id: 0,
+    buyer_id: 0,
+    product_id: 0,
+    deposit_amount: 0,
+    vehicle_price: 0,
+    commission_percent: 5,
+    dispute_city: 'Ho Chi Minh',
+    status: 'pending'
+  })
   const qc = useQueryClient()
   const { data: allAuctionData } = useQuery({
     queryKey: ['all-auction'],
     queryFn: auctionApi.getAllAuction
   })
+  const auctions = allAuctionData?.data?.data
 
+  // start auction
   const startAuction = useMutation({
     mutationFn: (auction_id: number) => auctionApi.startAuction(auction_id),
     onSuccess: () => {
@@ -34,6 +50,7 @@ export default function AuctionsTable() {
     startAuction.mutate(auction_id)
   }
 
+  //update auction before start
   const updateAuction = useMutation({
     mutationFn: ({ auctionId, duration }: { auctionId: number; duration: number }) =>
       auctionApi.verifyAuctionByAdmin(auctionId, duration),
@@ -53,13 +70,15 @@ export default function AuctionsTable() {
       toast.info('Chưa chọn xác minh phiên đấu giá!')
     }
   }
+  const handleEdit = (auction: Auction) => {
+    setEditingAuction(auction)
+    setDuration(auction.duration || 0)
+  }
   // const handleUpdateAuction = (auctionId: number, duration: number) => {
   //   if (isVerify) {
   //     updateAuction.mutate({ auctionId, duration })
   //   }
   // }
-
-  const auctions = allAuctionData?.data?.data
 
   // Lọc
   // let filteredAuctions = auctions
@@ -70,10 +89,38 @@ export default function AuctionsTable() {
   //   filteredAuctions = filteredAuctions.filter((a) => a.note.toLowerCase().includes(filters.search.toLowerCase()))
   // }
 
-  const handleEdit = (auction: Auction) => {
-    setEditingAuction(auction)
-    setDuration(auction.duration || 0)
+  const handleCreateContract = (auction: Auction) => {
+    setContractAuction(auction)
+    // Điền sẵn form từ auction
+    setForm({
+      seller_id: auction.seller_id || 0,
+      buyer_id: auction.winner_id || 0,
+      product_id: auction.product_id || 0,
+      deposit_amount: Number(auction.deposit) || 0,
+      vehicle_price: Number(auction.winning_price) || 0,
+      commission_percent: 5,
+      dispute_city: 'Ho Chi Minh',
+      status: 'pending'
+    })
   }
+  const createContract = useMutation({
+    mutationFn: () => contractApi.createContract(form),
+    onSuccess: (res) => {
+      toast.success('Tạo hợp đồng thành công!')
+
+      const url = res?.data?.data?.url
+      if (url) {
+        window.open(url, '_blank') // mở DocuSeal trong tab mới
+      }
+
+      setContractAuction(null)
+    },
+    onError: (error) => {
+      console.error('❌ Lỗi khi tạo hợp đồng:', error)
+      toast.error(error?.response?.data?.message || 'Tạo hợp đồng thất bại!')
+    }
+  })
+  const handleSubmitContract = () => createContract.mutate()
 
   const formatMoney = (value: string | number) =>
     Number(value).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
@@ -135,21 +182,31 @@ export default function AuctionsTable() {
                       {badge.label}
                     </span>
                   </div>
-
-                  <div className='col-span-1 sm:col-span-2 flex justify-end gap-2 cursor-default'>
-                    <button
-                      onClick={() => handleEdit(auction)}
-                      className='rounded-lg bg-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-300 transition-colors'
-                    >
-                      Chỉnh Sửa
-                    </button>
-                    <button
-                      onClick={() => handleStartAuction(auction.id)}
-                      className='rounded-lg bg-red-500 px-3 py-2 text-xs font-medium text-white hover:bg-red-600 transition-colors'
-                    >
-                      Bắt Đầu
-                    </button>
-                  </div>
+                  {auction.status === 'ended' ? (
+                    <div className='col-span-1 sm:col-span-2 flex justify-end gap-2 cursor-default'>
+                      <button
+                        onClick={() => handleCreateContract(auction)}
+                        className='rounded-lg bg-green-500 px-3 py-2 text-xs font-medium text-white hover:bg-green-600 transition-colors'
+                      >
+                        Tạo hợp đồng
+                      </button>
+                    </div>
+                  ) : (
+                    <div className='col-span-1 sm:col-span-2 flex justify-end gap-2 cursor-default'>
+                      <button
+                        onClick={() => handleEdit(auction)}
+                        className='rounded-lg bg-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-300 transition-colors'
+                      >
+                        Chỉnh Sửa
+                      </button>
+                      <button
+                        onClick={() => handleStartAuction(auction.id)}
+                        className='rounded-lg bg-red-500 px-3 py-2 text-xs font-medium text-white hover:bg-red-600 transition-colors'
+                      >
+                        Bắt Đầu
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Chi tiết mở rộng */}
@@ -235,6 +292,62 @@ export default function AuctionsTable() {
                 className='rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700'
               >
                 Lưu thay đổi
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {contractAuction && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm'>
+          <div className='w-full max-w-2xl rounded-2xl bg-white shadow-2xl border border-slate-200'>
+            <div className='flex items-center justify-between px-6 py-4 border-b border-slate-200'>
+              <h2 className='text-xl font-semibold text-slate-900'>
+                Tạo Hợp Đồng cho sản phẩm #{contractAuction.product_id}
+              </h2>
+              <button
+                onClick={() => setContractAuction(null)}
+                className='text-slate-500 hover:text-slate-700 transition'
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className='px-6 py-5 max-h-[70vh] overflow-y-auto'>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
+                {Object.entries(form).map(([key, value]) => {
+                  const isMoneyField = key === 'deposit_amount' || key === 'vehicle_price'
+                  const displayValue = isMoneyField ? formatMoney(Number(value)) : String(value ?? '')
+
+                  return (
+                    <div key={key}>
+                      <label className='block text-sm font-medium text-slate-700 capitalize'>
+                        {key.replace('_', ' ')}
+                      </label>
+                      <input
+                        type={isMoneyField ? 'text' : typeof value === 'number' ? 'number' : 'text'}
+                        value={displayValue}
+                        readOnly
+                        className='mt-1 w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:ring-2 focus:ring-blue-500 focus:bg-white transition'
+                      />
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+
+            <div className='flex justify-end gap-3 border-t border-slate-200 px-6 py-4 bg-slate-50 rounded-b-2xl'>
+              <button
+                onClick={() => setContractAuction(null)}
+                className='rounded-lg bg-white border border-slate-300 px-5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition'
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleSubmitContract}
+                className='rounded-lg bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 transition'
+              >
+                Tạo Hợp Đồng
               </button>
             </div>
           </div>
