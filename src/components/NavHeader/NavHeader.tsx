@@ -99,7 +99,7 @@ export default function NavHeader() {
       {/* Logo */}
       <div className='flex items-center justify-between w-full cursor-pointer'>
         <div className='flex-shrink-0 justify-self-start w-[120px] h-[60px]'>
-          <Link to={path.home} className='inline-flex items-center gap-2'>
+          <Link to={path.landingPage} className='inline-flex items-center gap-2'>
             <img
               src={logoUrl}
               alt='EViest'
