@@ -35,6 +35,12 @@ import ProfileUser from '~/pages/ProfileUser'
 import Register from '~/pages/Register'
 import UpdateRejectedPostMock from '~/pages/UpdateRejectedPostMock'
 import VehicleList from '~/pages/VehicleList'
+import UserManagement from '~/pages/admin/UserManagement/UserManagement'
+import TransactionManagment from '~/pages/admin/TransactionManagement/TransactionManagment'
+import Home from '~/pages/admin/Home/Home'
+import AllAuctionList from '~/pages/AllAuctionList/AllAuctionList'
+import AuctionManagement from '~/pages/admin/AuctionManagement/AuctionManagement'
+import SellerProfilePage from '~/pages/SellerProfilePage'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
