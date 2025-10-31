@@ -1,119 +1,71 @@
+import { useQuery } from '@tanstack/react-query'
+import { omit } from 'lodash'
+import { Bell, Check, Clock, Trash2 } from 'lucide-react'
 import { useState } from 'react'
-import {
-  Bell,
-  CheckCircle,
-  XCircle,
-  AlertCircle,
-  MessageSquare,
-  Heart,
-  Shield,
-  Trash2,
-  Clock,
-  Check
-} from 'lucide-react'
+import { createSearchParams, useNavigate } from 'react-router-dom'
+import notificationApi from '~/apis/notification.api'
+import { notificationConfig, type ToneNotification } from '~/constants/notification'
+import useNotificationQueryConfig from '~/hooks/useNotificationQueryConfig'
+import type { NotificationListConfig } from '~/types/notification.type'
+import { getTimeAgo } from '~/utils/util'
+import Pagination from '../AccountOrders/components/Pagination'
 
-type NotificationCategory =
-  | 'post_published'
-  | 'post_certified'
-  | 'post_rejected'
-  | 'post_deleted'
-  | 'interest'
-  | 'message'
-  | 'system'
-
-interface Notification {
-  id: string
-  category: NotificationCategory
-  title: string
-  message: string
-  postTitle?: string
-  timestamp: string
-  read: boolean
+const toneTw: Record<ToneNotification, { border: string; bgUnread: string; icon: string }> = {
+  success: { border: 'border-emerald-400', bgUnread: 'bg-emerald-50', icon: 'text-emerald-600' },
+  info: { border: 'border-blue-400', bgUnread: 'bg-blue-50', icon: 'text-blue-600' },
+  warning: { border: 'border-amber-400', bgUnread: 'bg-amber-50', icon: 'text-amber-600' },
+  danger: { border: 'border-rose-400', bgUnread: 'bg-rose-50', icon: 'text-rose-600' }
 }
-
-const notificationConfig = {
-  post_published: { icon: CheckCircle },
-  post_certified: { icon: Shield },
-  post_rejected: { icon: AlertCircle },
-  post_deleted: { icon: XCircle },
-  interest: { icon: Heart },
-  message: { icon: MessageSquare },
-  system: { icon: Bell }
-}
-
-const mockNotifications: Notification[] = [
-  {
-    id: '1',
-    category: 'post_published',
-    title: 'Post Published',
-    message: 'Your listing "Tesla Model 3" has been approved and is now live.',
-    postTitle: 'Tesla Model 3 Standard Range Plus',
-    timestamp: '2025-10-09T10:30:00',
-    read: false
-  },
-  {
-    id: '2',
-    category: 'message',
-    title: 'New Message Received',
-    message: 'You have a new inquiry from a buyer regarding your listing.',
-    postTitle: 'Nissan Leaf SV 2019',
-    timestamp: '2025-10-09T09:45:00',
-    read: true
-  },
-  {
-    id: '3',
-    category: 'system',
-    title: 'System Update',
-    message: 'We’ve improved dashboard performance and added new filters.',
-    timestamp: '2025-10-08T14:20:00',
-    read: true
-  }
-]
-
 export default function AccountNotification() {
-  const [notifications, setNotifications] = useState(mockNotifications)
-  const [filter, setFilter] = useState<'all' | 'unread'>('all')
-
-  const unreadCount = notifications.filter((n) => !n.read).length
-  const filtered = filter === 'unread' ? notifications.filter((n) => !n.read) : notifications
-
-  const markAsRead = (id: string) => {
-    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)))
+  const [activeTab, setActiveTab] = useState<'all' | 'unread'>('all')
+  const queryConfig = useNotificationQueryConfig()
+  const navigate = useNavigate()
+  const handleTypeReadClick = (key: 'all' | 'unread') => {
+    setActiveTab(key)
+    const search =
+      key === 'all'
+        ? createSearchParams(omit({ ...queryConfig, page: '1' }, ['isRead'])).toString()
+        : createSearchParams({ ...queryConfig, isRead: 'false', page: '1' }).toString()
+    navigate({
+      pathname: '',
+      search: search
+    })
   }
 
-  const markAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))
-  }
+  const { data: noticationData, isLoading } = useQuery({
+    queryKey: ['notifications', queryConfig],
+    queryFn: () => notificationApi.getNotificationByUser(queryConfig as NotificationListConfig)
+  })
 
-  const deleteNotification = (id: string) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id))
-  }
+  const notification = noticationData?.data.data.notifications || []
 
-  const getTimeAgo = (timestamp: string) => {
-    const now = new Date()
-    const time = new Date(timestamp)
-    const diff = Math.floor((now.getTime() - time.getTime()) / 1000)
-    if (diff < 60) return 'Just now'
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`
-    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`
-    return `${Math.floor(diff / 86400)}d ago`
-  }
+  // const markAsRead = (id: number) => {
+  //   setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)))
+  // }
+
+  // const markAllAsRead = () => {
+  //   setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })))
+  // }
+
+  // const deleteNotification = (id: number) => {
+  //   setNotifications((prev) => prev.filter((n) => n.id !== id))
+  // }
 
   return (
     <div className='flex-1 bg-white min-h-screen p-8 text-gray-900'>
       {/* Header */}
       <div className='flex justify-between items-end border-b border-gray-200 pb-5'>
         <div>
-          <h1 className='text-4xl font-bold text-gray-900 mb-2'>Notifications</h1>
-          <p className='text-gray-600'>Stay informed about your posts and system updates</p>
+          <h1 className='text-4xl font-bold text-gray-900 mb-2'>Thông báo</h1>
+          <p className='text-gray-600'>Theo dõi cập nhật về bài đăng và hệ thống</p>
         </div>
         <div className='flex items-center gap-3'>
           <button
-            onClick={markAllAsRead}
-            disabled={unreadCount === 0}
-            className='flex items-center gap-2 text-sm border  border-gray-300 px-4 py-2 rounded-md hover:bg-gray-100 transition disabled:opacity-50'
+            // onClick={markAllAsRead}
+            disabled={isLoading || !noticationData || noticationData.data.data.static.unreadCount === 0}
+            className='flex items-center gap-2 text-sm border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-100 transition disabled:opacity-50'
           >
-            <Check size={14} /> Mark all as read
+            <Check size={14} /> Đánh dấu tất cả đã đọc
           </button>
         </div>
       </div>
@@ -121,45 +73,64 @@ export default function AccountNotification() {
       {/* Tabs */}
       <div className='flex gap-3 mt-6'>
         <button
-          onClick={() => setFilter('all')}
+          onClick={() => handleTypeReadClick('all')}
           className={`px-4 py-2 text-sm font-medium rounded-md border transition ${
-            filter === 'all' ? 'bg-black text-white border-black' : 'border-gray-300 hover:bg-gray-50 text-gray-700'
+            activeTab === 'all' ? 'bg-black text-white border-black' : 'border-gray-300 hover:bg-gray-50 text-gray-700'
           }`}
         >
-          All ({notifications.length})
+          Tất cả ({noticationData?.data.data.static.totalCount ?? 0})
         </button>
         <button
-          onClick={() => setFilter('unread')}
+          onClick={() => handleTypeReadClick('unread')}
           className={`px-4 py-2 text-sm font-medium rounded-md border transition ${
-            filter === 'unread' ? 'bg-black text-white border-black' : 'border-gray-300 hover:bg-gray-50 text-gray-700'
+            activeTab === 'unread'
+              ? 'bg-black text-white border-black'
+              : 'border-gray-300 hover:bg-gray-50 text-gray-700'
           }`}
         >
-          Unread ({unreadCount})
+          Chưa đọc ({noticationData?.data.data.static.unreadCount ?? 0})
         </button>
       </div>
 
-      {/* Notification list */}
+      {/* List */}
       <div className='mt-6 space-y-3'>
-        {filtered.length === 0 ? (
+        {isLoading ? (
+          // Loading: render 6 skeleton (hoặc theo limit)
+          Array.from({ length: Number(queryConfig.limit ?? 6) }).map((_, i) => (
+            <div className='flex items-start gap-4 p-5 border border-gray-200 rounded-xl' key={i}>
+              <div className='w-10 h-10 rounded-full border border-gray-200 bg-gray-100 animate-pulse' />
+              <div className='flex-1 min-w-0 space-y-2'>
+                <div className='h-4 w-40 bg-gray-100 rounded animate-pulse' />
+                <div className='h-3 w-full bg-gray-100 rounded animate-pulse' />
+                <div className='h-3 w-2/3 bg-gray-100 rounded animate-pulse' />
+                <div className='h-3 w-24 bg-gray-100 rounded animate-pulse' />
+              </div>
+            </div>
+          ))
+        ) : notification.length === 0 ? (
+          // Empty
           <div className='text-center py-20 border border-gray-200 rounded-lg'>
             <Bell className='w-10 h-10 text-gray-400 mx-auto mb-4' />
-            <p className='text-gray-600 font-medium mb-1'>No notifications</p>
-            <p className='text-gray-400 text-sm'>You're all caught up for now.</p>
+            <p className='text-gray-600 font-medium mb-1'>Không có thông báo</p>
+            <p className='text-gray-400 text-sm'>Bạn đã cập nhật đầy đủ mọi thứ.</p>
           </div>
         ) : (
-          filtered.map((item) => {
-            const Icon = notificationConfig[item.category].icon
+          notification.map((item) => {
+            const { icon: Icon, tone } = notificationConfig[item.type]
+            const toneClass = toneTw[tone]
+            const containerClass = item.isRead
+              ? 'border-gray-200 bg-white'
+              : `${toneClass.border} ${toneClass.bgUnread}`
+
             return (
               <div
                 key={item.id}
-                className={`group flex items-start gap-4 p-5 border rounded-xl transition-all hover:shadow-sm ${
-                  item.read ? 'border-gray-200 bg-white' : 'border-black/70 bg-gray-50'
-                }`}
+                className={`group flex items-start gap-4 p-5 border rounded-xl transition-all hover:shadow-sm ${containerClass}`}
               >
                 {/* Icon */}
                 <div className='flex-shrink-0'>
                   <div className='w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center'>
-                    <Icon size={18} className='text-gray-700' />
+                    <Icon size={18} className={item.isRead ? 'text-gray-700' : toneClass.icon} />
                   </div>
                 </div>
 
@@ -168,28 +139,28 @@ export default function AccountNotification() {
                   <div className='flex justify-between'>
                     <h3 className='font-medium text-gray-900'>{item.title}</h3>
                     <div className='flex gap-2 opacity-0 group-hover:opacity-100 transition'>
-                      {!item.read && (
+                      {!item.isRead && (
                         <button
-                          onClick={() => markAsRead(item.id)}
+                          // onClick={() => markAsRead(item.id)}
                           className='text-gray-500 hover:text-black transition'
-                          title='Mark as read'
+                          title='Đánh dấu đã đọc'
                         >
                           <Check size={14} />
                         </button>
                       )}
                       <button
-                        onClick={() => deleteNotification(item.id)}
+                        // onClick={() => deleteNotification(item.id)}
                         className='text-gray-400 hover:text-black transition'
-                        title='Delete'
+                        title='Xóa thông báo'
                       >
                         <Trash2 size={14} />
                       </button>
                     </div>
                   </div>
                   <p className='text-sm text-gray-600 mt-1 leading-snug'>{item.message}</p>
-                  {item.postTitle && <p className='text-xs text-gray-500 mt-1 italic'>Post: {item.postTitle}</p>}
+                  {item.postTitle && <p className='text-xs text-gray-500 mt-1 italic'>Bài đăng: {item.postTitle}</p>}
                   <div className='flex items-center gap-1 text-xs text-gray-400 mt-2'>
-                    <Clock size={12} /> {getTimeAgo(item.timestamp)}
+                    <Clock size={12} /> {getTimeAgo(item.createdAt)}
                   </div>
                 </div>
               </div>
@@ -198,13 +169,8 @@ export default function AccountNotification() {
         )}
       </div>
 
-      {filtered.length > 0 && (
-        <div className='flex justify-center pt-6'>
-          <button className='px-5 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition'>
-            Load more
-          </button>
-        </div>
-      )}
+      {/* Pagination */}
+      <Pagination pageSize={noticationData?.data.data.pagination?.page_size ?? 1} queryConfig={queryConfig} />
     </div>
   )
 }

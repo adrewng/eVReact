@@ -10,7 +10,6 @@ import {
   HeartPulse,
   History,
   MapPin,
-  MessageCircle,
   Palette,
   Shield,
   ShieldCheck,
@@ -19,9 +18,8 @@ import {
 } from 'lucide-react'
 
 import { useQuery } from '@tanstack/react-query'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import postApi from '~/apis/post.api'
-import Button from '~/components/Button'
 import {
   BATTERY_HEALTH_OPTIONS,
   CAPACITY_OPTIONS,
@@ -34,11 +32,11 @@ import {
 } from '~/constants/options'
 import { nonEmpty, toNumber } from '~/utils/formater'
 import { labelFromOptions } from '~/utils/option'
-import { formatCurrencyVND, formatOwners, getIdFromNameId, isVehicle } from '~/utils/util'
+import { formatCurrencyVND, formatOwners, generateNameId, getIdFromNameId, isVehicle } from '~/utils/util'
+import AuctionBox from './components/AuctionBox/AuctionBox'
 import Gallery from './components/Gallery'
 import MarketPriceRange from './components/MarketPriceRange'
 import SpecRow from './components/SpecRow'
-import AuctionBox from './components/AuctionBox/AuctionBox'
 
 export default function PostDetail() {
   const { nameid } = useParams()
@@ -125,14 +123,6 @@ export default function PostDetail() {
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-zinc-50 to-white text-zinc-900'>
-      {/* Breadcrumb */}
-      {/* <div className='border-b border-zinc-100 bg-white/70 backdrop-blur'>
-        <div className='mx-auto max-w-7xl px-4 py-3 text-sm text-zinc-500'>
-          <span className='text-zinc-900'>Trang chủ</span> / <span>{product.category.name || 'Danh mục'}</span> /{' '}
-          <span className='text-zinc-900'>Chi tiết</span>
-        </div>
-      </div> */}
-
       {product && post && (
         <div className='mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-10'>
           {/* Top meta */}
@@ -236,11 +226,11 @@ export default function PostDetail() {
                     windowText='Theo dữ liệu trong 3 tháng gần nhất'
                   />
                 </div>
-                <div className='flex gap-2'>
+                {/* <div className='flex gap-2'>
                   <Button className='flex-1 flex justify-center items-center rounded-xl bg-zinc-900 px-4 py-3 font-medium text-white shadow-sm transition hover:translate-y-[-1px] hover:shadow-md'>
                     <MessageCircle className='mr-2 inline h-5 w-5' /> Gữi yêu cầu mua
                   </Button>
-                </div>
+                </div> */}
               </div>
 
               {/* Seller card */}
@@ -260,11 +250,14 @@ export default function PostDetail() {
                         </span>
                       )}
                     </p>
-                    {/* {post.seller.phone && <p className='text-sm text-zinc-500'>{post.seller.phone}</p>} */}
+                    {post.seller.phone && <p className='text-sm text-zinc-500'>{post.seller.phone}</p>}
                   </div>
-                  {/* <button className='rounded-lg border border-zinc-300 px-3 py-2 text-sm font-medium shadow-sm transition hover:bg-zinc-100'>
-                  Xem trang
-                </button> */}
+                  <Link
+                    to={`/profile-user/${generateNameId({ name: post.seller.full_name, id: post.seller.id })}`}
+                    className='rounded-lg border border-zinc-300 px-3 py-2 text-sm font-medium shadow-sm transition hover:bg-zinc-100'
+                  >
+                    Xem trang
+                  </Link>
                 </div>
               )}
 
@@ -284,40 +277,3 @@ export default function PostDetail() {
     </div>
   )
 }
-
-// export default function PostDetail() {
-//   const demo: PostType = {
-//     id: 1,
-//     title: 'Xe điện VinFast VF e34 chạy 20.000km, bảo hành 12 tháng',
-//     priority: 0,
-//     created_at: new Date().toISOString(),
-//     updated_at: new Date().toISOString(),
-//     product: {
-//       id: 1,
-//       brand: 'VinFast',
-//       model: 'VF e34',
-//       power: '110 kW',
-//       price: '500000000',
-//       address: 'Quận Ba Đình, Hà Nội',
-//       description: 'Xe chính chủ, bảo dưỡng định kỳ. Trang bị đầy đủ tính năng an toàn, hỗ trợ lái.',
-//       category: { id: 1, name: 'Electric Car', typeSlug: 'vehicle' },
-//       mileage: '20.000 km',
-//       year: 2022,
-//       seats: 5,
-//       image: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=1600&auto=format&fit=crop',
-//       images: [
-//         'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=1600&auto=format&fit=crop',
-//         'https://plus.unsplash.com/premium_photo-1760496808689-7bb84539bb65?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1771'
-//       ],
-//       warranty: '12 tháng',
-//       color: 'Trắng',
-//       previousOwners: 1
-//     } as VehicleType,
-//     seller: { id: 1, full_name: 'Nguyễn Văn A', phone: '0901 234 567' },
-//     ai: {
-//       min_price: 4500000 * 100,
-//       max_price: 5500000 * 100
-//     }
-//   }
-//   return <ProductDetailPage post={demo} />
-// }

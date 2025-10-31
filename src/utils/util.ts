@@ -3,6 +3,7 @@ import { CategoryType } from '~/types/category.type'
 import type { BatteryType, VehicleType } from '~/types/post.type'
 import type { ErrorResponse } from '~/types/util.type'
 
+// Format error
 export const isAxiosError = <T = unknown>(error: unknown): error is AxiosError<T> => axios.isAxiosError(error)
 
 export const isUnprocessableEntityError = <T = unknown>(error: unknown): error is AxiosError<T> => {
@@ -24,10 +25,10 @@ export function isAxiosPaymentRequiredError<T>(error: unknown): error is AxiosEr
   return isAxiosError(error) && error.response?.status === HttpStatusCode.PaymentRequired
 }
 
+//Format number
 export function formatCurrency(currency: number) {
   return new Intl.NumberFormat('de-DE').format(currency)
 }
-
 export function formatNumberToSocialStyle(value: number) {
   return new Intl.NumberFormat('en', {
     notation: 'compact',
@@ -54,8 +55,37 @@ export const formatCurrencyVND = (val: string | number | undefined | null, unit?
   //    (dấu chấm) rồi thêm " ₫" phía sau
   return new Intl.NumberFormat('vi-VN').format(n) + ' ' + (unit ? unit : 'đ')
 }
+
+//Format time
 export const fmtDate = (s?: string) => (s ? new Date(s).toLocaleString('vi-VN') : '—')
 
+export const getTimeAgo = (timestamp: string) => {
+  const now = new Date()
+  const time = new Date(timestamp)
+  const diff = Math.floor((now.getTime() - time.getTime()) / 1000)
+  if (diff < 60) return 'Vừa xong'
+  if (diff < 3600) return `${Math.floor(diff / 60)} phút trước`
+  if (diff < 86400) return `${Math.floor(diff / 3600)} giờ trước`
+  return `${Math.floor(diff / 86400)} ngày trước`
+}
+export const getJoinDuration = (date: string): string | null => {
+  const join = new Date(date)
+  if (Number.isNaN(join.getTime())) return null
+
+  const now = new Date()
+  let months = (now.getFullYear() - join.getFullYear()) * 12 + (now.getMonth() - join.getMonth())
+  if (now.getDate() < join.getDate()) months -= 1
+  if (months < 0) return null
+
+  if (months >= 12) {
+    const years = Math.floor(months / 12)
+    const rem = months % 12
+    return rem ? `${years} năm ${rem} tháng` : `${years} năm`
+  }
+  return `${months} tháng`
+}
+
+//orther
 export const formatOwners = (val?: number | string) => {
   if (val === undefined || val === null || val === '') return undefined
   const n = typeof val === 'string' ? Number(val) : val
@@ -81,4 +111,14 @@ const removeSpecialCharacter = (str: string) =>
 
 export const generateNameId = ({ name, id }: { name: string; id: string | number }) => {
   return removeSpecialCharacter(name).replace(/\s/g, '-') + `-i-${id}`
+}
+
+export function paginate<T>(arr: T[], page = 1, limit = 10) {
+  const safeLimit = Math.max(1, limit)
+  const total = arr.length
+  const page_size = Math.max(1, Math.ceil(total / safeLimit))
+  const p = Math.min(Math.max(1, page), page_size)
+  const start = (p - 1) * safeLimit
+  const items = arr.slice(start, start + safeLimit)
+  return { items, meta: { page: p, limit: safeLimit, page_size } }
 }
