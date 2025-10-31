@@ -7,8 +7,6 @@ import { Search, UserRound } from 'lucide-react'
 import userApi from '~/apis/user.api'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
-import { UserBarChart } from './components/UserBarChart'
-import UserStatCards from './components/UserStatCards'
 
 // // Mock data
 // const userStats = {

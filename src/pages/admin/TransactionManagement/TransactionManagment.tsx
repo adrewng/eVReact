@@ -1,8 +1,6 @@
-'use client'
-
 import { useState } from 'react'
 // import Link from 'next/link'
-import { CheckCircle, DollarSign, Search, TrendingUp, type LucideIcon } from 'lucide-react'
+import { DollarSign, TrendingUp, type LucideIcon } from 'lucide-react'
 import {
   Area,
   AreaChart,
@@ -15,9 +13,7 @@ import {
   XAxis,
   YAxis
 } from 'recharts'
-import { Button } from '~/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
-import { Input } from '~/components/ui/input'
 
 // Mock data
 const transactionStats = {
@@ -43,11 +39,11 @@ const paymentMethods = [
   { method: 'E-Wallet', count: 277, revenue: 427500 }
 ]
 
-const transactionStatus = [
-  { status: 'Completed', count: 1820, color: '#10b981' },
-  { status: 'Pending', count: 18, color: '#f59e0b' },
-  { status: 'Failed', count: 9, color: '#ef4444' }
-]
+// const transactionStatus = [
+//   { status: 'Completed', count: 1820, color: '#10b981' },
+//   { status: 'Pending', count: 18, color: '#f59e0b' },
+//   { status: 'Failed', count: 9, color: '#ef4444' }
+// ]
 
 const recentTransactions = [
   {
@@ -122,8 +118,8 @@ const StatCard = ({
 )
 
 export default function TransactionManagement() {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [searchTerm] = useState('')
+  const [statusFilter] = useState('all')
 
   const filteredTransactions = recentTransactions.filter((txn) => {
     const matchesSearch =

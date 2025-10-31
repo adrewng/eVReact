@@ -115,7 +115,8 @@ export default function AuctionsTable() {
 
       setContractAuction(null)
     },
-    onError: (error) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
       console.error('❌ Lỗi khi tạo hợp đồng:', error)
       toast.error(error?.response?.data?.message || 'Tạo hợp đồng thất bại!')
     }
