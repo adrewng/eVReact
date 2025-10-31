@@ -33,6 +33,7 @@ import TransactionManagment from '~/pages/admin/TransactionManagement/Transactio
 import Home from '~/pages/admin/Home/Home'
 import AllAuctionList from '~/pages/AllAuctionList/AllAuctionList'
 import AuctionManagement from '~/pages/admin/AuctionManagement/AuctionManagement'
+import SellerProfilePage from '~/pages/SellerProfilePage'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
@@ -81,7 +82,8 @@ export default function useRouteElements() {
             { path: path.checkout, element: <CheckoutPage /> },
             { path: path.postDetail, element: <PostDetail /> },
             { path: path.updatePostReject, element: <UpdateRejectedPostMock /> },
-            { path: path.auction, element: <AllAuctionList /> }
+            { path: path.auction, element: <AllAuctionList /> },
+            { path: '/seller', element: <SellerProfilePage /> }
           ]
         }
       ]

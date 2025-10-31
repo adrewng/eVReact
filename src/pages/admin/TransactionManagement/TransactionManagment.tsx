@@ -156,7 +156,7 @@ export default function TransactionManagement() {
       {/* Main Content */}
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         {/* KPI Cards */}
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-8'>
           <StatCard
             title='Total Revenue'
             value={`$${(transactionStats.totalRevenue / 1000000).toFixed(2)}M`}
@@ -169,7 +169,7 @@ export default function TransactionManagement() {
             icon={TrendingUp}
             color='bg-green-500'
           />
-          <StatCard
+          {/* <StatCard
             title='Avg Transaction'
             value={`$${transactionStats.avgTransactionValue.toLocaleString()}`}
             icon={DollarSign}
@@ -180,7 +180,7 @@ export default function TransactionManagement() {
             value={`${transactionStats.successRate}%`}
             icon={CheckCircle}
             color='bg-emerald-500'
-          />
+          /> */}
         </div>
 
         {/* Charts */}
@@ -236,36 +236,12 @@ export default function TransactionManagement() {
           </Card>
         </div>
 
-        {/* Transaction Status Overview */}
-        <Card className='mb-8'>
-          <CardHeader>
-            <CardTitle>Transaction Status</CardTitle>
-            <CardDescription>Current transaction status distribution</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className='grid grid-cols-3 gap-4'>
-              {transactionStatus.map((item) => (
-                <div key={item.status} className='p-4 rounded-lg border border-border'>
-                  <div className='flex items-center gap-2 mb-2'>
-                    <div className='w-3 h-3 rounded-full' style={{ backgroundColor: item.color }}></div>
-                    <span className='font-medium'>{item.status}</span>
-                  </div>
-                  <div className='text-2xl font-bold'>{item.count}</div>
-                  <div className='text-xs text-muted-foreground mt-1'>
-                    {((item.count / transactionStats.totalTransactions) * 100).toFixed(1)}% of total
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Recent Transactions Table */}
         <Card>
           <CardHeader>
             <CardTitle>Recent Transactions</CardTitle>
             <CardDescription>Latest transactions on the platform</CardDescription>
-            <div className='mt-4 flex items-center gap-2 flex-wrap'>
+            {/* <div className='mt-4 flex items-center gap-2 flex-wrap'>
               <div className='flex items-center gap-2'>
                 <Search className='h-4 w-4 text-muted-foreground' />
                 <Input
@@ -287,7 +263,7 @@ export default function TransactionManagement() {
                   </Button>
                 ))}
               </div>
-            </div>
+            </div> */}
           </CardHeader>
           <CardContent>
             <div className='overflow-x-auto'>

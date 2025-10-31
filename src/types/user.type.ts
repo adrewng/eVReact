@@ -77,6 +77,11 @@ export interface UserGetByAdmin {
   refresh_token: string
 }
 
+export interface UserListGetByAdmin {
+  totalUsers: number
+  users: UserGetByAdmin[]
+}
+
 export interface BodyUpdateProfile {
   email: string
   avatar: string
