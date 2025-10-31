@@ -18,21 +18,23 @@ import AuctionRequest from '~/pages/Auction/AuctionRequest'
 import BatteryList from '~/pages/BatteryList'
 import CheckoutPage from '~/pages/CheckoutPage/CheckoutPage'
 
+import AccountFavorite from '~/pages/Account/pages/Posts/AccountFavorite'
+import AuctionManagement from '~/pages/admin/AuctionManagement/AuctionManagement'
+import Home from '~/pages/admin/Home/Home'
+import PostManagement from '~/pages/admin/PostManagement/PostManagement'
+import TransactionManagment from '~/pages/admin/TransactionManagement/TransactionManagment'
+import UserManagement from '~/pages/admin/UserManagement/UserManagement'
+import AllAuctionList from '~/pages/AllAuctionList/AllAuctionList'
 import LandingPage from '~/pages/LandingPage/LandingPage'
 import Login from '~/pages/Login'
 import PageNotFound from '~/pages/PageNotFound'
 import Post from '~/pages/Post'
 import PostDetail from '~/pages/PostDetail'
-import PostManagement from '~/pages/admin/PostManagement/PostManagement'
 import PricingPage from '~/pages/PricingPage/PricingPage'
+import ProfileUser from '~/pages/ProfileUser'
 import Register from '~/pages/Register'
 import UpdateRejectedPostMock from '~/pages/UpdateRejectedPostMock'
 import VehicleList from '~/pages/VehicleList'
-import UserManagement from '~/pages/admin/UserManagement/UserManagement'
-import TransactionManagment from '~/pages/admin/TransactionManagement/TransactionManagment'
-import Home from '~/pages/admin/Home/Home'
-import AllAuctionList from '~/pages/AllAuctionList/AllAuctionList'
-import AuctionManagement from '~/pages/admin/AuctionManagement/AuctionManagement'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
@@ -81,7 +83,8 @@ export default function useRouteElements() {
             { path: path.checkout, element: <CheckoutPage /> },
             { path: path.postDetail, element: <PostDetail /> },
             { path: path.updatePostReject, element: <UpdateRejectedPostMock /> },
-            { path: path.auction, element: <AllAuctionList /> }
+            { path: path.auction, element: <AllAuctionList /> },
+            { path: path.profileUser, element: <ProfileUser /> }
           ]
         }
       ]
@@ -105,6 +108,7 @@ export default function useRouteElements() {
           element: <Account />,
           children: [
             { path: path.accountPosts, element: <AccountPost /> },
+            { path: path.accountFavorite, element: <AccountFavorite /> },
             { path: path.accountProfile, element: <AccountProfile /> },
             { path: path.accountNotification, element: <AccountNotification /> },
             { path: path.accountTransaction, element: <AccountTransaction /> },

@@ -17,6 +17,7 @@ export default function AccountOrders() {
   const navigate = useNavigate()
 
   const entries = Object.entries(ORDER_TYPE_LABEL) as [OrderType, string][]
+
   const [activeTab, setActiveTab] = useState<OrderType>('post')
   const [open, setOpen] = useState(false)
   const [current, setCurrent] = useState<Order | null>(null)
@@ -158,7 +159,7 @@ export default function AccountOrders() {
         </div>
 
         {/* Giữ Pagination, đọc từ API */}
-        <Pagination pageSize={data?.pagination?.page ?? 1} queryConfig={queryConfig} />
+        <Pagination pageSize={data?.pagination?.page_size ?? 1} queryConfig={queryConfig} />
 
         <OrderDetail open={open} onClose={() => setOpen(false)} order={current} />
       </div>

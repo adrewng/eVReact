@@ -1,13 +1,13 @@
-import { Clock, Gavel, Zap, Plus, Minus } from 'lucide-react'
-import { JoinABidButton } from './JoinABidButton'
 import { useQuery } from '@tanstack/react-query'
-import auctionApi from '~/apis/auction.api'
-import { useEffect, useState, useContext } from 'react'
-import { io, Socket } from 'socket.io-client'
-import { AppContext } from '~/contexts/app.context'
+import { Clock, Gavel, Minus, Plus, Zap } from 'lucide-react'
+import { useContext, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import { io, Socket } from 'socket.io-client'
+import auctionApi from '~/apis/auction.api'
+import { AppContext } from '~/contexts/app.context'
+import { JoinABidButton } from './JoinABidButton'
 
-const SERVER_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+const SERVER_URL = import.meta.env.VITE_API_URL
 
 // Button component
 interface ButtonProps {
@@ -48,7 +48,6 @@ export default function AuctionBox({ product_id }: AuctionBoxProps) {
 
   // Lấy token từ localStorage
   const accessToken = localStorage.getItem('access_token')
-  console.log('log:', accessToken)
   const token = accessToken?.replace('Bearer ', '')
 
   // Fetch thông tin auction ban đầu
@@ -72,8 +71,7 @@ export default function AuctionBox({ product_id }: AuctionBoxProps) {
       return
     }
 
-    console.log('🔌 Connecting to auction socket...')
-
+    console.log('🔌 Connecting to auction socket...' + SERVER_URL)
     const socketInstance = io(`${SERVER_URL}/auction`, {
       auth: { token },
       transports: ['websocket', 'polling'],

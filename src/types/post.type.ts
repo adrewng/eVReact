@@ -14,6 +14,8 @@ export interface PostType {
   reviewed_by?: string
   status?: string
   allow_resubmit?: boolean
+  status_verify?: string
+  favorite_at?: string
   ai?: {
     min_price: number
     max_price: number
@@ -69,17 +71,23 @@ export interface PostListType {
     page_size: number
   }
   count?: {
-    all: number
-    pending: number
-    approved: number
-    rejected: number
-    unverified: number
-    verifying: number
-    verified: number
+    all?: number
+    pending?: number
+    approved?: number
+    rejected?: number
+    auctioning?: number
+    auctioned?: number
+    sold?: number
   }
 }
+export interface FavNavData {
+  items: PostType[]
+  isLoading: boolean
+  isFetching: boolean
+  total?: number
+}
 
-export type PostStatus = 'pending' | 'approved' | 'rejected' | 'verifying' | 'verified' | 'unverified'
+export type PostStatus = 'pending' | 'approved' | 'rejected' | 'auctioning' | 'auctioned' | 'sold'
 export interface ProductListConfig {
   page?: number | string
   limit?: number | string
@@ -99,6 +107,15 @@ export interface ProductListConfig {
   price_min?: number | string
   category_type?: Omit<CategoryType, 'notFound' | 'all'>
   category_id?: string
-  status?: Extract<PostStatus, 'pending' | 'approved' | 'rejected'> | 'all'
-  status_verify?: Extract<PostStatus, 'verifying' | 'verified' | 'unverified'>
+  status?: Extract<PostStatus, 'pending' | 'approved' | 'rejected' | 'auctioning' | 'auctioned' | 'sold'> | 'all'
+  // status_verify?: Extract<PostStatus, 'verifying' | 'verified' | 'unverified'>
+}
+
+export interface PostOverView {
+  id: number
+  title: string
+  product: {
+    price: string
+    image: string
+  }
 }

@@ -45,12 +45,11 @@ export default function AccountProfile() {
   // Upload ảnh đại diện
   const uploadAvatarMutation = useMutation({
     mutationFn: (data: FormData) => accountApi.updateAvatar(data),
-    onSuccess: async (response) => {
-      console.log('✅ Cập nhật ảnh đại diện thành công!', response)
-      setProfile(response.data.data)
-      setProfileToLS(response.data.data)
-      const { data: newData } = await refetch()
-      console.log('Dữ liệu sau khi refetch', newData)
+    onSuccess: async (data) => {
+      const user = data.data.data.user
+      setProfile(user)
+      setProfileToLS(user)
+      await refetch()
     },
     onError: (error) => {
       console.log('❌ Cập nhật ảnh đại diện thất bại!', error)
@@ -62,10 +61,11 @@ export default function AccountProfile() {
     const formData = new FormData()
     formData.append('avatar', file)
     formData.append('full_name', profile.full_name)
-    formData.append('email', profile.email)
-    formData.append('gender', profile.gender)
-    formData.append('phone', profile.phone)
-    formData.append('address', profile.address)
+    formData.append('email', profile.email as string)
+    formData.append('gender', profile.gender as string)
+    formData.append('phone', profile.phone as string)
+    formData.append('address', profile.address as string)
+    formData.append('description', profile.description as string)
     const uploadRes = uploadAvatarMutation.mutate(formData)
     console.log(uploadRes)
   }
