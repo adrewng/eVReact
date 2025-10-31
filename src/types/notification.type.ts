@@ -14,7 +14,8 @@ export interface NotificationList {
   notifications: Notification[]
   static: {
     allCount: number
-    unrendCount: number
+    totalCount: number
+    unreadCount: number
   }
   pagination: {
     page: number

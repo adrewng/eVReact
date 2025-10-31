@@ -110,3 +110,12 @@ export interface ProductListConfig {
   status?: Extract<PostStatus, 'pending' | 'approved' | 'rejected' | 'auctioning' | 'auctioned' | 'sold'> | 'all'
   // status_verify?: Extract<PostStatus, 'verifying' | 'verified' | 'unverified'>
 }
+
+export interface PostOverView {
+  id: number
+  title: string
+  product: {
+    price: string
+    image: string
+  }
+}

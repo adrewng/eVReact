@@ -62,14 +62,16 @@ export default function NavHeader() {
   } = useQuery({
     queryKey: ['notifications', notificationQueryConfig],
     queryFn: () => notificationApi.getNotificationByUser(notificationQueryConfig as NotificationListConfig),
-    staleTime: 30_000,
-    refetchInterval: 30_000
+    staleTime: 5 * 60 * 1000, // cache 5 phút
+    gcTime: 15 * 60 * 1000, // giữ cache 15 phút
+    refetchOnWindowFocus: false,
+    enabled: isAuthenticated
   })
 
   const navNotifData: NavNotificationsData = {
-    items: notificationData?.data.notifications ?? [],
-    allCount: notificationData?.data.static.allCount ?? 0,
-    unreadCount: notificationData?.data.static.unrendCount ?? 0,
+    items: notificationData?.data.data.notifications ?? [],
+    allCount: notificationData?.data.data.static.totalCount ?? 0,
+    unreadCount: notificationData?.data.data.static.unreadCount ?? 0,
     isLoading: !!notificationLoading,
     isFetching: !!notificationFetching
   }
@@ -83,8 +85,10 @@ export default function NavHeader() {
   } = useQuery({
     queryKey: ['favorite-posts', { page: 1, limit: 5 }],
     queryFn: () => postApi.getFavoritePostByUser({ page: 1, limit: 5 }),
-    staleTime: 30_000,
-    refetchInterval: 30_000
+    staleTime: 5 * 60 * 1000,
+    gcTime: 15 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    enabled: isAuthenticated
   })
   const favNavData: FavNavData = {
     items: myPosts?.data.posts ?? [],

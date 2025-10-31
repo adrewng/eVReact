@@ -37,7 +37,7 @@ export default function AccountNotification() {
     queryFn: () => notificationApi.getNotificationByUser(queryConfig as NotificationListConfig)
   })
 
-  const notification = noticationData?.data.notifications || []
+  const notification = noticationData?.data.data.notifications || []
 
   // const markAsRead = (id: number) => {
   //   setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)))
@@ -62,7 +62,7 @@ export default function AccountNotification() {
         <div className='flex items-center gap-3'>
           <button
             // onClick={markAllAsRead}
-            disabled={isLoading || !noticationData || noticationData.data.static.unrendCount === 0}
+            disabled={isLoading || !noticationData || noticationData.data.data.static.unreadCount === 0}
             className='flex items-center gap-2 text-sm border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-100 transition disabled:opacity-50'
           >
             <Check size={14} /> Đánh dấu tất cả đã đọc
@@ -78,7 +78,7 @@ export default function AccountNotification() {
             activeTab === 'all' ? 'bg-black text-white border-black' : 'border-gray-300 hover:bg-gray-50 text-gray-700'
           }`}
         >
-          Tất cả ({noticationData?.data.static.allCount ?? 0})
+          Tất cả ({noticationData?.data.data.static.totalCount ?? 0})
         </button>
         <button
           onClick={() => handleTypeReadClick('unread')}
@@ -88,7 +88,7 @@ export default function AccountNotification() {
               : 'border-gray-300 hover:bg-gray-50 text-gray-700'
           }`}
         >
-          Chưa đọc ({noticationData?.data.static.unrendCount ?? 0})
+          Chưa đọc ({noticationData?.data.data.static.unreadCount ?? 0})
         </button>
       </div>
 
@@ -170,7 +170,7 @@ export default function AccountNotification() {
       </div>
 
       {/* Pagination */}
-      <Pagination pageSize={noticationData?.data.pagination?.page_size ?? 1} queryConfig={queryConfig} />
+      <Pagination pageSize={noticationData?.data.data.pagination?.page_size ?? 1} queryConfig={queryConfig} />
     </div>
   )
 }

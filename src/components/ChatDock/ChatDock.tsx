@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import { AnimatePresence, motion } from 'framer-motion'
 import { MessageCircle, Minus, Send, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import aiApi from '~/apis/ai.api'
 
 type Msg = { id: string; role: 'user' | 'assistant' | 'system'; text: string }
@@ -82,122 +83,123 @@ export default function ChatDock() {
         <span className='sr-only'>Chat AI</span>
         <span className='absolute -top-1 -right-1 text-[10px] rounded-full px-1.5 py-0.5 bg-black text-white'>AI</span>
       </button>
-      createPortal(
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className='fixed inset-0 z-[59]'
-            onMouseDown={() => {
-              setOpen(false)
-              controllerRef.current?.abort()
-            }}
-          >
+      {createPortal(
+        <AnimatePresence>
+          {open && (
             <motion.div
-              role='dialog'
-              aria-modal='true'
-              initial={{ scale: 0.9, opacity: 0, y: 10 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.98, opacity: 0, y: 6 }}
-              transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-              className={clsx(
-                'fixed bottom-20 right-5 pointer-events-auto',
-                'w-[19rem] h-[26rem] max-w-[92vw] max-h-[80vh] flex flex-col',
-                'rounded-2xl shadow-2xl border border-black/5 bg-white overflow-hidden'
-              )}
-              onMouseDown={(e) => e.stopPropagation()}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className='fixed inset-0 z-[59]'
+              onMouseDown={() => {
+                setOpen(false)
+                controllerRef.current?.abort()
+              }}
             >
-              <div className='flex items-center justify-between px-4 py-2 border-b'>
-                <div className='flex items-center gap-2'>
-                  <div className='h-5 w-5 rounded-full bg-gradient-to-tr from-amber-300 to-emerald-300' />
-                  <div className='font-medium text-sm'>EViest AI</div>
-                </div>
-                <div className='flex items-center gap-1'>
-                  <button
-                    onClick={() => {
-                      setOpen(false)
-                      controllerRef.current?.abort()
-                    }}
-                    className='p-1.5 rounded-lg hover:bg-zinc-100'
-                    aria-label='Thu nhỏ'
-                    title='Thu nhỏ'
-                  >
-                    <Minus className='h-4 w-4' />
-                  </button>
-                  <button
-                    onClick={() => {
-                      setOpen(false)
-                      controllerRef.current?.abort()
-                    }}
-                    className='p-1.5 rounded-lg hover:bg-zinc-100'
-                    aria-label='Đóng'
-                    title='Đóng'
-                  >
-                    <X className='h-4 w-4' />
-                  </button>
-                </div>
-              </div>
-
-              <div className='px-3 py-3 space-y-2 flex-1 overflow-y-auto'>
-                {messages.map((m) => (
-                  <div key={m.id} className={clsx('flex', m.role === 'user' ? 'justify-end' : 'justify-start')}>
-                    <div
-                      className={clsx(
-                        'px-3 py-2 rounded-2xl text-sm max-w-[80%] whitespace-pre-wrap',
-                        m.role === 'user'
-                          ? 'bg-zinc-900 text-white rounded-br-md'
-                          : m.role === 'assistant'
-                            ? 'bg-zinc-100 text-zinc-900 rounded-bl-md'
-                            : 'bg-amber-50 text-amber-900 rounded-bl-md border border-amber-200'
-                      )}
-                    >
-                      {m.text}
-                    </div>
+              <motion.div
+                role='dialog'
+                aria-modal='true'
+                initial={{ scale: 0.9, opacity: 0, y: 10 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.98, opacity: 0, y: 6 }}
+                transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                className={clsx(
+                  'fixed bottom-20 right-5 pointer-events-auto',
+                  'w-[19rem] h-[26rem] max-w-[92vw] max-h-[80vh] flex flex-col',
+                  'rounded-2xl shadow-2xl border border-black/5 bg-white overflow-hidden'
+                )}
+                onMouseDown={(e) => e.stopPropagation()}
+              >
+                <div className='flex items-center justify-between px-4 py-2 border-b'>
+                  <div className='flex items-center gap-2'>
+                    <div className='h-5 w-5 rounded-full bg-gradient-to-tr from-amber-300 to-emerald-300' />
+                    <div className='font-medium text-sm'>EViest AI</div>
                   </div>
-                ))}
-                {errorText && <div className='text-xs text-red-600 px-1'>Lỗi: {errorText}</div>}
-              </div>
+                  <div className='flex items-center gap-1'>
+                    <button
+                      onClick={() => {
+                        setOpen(false)
+                        controllerRef.current?.abort()
+                      }}
+                      className='p-1.5 rounded-lg hover:bg-zinc-100'
+                      aria-label='Thu nhỏ'
+                      title='Thu nhỏ'
+                    >
+                      <Minus className='h-4 w-4' />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setOpen(false)
+                        controllerRef.current?.abort()
+                      }}
+                      className='p-1.5 rounded-lg hover:bg-zinc-100'
+                      aria-label='Đóng'
+                      title='Đóng'
+                    >
+                      <X className='h-4 w-4' />
+                    </button>
+                  </div>
+                </div>
 
-              <div className='border-t p-2'>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                    handleSend()
-                  }}
-                  className='flex items-center gap-2'
-                >
-                  <input
-                    autoFocus
-                    value={draft}
-                    onChange={(e) => setDraft(e.target.value)}
-                    placeholder='Hỏi AI điều gì đó...'
-                    disabled={isSending}
-                    className='flex-1 rounded-xl border px-3 py-1.5 text-sm outline-none disabled:opacity-60 focus:ring-2 focus:ring-zinc-900/10'
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault()
-                        handleSend()
-                      }
+                <div className='px-3 py-3 space-y-2 flex-1 overflow-y-auto'>
+                  {messages.map((m) => (
+                    <div key={m.id} className={clsx('flex', m.role === 'user' ? 'justify-end' : 'justify-start')}>
+                      <div
+                        className={clsx(
+                          'px-3 py-2 rounded-2xl text-sm max-w-[80%] whitespace-pre-wrap',
+                          m.role === 'user'
+                            ? 'bg-zinc-900 text-white rounded-br-md'
+                            : m.role === 'assistant'
+                              ? 'bg-zinc-100 text-zinc-900 rounded-bl-md'
+                              : 'bg-amber-50 text-amber-900 rounded-bl-md border border-amber-200'
+                        )}
+                      >
+                        {m.text}
+                      </div>
+                    </div>
+                  ))}
+                  {errorText && <div className='text-xs text-red-600 px-1'>Lỗi: {errorText}</div>}
+                </div>
+
+                <div className='border-t p-2'>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault()
+                      handleSend()
                     }}
-                  />
-                  <button
-                    type='submit'
-                    disabled={isSending}
-                    className='inline-flex items-center gap-1 rounded-xl border px-2.5 py-1.5 text-sm hover:bg-zinc-50 disabled:opacity-60'
-                    aria-label='Gửi'
+                    className='flex items-center gap-2'
                   >
-                    <Send className='h-4 w-4' />
-                    Gửi
-                  </button>
-                </form>
-              </div>
+                    <input
+                      autoFocus
+                      value={draft}
+                      onChange={(e) => setDraft(e.target.value)}
+                      placeholder='Hỏi AI điều gì đó...'
+                      disabled={isSending}
+                      className='flex-1 rounded-xl border px-3 py-1.5 text-sm outline-none disabled:opacity-60 focus:ring-2 focus:ring-zinc-900/10'
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault()
+                          handleSend()
+                        }
+                      }}
+                    />
+                    <button
+                      type='submit'
+                      disabled={isSending}
+                      className='inline-flex items-center gap-1 rounded-xl border px-2.5 py-1.5 text-sm hover:bg-zinc-50 disabled:opacity-60'
+                      aria-label='Gửi'
+                    >
+                      <Send className='h-4 w-4' />
+                      Gửi
+                    </button>
+                  </form>
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      , document.body )
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </>
   )
 }

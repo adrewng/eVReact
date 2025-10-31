@@ -16,6 +16,7 @@ export const path = {
   updatePostReject: '/update-rejected/:nameid',
   deletePost: '/delete-post/:id',
   requestAution: '/request-auction/:nameid',
+  profileUser: '/profile-user/:nameid',
   //account
   account: '/account',
   accountPosts: '/account/posts',
