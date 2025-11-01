@@ -36,13 +36,13 @@ import { nonEmpty, toNumber } from '~/utils/formater'
 import { labelFromOptions } from '~/utils/option'
 import { formatCurrencyVND, formatOwners, generateNameId, getIdFromNameId, isVehicle } from '~/utils/util'
 
+import auctionApi from '~/apis/auction.api'
 import AuctionBox from './components/AuctionBox/AuctionBox'
 import Gallery from './components/Gallery'
 import MarketPriceRange from './components/MarketPriceRange'
 import PageSkeleton from './components/PageSkeleton'
 import RelatedCard from './components/RelatedCard/RelatedCard'
 import SpecRow from './components/SpecRow'
-import auctionApi from '~/apis/auction.api'
 
 // --- Skeleton for related grid ---
 function SkeletonGrid() {
@@ -330,17 +330,10 @@ export default function PostDetail() {
                       windowText='Theo dữ liệu trong 3 tháng gần nhất'
                     />
                   </div>
-                  {/* <div className='flex gap-2'>
-                  <Button className='flex-1 flex justify-center items-center rounded-xl bg-zinc-900 px-4 py-3 font-medium text-white shadow-sm transition hover:translate-y-[-1px] hover:shadow-md'>
-                    <MessageCircle className='mr-2 inline h-5 w-5' /> Gữi yêu cầu mua
-                  </Button>
-                </div> */}
                 </div>
               )}
-              <AuctionBox product_id={id} />
-
               {/* Price & actions */}
-              <div className='rounded-2xl border border-zinc-100 bg-white/90 p-5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/70'>
+              {/* <div className='rounded-2xl border border-zinc-100 bg-white/90 p-5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/70'>
                 <div className='mb-1 text-xs uppercase tracking-wide text-zinc-500'>Giá bán</div>
                 <div className='mb-3 text-3xl font-extrabold'>{formatCurrencyVND(product.price)}</div>
                 <div className='mb-3 flex items-center gap-2 text-sm'>
@@ -359,7 +352,7 @@ export default function PostDetail() {
                     windowText='Theo dữ liệu trong 3 tháng gần nhất'
                   />
                 </div>
-              </div>
+              </div> */}
 
               {/* Seller card */}
               {post.seller && (

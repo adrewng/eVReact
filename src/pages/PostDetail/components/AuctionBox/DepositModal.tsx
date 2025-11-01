@@ -3,7 +3,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import auctionApi from '~/apis/auction.api'
 import { Button } from '~/components/ui/button'

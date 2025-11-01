@@ -1,11 +1,9 @@
-'use client'
-
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 import { Plus } from 'lucide-react'
 import { Button } from '~/components/ui/button'
-import { PackageList } from './components/PackageList'
 import { PackageForm } from './components/PackageForm'
+import { PackageList } from './components/PackageList'
 
 interface Package {
   id: number
@@ -24,9 +22,7 @@ export default function PackageManagment() {
   const [packages, setPackages] = useState<Package[]>([])
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingPackage, setEditingPackage] = useState<Package | null>(null)
-  const [loading, setLoading] = useState(true)
-
-
+  const [loading] = useState(true)
 
   const handleAddPackage = () => {
     setEditingPackage(null)
@@ -43,6 +39,7 @@ export default function PackageManagment() {
     setEditingPackage(null)
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSavePackage = async (formData: any) => {
     try {
       if (editingPackage) {
