@@ -1,16 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import {
-  Bell,
-  CreditCard,
-  FileText,
-  Gavel,
-  Home,
-  LogOutIcon,
-  MessageSquare,
-  Package,
-  ShoppingCart,
-  Users
-} from 'lucide-react'
+import { Bell, CreditCard, FileText, Gavel, Home, LogOutIcon, MessageSquare, Package, Users } from 'lucide-react'
 import { useContext } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { authApi } from '~/apis/auth.api'
@@ -88,7 +77,7 @@ export default function Sidebar() {
                   <span>{item.label}</span>
                 </div>
 
-                {item.badge && (
+                {/* {item.badge && (
                   <span
                     className={cn(
                       'text-xs font-semibold px-2 py-0.5 rounded-full',
@@ -97,7 +86,7 @@ export default function Sidebar() {
                   >
                     {item.badge}
                   </span>
-                )}
+                )} */}
               </button>
             </Link>
           )
