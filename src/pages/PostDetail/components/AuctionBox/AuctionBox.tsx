@@ -1,11 +1,12 @@
-import { useQuery } from '@tanstack/react-query'
 import { Clock, Gavel, Minus, Plus, Zap } from 'lucide-react'
 import { useContext, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { io, Socket } from 'socket.io-client'
-import auctionApi from '~/apis/auction.api'
 import { AppContext } from '~/contexts/app.context'
 import { JoinABidButton } from './JoinABidButton'
+import type { AxiosResponse } from 'axios'
+import type { SuccessResponse } from '~/types/util.type'
+import type { Auction } from '~/types/auction.type'
 
 const SERVER_URL = import.meta.env.VITE_API_URL
 
@@ -33,9 +34,10 @@ const Button = ({
 
 interface AuctionBoxProps {
   product_id: string
+  auctionData: AxiosResponse<SuccessResponse<Auction>>
 }
 
-export default function AuctionBox({ product_id }: AuctionBoxProps) {
+export default function AuctionBox({ auctionData }: AuctionBoxProps) {
   const { profile } = useContext(AppContext)
   const [socket, setSocket] = useState<Socket | null>(null)
   const [timeLeft, setTimeLeft] = useState<number>(0)
@@ -51,11 +53,11 @@ export default function AuctionBox({ product_id }: AuctionBoxProps) {
   const token = accessToken?.replace('Bearer ', '')
 
   // Fetch thông tin auction ban đầu
-  const { data: auctionData } = useQuery({
-    queryKey: ['auction-info', product_id],
-    queryFn: () => auctionApi.getAuctionByProduct(Number(product_id)),
-    enabled: !!product_id
-  })
+  // const { data: auctionData } = useQuery({
+  //   queryKey: ['auction-info', product_id],
+  //   queryFn: () => auctionApi.getAuctionByProduct(Number(product_id)),
+  //   enabled: !!product_id
+  // })
 
   const auctionInfo = auctionData?.data?.data
   const auctionId = auctionInfo?.id

@@ -42,6 +42,7 @@ import MarketPriceRange from './components/MarketPriceRange'
 import PageSkeleton from './components/PageSkeleton'
 import RelatedCard from './components/RelatedCard/RelatedCard'
 import SpecRow from './components/SpecRow'
+import auctionApi from '~/apis/auction.api'
 
 // --- Skeleton for related grid ---
 function SkeletonGrid() {
@@ -74,6 +75,13 @@ export default function PostDetail() {
 
   const post = postQ.data
   const product = post?.product
+  console.log('post-', post)
+
+  const { data: auctionData } = useQuery({
+    queryKey: ['auction-info', id],
+    queryFn: () => auctionApi.getAuctionByProduct(Number(id)),
+    enabled: !!id
+  })
 
   // Build specs (memo)
   const specs = useMemo(() => {
@@ -217,6 +225,36 @@ export default function PostDetail() {
             <div className='min-w-0 space-y-6'>
               <Gallery images={product.images} />
 
+              {auctionData ? (
+                <div className='rounded-2xl border border-zinc-100 bg-white/90 p-5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/70'>
+                  <div className='mb-1 text-xs uppercase tracking-wide text-zinc-500'>Giá bán</div>
+                  <div className='mb-3 text-3xl font-extrabold'>{formatCurrencyVND(product.price)}</div>
+                  <div className='mb-3 text-sm  flex items-center gap-2 justify-start'>
+                    <MapPin className='h-4 w-4' />
+                    {product.address}
+                  </div>
+
+                  <div className='my-3 text-sm text-zinc-500'>
+                    Cập nhật: {new Date(post.updated_at).toLocaleDateString('vi-VN')}
+                  </div>
+                  <div className='mb-4'>
+                    <MarketPriceRange
+                      min={toNumber(post.ai?.min_price)}
+                      max={toNumber(post.ai?.max_price)}
+                      listing={toNumber(product.price)}
+                      windowText='Theo dữ liệu trong 3 tháng gần nhất'
+                    />
+                  </div>
+                  {/* <div className='flex gap-2'>
+                  <Button className='flex-1 flex justify-center items-center rounded-xl bg-zinc-900 px-4 py-3 font-medium text-white shadow-sm transition hover:translate-y-[-1px] hover:shadow-md'>
+                    <MessageCircle className='mr-2 inline h-5 w-5' /> Gữi yêu cầu mua
+                  </Button>
+                </div> */}
+                </div>
+              ) : (
+                ''
+              )}
+
               {/* Specs */}
               <section className='rounded-2xl border border-zinc-100 bg-white/90 p-5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/70'>
                 <div className='mb-4 flex items-center gap-2'>
@@ -267,6 +305,38 @@ export default function PostDetail() {
 
             {/* Right column */}
             <aside className='space-y-4 lg:sticky lg:top-24'>
+              {auctionData && <AuctionBox product_id={id} auctionData={auctionData} />}
+
+              {/* Price & actions */}
+              {auctionData ? (
+                ''
+              ) : (
+                <div className='rounded-2xl border border-zinc-100 bg-white/90 p-5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/70'>
+                  <div className='mb-1 text-xs uppercase tracking-wide text-zinc-500'>Giá bán</div>
+                  <div className='mb-3 text-3xl font-extrabold'>{formatCurrencyVND(product.price)}</div>
+                  <div className='mb-3 text-sm  flex items-center gap-2 justify-start'>
+                    <MapPin className='h-4 w-4' />
+                    {product.address}
+                  </div>
+
+                  <div className='my-3 text-sm text-zinc-500'>
+                    Cập nhật: {new Date(post.updated_at).toLocaleDateString('vi-VN')}
+                  </div>
+                  <div className='mb-4'>
+                    <MarketPriceRange
+                      min={toNumber(post.ai?.min_price)}
+                      max={toNumber(post.ai?.max_price)}
+                      listing={toNumber(product.price)}
+                      windowText='Theo dữ liệu trong 3 tháng gần nhất'
+                    />
+                  </div>
+                  {/* <div className='flex gap-2'>
+                  <Button className='flex-1 flex justify-center items-center rounded-xl bg-zinc-900 px-4 py-3 font-medium text-white shadow-sm transition hover:translate-y-[-1px] hover:shadow-md'>
+                    <MessageCircle className='mr-2 inline h-5 w-5' /> Gữi yêu cầu mua
+                  </Button>
+                </div> */}
+                </div>
+              )}
               <AuctionBox product_id={id} />
 
               {/* Price & actions */}

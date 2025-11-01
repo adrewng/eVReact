@@ -21,7 +21,8 @@ export interface Auction {
   location: string
 }
 export interface AuctionList {
-  data: Auction[]
+  auctions: Auction[]
+  totalAuctions: number
 }
 
 export interface AuctionType {

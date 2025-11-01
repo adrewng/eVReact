@@ -16,6 +16,7 @@ import AccountProfile from '~/pages/Account/pages/Profile/AccountProfile'
 import AccountTransaction from '~/pages/Account/pages/Transaction/AccountTransaction'
 import AuctionManagement from '~/pages/admin/AuctionManagement/AuctionManagement'
 import Home from '~/pages/admin/Home/Home'
+import PackageManagment from '~/pages/admin/PackageManagement/PackageManagement'
 import PostManagement from '~/pages/admin/PostManagement/PostManagement'
 import TransactionManagment from '~/pages/admin/TransactionManagement/TransactionManagment'
 import UserManagement from '~/pages/admin/UserManagement/UserManagement'
@@ -142,7 +143,7 @@ export default function useRouteElements() {
                 { path: path.adminUsers, element: <UserManagement /> },
                 { path: path.adminTransactions, element: <TransactionManagment /> },
                 { path: path.adminAuctions, element: <AuctionManagement /> },
-                { path: path.adminPackages, element: <AuctionManagement /> }
+                { path: path.adminPackages, element: <PackageManagment /> }
               ]
             }
           ]
