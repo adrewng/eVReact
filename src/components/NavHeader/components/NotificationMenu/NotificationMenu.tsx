@@ -1,6 +1,8 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Check } from 'lucide-react'
 
 import { Link, useNavigate } from 'react-router-dom'
+import notificationApi from '~/apis/notification.api'
 import { type ToneNotification, notificationConfig } from '~/constants/notification'
 import { path } from '~/constants/path'
 import type { NavNotificationsData } from '~/types/notification.type'
@@ -25,6 +27,17 @@ export default function NotificationMenu({ notificationsData }: Props) {
   const allCount = notificationsData?.allCount ?? 0
   const unread = notificationsData?.unreadCount ?? 0
 
+  const qc = useQueryClient()
+  const readAllNotifictionMutation = useMutation({
+    mutationKey: ['read-notifications'],
+    mutationFn: () => notificationApi.readAllNotification(),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['notifications'] })
+    }
+  })
+  const handleMarkAllRead = () => {
+    readAllNotifictionMutation.mutate()
+  }
   return (
     <div className='w-[360px] max-w-[92vw]'>
       <div className='px-4 pt-3 pb-2 border-b border-gray-200 flex items-center justify-between'>
@@ -36,7 +49,7 @@ export default function NotificationMenu({ notificationsData }: Props) {
         </div>
 
         <button
-          // onClick={handleMarkAllRead}
+          onClick={handleMarkAllRead}
           disabled={notificationsData.isLoading || unread === 0}
           className='inline-flex items-center gap-1 text-xs text-gray-600 hover:text-gray-900 disabled:opacity-40'
           title='Đánh dấu tất cả đã đọc'

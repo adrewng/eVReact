@@ -3,17 +3,11 @@ import type { SuccessResponse } from '~/types/util.type'
 import http from '~/utils/http'
 
 const URL_GET_NOTIFICAION = 'api/notification/notifications'
-// helper ép số an toàn cho cả number|string
-// const toInt = (v: number | string | undefined, fallback: number) => {
-//   if (v === undefined || v === null) return fallback
-//   const n = typeof v === 'string' ? parseInt(v, 10) : Math.trunc(v)
-//   return Number.isFinite(n) && n > 0 ? n : fallback
-// }
-const notificationApi = {
-  //   getNotificationByUser() {
-  //     // return http.get<SuccessResponse<NotificationList>>()
+const URL_READ_A_NOTIFICAION = 'api/notification/mark-as-read'
+const URL_READ_ALL_NOTIFICAION = 'api/notification/mark-all-as-read'
+const URL_DELETE_NOTIFICAION = 'api/notification/delete'
 
-  //   }
+const notificationApi = {
   // async getNotificationByUser(config: NotificationListConfig = {}): Promise<SuccessResponse<NotificationList>> {
   //   const page = toInt(config.page, 1)
   //   const limit = toInt(config.limit, 10)
@@ -58,6 +52,21 @@ const notificationApi = {
   // }
   getNotificationByUser(config: NotificationListConfig) {
     return http.get<SuccessResponse<NotificationList>>(URL_GET_NOTIFICAION, { params: config })
+  },
+  readANotification(id: number | string) {
+    return http.put(URL_READ_A_NOTIFICAION, {
+      id
+    })
+  },
+  readAllNotification() {
+    return http.put(URL_READ_ALL_NOTIFICAION)
+  },
+  deleteNotification(id: string | number) {
+    return http.delete(URL_DELETE_NOTIFICAION, {
+      data: {
+        id
+      }
+    })
   }
 }
 

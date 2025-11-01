@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query'
 import { omit } from 'lodash'
 import { useContext, useEffect, useState } from 'react'
 import { createSearchParams, Link, useLocation, useNavigate } from 'react-router-dom'
@@ -62,6 +62,7 @@ export default function NavHeader() {
   } = useQuery({
     queryKey: ['notifications', notificationQueryConfig],
     queryFn: () => notificationApi.getNotificationByUser(notificationQueryConfig as NotificationListConfig),
+    placeholderData: keepPreviousData,
     staleTime: 5 * 60 * 1000, // cache 5 phút
     gcTime: 15 * 60 * 1000, // giữ cache 15 phút
     refetchOnWindowFocus: false,
@@ -71,7 +72,9 @@ export default function NavHeader() {
   const navNotifData: NavNotificationsData = {
     items: notificationData?.data.data.notifications ?? [],
     allCount: notificationData?.data.data.static.totalCount ?? 0,
+    // allCount: 0,
     unreadCount: notificationData?.data.data.static.unreadCount ?? 0,
+    // unreadCount: 0,
     isLoading: !!notificationLoading,
     isFetching: !!notificationFetching
   }
@@ -85,16 +88,17 @@ export default function NavHeader() {
   } = useQuery({
     queryKey: ['favorite-posts', { page: 1, limit: 5 }],
     queryFn: () => postApi.getFavoritePostByUser({ page: 1, limit: 5 }),
+    placeholderData: keepPreviousData,
     staleTime: 5 * 60 * 1000,
     gcTime: 15 * 60 * 1000,
     refetchOnWindowFocus: false,
     enabled: isAuthenticated
   })
   const favNavData: FavNavData = {
-    items: myPosts?.data.posts ?? [],
+    items: myPosts?.data.data.posts ?? [],
     isLoading: favLoading,
     isFetching: favFetching,
-    total: myPosts?.data.count?.all ?? 0
+    total: myPosts?.data.data.count?.all ?? 0
   }
 
   return (

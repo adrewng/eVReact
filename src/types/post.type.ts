@@ -7,6 +7,7 @@ export interface PostType {
   priority: number
   created_at: string
   updated_at: string
+  isFavorite?: boolean
   product: VehicleType | BatteryType
   end_date?: string
   seller?: User
@@ -118,4 +119,35 @@ export interface PostOverView {
     price: string
     image: string
   }
+}
+
+export interface RelatedPost {
+  id: number
+  title: string
+  price: string
+  brand: string
+  model: string
+  year: number
+  address: string
+  status: string
+  category_name: string
+  category_type: string
+  image: string
+  similarity_score: number
+  seller: {
+    id: number
+    name: string
+    rating: number
+  }
+  created_at: string
+}
+
+export interface RelatedPostList {
+  current_product: {
+    id: number
+    category_id: number
+    price: number | string
+  }
+  total: number
+  related_posts: RelatedPost[]
 }
