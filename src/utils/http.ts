@@ -119,7 +119,9 @@ class Http {
       (error: AxiosError) => {
         // Toast khi không phải lỗi 422 và 401
         if (
-          ![HttpStatusCode.UnprocessableEntity, HttpStatusCode.Unauthorized].includes(error.response?.status as number)
+          ![HttpStatusCode.UnprocessableEntity, HttpStatusCode.Unauthorized, HttpStatusCode.NotFound].includes(
+            error.response?.status as number
+          )
         ) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const data: any | undefined = error.response?.data

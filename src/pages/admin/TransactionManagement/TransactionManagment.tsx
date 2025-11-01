@@ -4,10 +4,10 @@ import { DollarSign, TrendingUp, type LucideIcon } from 'lucide-react'
 import {
   Area,
   AreaChart,
-  Bar,
-  BarChart,
   CartesianGrid,
-  Legend,
+  Cell,
+  Pie,
+  PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -31,12 +31,6 @@ const dailyRevenue = [
   { date: 'Jun 5', revenue: 55000, transactions: 35 },
   { date: 'Jun 6', revenue: 58000, transactions: 36 },
   { date: 'Jun 7', revenue: 64000, transactions: 40 }
-]
-
-const paymentMethods = [
-  { method: 'Credit Card', count: 920, revenue: 1420000 },
-  { method: 'Bank Transfer', count: 650, revenue: 1000000 },
-  { method: 'E-Wallet', count: 277, revenue: 427500 }
 ]
 
 // const transactionStatus = [
@@ -116,10 +110,17 @@ const StatCard = ({
     </CardContent>
   </Card>
 )
+const statusData = [
+  { name: 'Tin đăng trả phí', value: 12000000, color: '#3b82f6' }, // Post
+  { name: 'Mua gói', value: 8500000, color: '#f59e0b' }, // Package
+  { name: 'Đấu giá', value: 23000000, color: '#10b981' }
+]
 
 export default function TransactionManagement() {
   const [searchTerm] = useState('')
   const [statusFilter] = useState('all')
+
+  
 
   const filteredTransactions = recentTransactions.filter((txn) => {
     const matchesSearch =
@@ -132,23 +133,6 @@ export default function TransactionManagement() {
 
   return (
     <div className='min-h-screen flex-1 bg-background'>
-      {/* Header */}
-      {/* <div className='border-b -border bg-card'>
-        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6'>
-          <div className='flex items-center gap-4 mb-4'>
-            <Link to='/'>
-              <Button variant='ghost' size='sm'>
-                <ChevronLeft className='h-4 w-4' />
-              </Button>
-            </Link>
-            <div>
-              <h1 className='text-3xl font-bold text-foreground'>Transaction Management</h1>
-              <p className='text-muted-foreground mt-1'>Monitor all platform transactions and revenue</p>
-            </div>
-          </div>
-        </div>
-      </div> */}
-
       {/* Main Content */}
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         {/* KPI Cards */}
@@ -180,9 +164,9 @@ export default function TransactionManagement() {
         </div>
 
         {/* Charts */}
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8'>
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8'>
           {/* Daily Revenue */}
-          <Card>
+          <Card className='col-span-1 lg:col-span-2 rounded-xl border border-slate-200 bg-white p-6 shadow-sm'>
             <CardHeader>
               <CardTitle>Daily Revenue</CardTitle>
               <CardDescription>Revenue trend over the last 7 days</CardDescription>
@@ -208,28 +192,58 @@ export default function TransactionManagement() {
             </CardContent>
           </Card>
 
-          {/* Payment Methods */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Payment Methods</CardTitle>
-              <CardDescription>Revenue by payment method</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width='100%' height={300}>
-                <BarChart data={paymentMethods}>
-                  <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
-                  <XAxis dataKey='method' stroke='#6b7280' />
-                  <YAxis stroke='#6b7280' />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px', color: '#fff' }}
-                  />
-                  <Legend />
-                  <Bar dataKey='count' fill='#3b82f6' radius={[8, 8, 0, 0]} />
-                  <Bar dataKey='revenue' fill='#10b981' radius={[8, 8, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+          <div className='rounded-xl border border-slate-200 bg-white p-6 shadow-sm'>
+            <h3 className='mb-6 text-lg font-semibold text-slate-900'>Doanh thu</h3>
+            <ResponsiveContainer width='100%' height={300}>
+              <PieChart>
+                <Pie
+                  data={statusData}
+                  cx='50%'
+                  cy='50%'
+                  innerRadius={60}
+                  outerRadius={100}
+                  paddingAngle={2}
+                  dataKey='value'
+                >
+                  {statusData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  formatter={(value: number) => `${value.toLocaleString('vi-VN')} ₫`}
+                  contentStyle={{
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e2e8f0', // viền xám nhạt (slate-200)
+                    borderRadius: '8px',
+                    color: '#0f172a', // slate-900
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                    padding: '8px 12px'
+                  }}
+                  itemStyle={{
+                    color: '#0f172a',
+                    fontSize: '14px',
+                    fontWeight: 500
+                  }}
+                  labelStyle={{
+                    color: '#64748b', // slate-500
+                    fontSize: '13px',
+                    marginBottom: '4px'
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className='mt-4 space-y-2'>
+              {statusData.map((item) => (
+                <div key={item.name} className='flex items-center justify-between text-sm'>
+                  <div className='flex items-center gap-2'>
+                    <div className='h-3 w-3 rounded-full' style={{ backgroundColor: item.color }} />
+                    <span className='text-slate-600'>{item.name}</span>
+                  </div>
+                  <span className='font-semibold text-slate-900'>{item.value.toLocaleString('vi-VN')}đ</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Recent Transactions Table */}
@@ -237,29 +251,6 @@ export default function TransactionManagement() {
           <CardHeader>
             <CardTitle>Recent Transactions</CardTitle>
             <CardDescription>Latest transactions on the platform</CardDescription>
-            {/* <div className='mt-4 flex items-center gap-2 flex-wrap'>
-              <div className='flex items-center gap-2'>
-                <Search className='h-4 w-4 text-muted-foreground' />
-                <Input
-                  placeholder='Search transactions...'
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className='max-w-sm'
-                />
-              </div>
-              <div className='flex gap-2'>
-                {['all', 'Completed', 'Pending', 'Failed'].map((status) => (
-                  <Button
-                    key={status}
-                    variant={statusFilter === status ? 'default' : 'outline'}
-                    size='sm'
-                    onClick={() => setStatusFilter(status)}
-                  >
-                    {status}
-                  </Button>
-                ))}
-              </div>
-            </div> */}
           </CardHeader>
           <CardContent>
             <div className='overflow-x-auto'>

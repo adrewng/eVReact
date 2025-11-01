@@ -23,9 +23,8 @@ const menuItems = [
   { label: 'Dashboard', icon: Home, path: path.adminDashboard },
   { label: 'Transaction', icon: CreditCard, path: path.adminTransactions },
   { label: 'Posts', icon: FileText, path: path.adminPosts },
-  { label: 'Orders', icon: ShoppingCart, badge: 14 },
-  { label: 'User', icon: Users, badge: 23, path: path.adminUsers },
-  { label: 'Auction', icon: Gavel, badge: 1, path: path.adminAuctions },
+  { label: 'User', icon: Users, path: path.adminUsers },
+  { label: 'Auction', icon: Gavel, path: path.adminAuctions },
   { label: 'Package', icon: Package, path: path.adminPackages }
 ]
 

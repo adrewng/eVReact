@@ -37,7 +37,8 @@ export default function AuctionsTable() {
     queryKey: ['all-auction'],
     queryFn: auctionApi.getAllAuction
   })
-  const auctions = allAuctionData?.data?.data
+  const auctions = allAuctionData?.data?.data.auctions
+  console.log('auctions-', allAuctionData)
 
   // start auction
   const startAuction = useMutation({
