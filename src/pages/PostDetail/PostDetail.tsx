@@ -1,3 +1,4 @@
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import {
   Armchair,
   Battery,
@@ -16,9 +17,10 @@ import {
   Sparkles,
   Zap
 } from 'lucide-react'
+import { useMemo } from 'react'
 
-import { useQuery } from '@tanstack/react-query'
 import { Link, useParams } from 'react-router-dom'
+
 import postApi from '~/apis/post.api'
 import {
   BATTERY_HEALTH_OPTIONS,
@@ -33,20 +35,45 @@ import {
 import { nonEmpty, toNumber } from '~/utils/formater'
 import { labelFromOptions } from '~/utils/option'
 import { formatCurrencyVND, formatOwners, generateNameId, getIdFromNameId, isVehicle } from '~/utils/util'
+
 import AuctionBox from './components/AuctionBox/AuctionBox'
 import Gallery from './components/Gallery'
 import MarketPriceRange from './components/MarketPriceRange'
+import PageSkeleton from './components/PageSkeleton'
+import RelatedCard from './components/RelatedCard/RelatedCard'
 import SpecRow from './components/SpecRow'
 import auctionApi from '~/apis/auction.api'
+
+// --- Skeleton for related grid ---
+function SkeletonGrid() {
+  return (
+    <div className='grid auto-rows-fr grid-cols-1 gap-4 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'>
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div key={i} className='h-72 animate-pulse rounded-2xl border border-zinc-100 bg-zinc-100' />
+      ))}
+    </div>
+  )
+}
 
 export default function PostDetail() {
   const { nameid } = useParams()
   const id = getIdFromNameId(nameid as string)
-  const { data: postDetailData } = useQuery({
+
+  // Product detail
+  const postQ = useQuery({
     queryKey: ['product', id],
-    queryFn: () => postApi.getProductDetail(id as string)
+    queryFn: () => postApi.getProductDetail(id),
+    select: (r) => r.data.data,
+    enabled: !!id,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    placeholderData: keepPreviousData,
+    retry: 1
   })
-  const post = postDetailData?.data.data
+
+  const post = postQ.data
   const product = post?.product
   console.log('post-', post)
 
@@ -56,11 +83,13 @@ export default function PostDetail() {
     enabled: !!id
   })
 
-  const base = product
-    ? isVehicle(product)
+  // Build specs (memo)
+  const specs = useMemo(() => {
+    if (!product || !post) return []
+    const base = isVehicle(product)
       ? [
           { icon: <Factory className='h-4 w-4' />, label: 'Thương hiệu', value: product.brand },
-          { icon: <Car className='h-4 w-4' />, label: 'Tên', value: product.model }, // hoặc <Cube />
+          { icon: <Car className='h-4 w-4' />, label: 'Tên', value: product.model },
           {
             icon: <Zap className='h-4 w-4' />,
             label: 'Động cơ',
@@ -96,7 +125,7 @@ export default function PostDetail() {
         ]
       : [
           { icon: <Factory className='h-4 w-4' />, label: 'Thương hiệu', value: product.brand },
-          { icon: <Battery className='h-4 w-4' />, label: 'Model', value: product.model }, // hoặc <Cube />
+          { icon: <Battery className='h-4 w-4' />, label: 'Model', value: product.model },
           {
             icon: <Zap className='h-4 w-4' />,
             label: 'Điện áp',
@@ -125,10 +154,23 @@ export default function PostDetail() {
             value: labelFromOptions(COLOR_OPTIONS, product.color)
           }
         ]
-    : []
+    return base.filter((s) => nonEmpty(s.value) || s.value === 0)
+  }, [product, post])
 
-  const specs = base.filter((s) => nonEmpty(s.value) || s.value === 0)
+  const relatedQ = useQuery({
+    queryKey: ['related-posts', id],
+    queryFn: () => postApi.getRelatedPost(id),
+    select: (r) => r.data.data.related_posts,
+    enabled: !!id,
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    placeholderData: keepPreviousData
+  })
 
+  if (!postQ.data && postQ.isLoading) {
+    return <PageSkeleton />
+  }
   return (
     <div className='min-h-screen bg-gradient-to-br from-zinc-50 to-white text-zinc-900'>
       {product && post && (
@@ -139,35 +181,38 @@ export default function PostDetail() {
               <div className='min-w-0'>
                 <div className='mb-1 flex flex-wrap items-center gap-2 text-sm text-zinc-500'>
                   <span className='rounded-full bg-zinc-100 px-2 py-0.5'>{product.category.name}</span>
-                  {/* {isFeatured && (
-                  <span className='inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-amber-700'>
-                    <Sparkles className='h-3.5 w-3.5' /> Nổi bật
-                  </span>
-                )} */}
                   <span>•</span>
                   <span className='inline-flex items-center gap-1'>
                     <Calendar className='h-4 w-4' />
                     {new Date(post.created_at).toLocaleDateString('vi-VN')}
                   </span>
-                  <span>•</span>
                   {product.warranty && (
-                    <span className='inline-flex items-center gap-1'>
-                      <ShieldCheck className='h-4 w-4' />
-                      {product.warranty}
-                    </span>
+                    <>
+                      <span>•</span>
+                      <span className='inline-flex items-center gap-1'>
+                        <ShieldCheck className='h-4 w-4' />
+                        {product.warranty}
+                      </span>
+                    </>
                   )}
-                  <span>•</span>
                   {product.address && (
-                    <span className='inline-flex items-center gap-1'>
-                      <MapPin className='h-4 w-4' />
-                      {product.address}
-                    </span>
+                    <>
+                      <span>•</span>
+                      <span className='inline-flex items-center gap-1'>
+                        <MapPin className='h-4 w-4' />
+                        {product.address}
+                      </span>
+                    </>
                   )}
                 </div>
                 <h1 className='line-clamp-2 text-2xl font-bold sm:text-3xl'>{post.title}</h1>
               </div>
+
               <div className='flex shrink-0 items-center gap-2'>
-                <button className='rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium shadow-sm transition hover:bg-zinc-100'>
+                <button
+                  className='rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium shadow-sm transition hover:bg-zinc-100'
+                  aria-pressed={false}
+                >
                   <Heart className='mr-2 inline h-4 w-4' />
                   Lưu
                 </button>
@@ -232,12 +277,29 @@ export default function PostDetail() {
                 <p className='whitespace-pre-line leading-relaxed text-zinc-700'>{product.description}</p>
               </section>
 
-              {/* Placeholder for Related */}
+              {/* Related */}
               <section className='rounded-2xl border border-zinc-100 bg-white/90 p-5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/70'>
-                <h2 className='text-lg font-semibold'>Tin đăng tương tự</h2>
-                <p className='mt-1 text-sm text-zinc-500'>
-                  Bạn có thể hiển thị danh sách các tin liên quan theo cùng danh mục, mức giá, hoặc vị trí.
-                </p>
+                <div className='mb-3 flex items-center justify-between'>
+                  <div>
+                    <h2 className='text-lg font-semibold'>Tin đăng tương tự</h2>
+                    <p className='mt-1 text-sm text-zinc-500'>Gợi ý theo danh mục, mức giá, vị trí và độ tương đồng.</p>
+                  </div>
+                </div>
+
+                {relatedQ.isLoading && <SkeletonGrid />}
+
+                {!relatedQ.isLoading &&
+                  (relatedQ.data?.length ? (
+                    <div className='grid auto-rows-fr grid-cols-1 gap-4 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'>
+                      {relatedQ.data!.map((it) => (
+                        <RelatedCard key={it.id} item={it} />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className='rounded-2xl border border-zinc-100 bg-white/90 p-5 text-sm text-zinc-600'>
+                      Chưa có tin tương tự.
+                    </div>
+                  ))}
               </section>
             </div>
 
@@ -275,6 +337,29 @@ export default function PostDetail() {
                 </div> */}
                 </div>
               )}
+              <AuctionBox product_id={id} />
+
+              {/* Price & actions */}
+              <div className='rounded-2xl border border-zinc-100 bg-white/90 p-5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/70'>
+                <div className='mb-1 text-xs uppercase tracking-wide text-zinc-500'>Giá bán</div>
+                <div className='mb-3 text-3xl font-extrabold'>{formatCurrencyVND(product.price)}</div>
+                <div className='mb-3 flex items-center gap-2 text-sm'>
+                  <MapPin className='h-4 w-4' />
+                  {product.address}
+                </div>
+                <div className='my-3 text-sm text-zinc-500'>
+                  Cập nhật: {new Date(post.updated_at).toLocaleDateString('vi-VN')}
+                </div>
+
+                <div className='mb-4'>
+                  <MarketPriceRange
+                    min={toNumber(post.ai?.min_price)}
+                    max={toNumber(post.ai?.max_price)}
+                    listing={toNumber(product.price)}
+                    windowText='Theo dữ liệu trong 3 tháng gần nhất'
+                  />
+                </div>
+              </div>
 
               {/* Seller card */}
               {post.seller && (

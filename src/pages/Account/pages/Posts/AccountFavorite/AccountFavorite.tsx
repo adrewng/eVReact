@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/pages/AccountFavorite/AccountFavorite.tsx
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Eye, HeartCrack, MapPin, Trash2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import postApi from '~/apis/post.api'
@@ -14,6 +14,7 @@ import Pagination from '../../AccountOrders/components/Pagination'
 export default function AccountFavorite() {
   const navigate = useNavigate()
   const queryConfig = useQueryConfig()
+  const qc = useQueryClient()
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ['favorite-posts'],
     queryFn: () => postApi.getFavoritePostByUser({ page: 1, limit: 10 } as ProductListConfig),
@@ -21,8 +22,20 @@ export default function AccountFavorite() {
     refetchOnWindowFocus: false
   })
 
-  const list = data?.data.posts ?? []
-  const total = data?.data.count?.all ?? 0
+  const deleteFavoriteMutation = useMutation({
+    mutationKey: ['delete-favorite'],
+    mutationFn: (id: number | string) => postApi.deleteFavoritePost(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['favorite-posts'] })
+    }
+  })
+
+  const handleDeleteFavorite = (id: number | string) => {
+    deleteFavoriteMutation.mutate(id)
+  }
+
+  const list = data?.data.data.posts ?? []
+  const total = data?.data.data.count?.all ?? 0
 
   return (
     <div className='flex-1 bg-white min-h-screen p-8 text-gray-900'>
@@ -90,6 +103,7 @@ export default function AccountFavorite() {
                           } else {
                             e.stopPropagation()
                             //TODO Gọi hàm delete favorite post ở đây lun
+                            handleDeleteFavorite(p.id)
                           }
                         }}
                         className='inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-black text-white text-xs hover:bg-black/85'
@@ -102,7 +116,7 @@ export default function AccountFavorite() {
                       </button>
                       <button
                         onClick={() => {
-                          /* TODO: gọi API bỏ yêu thích */
+                          handleDeleteFavorite(p.id)
                         }}
                         className='inline-flex items-center gap-1 px-3 py-1.5 rounded-full border text-xs hover:bg-gray-50'
                         title='Bỏ yêu thích'
@@ -136,7 +150,7 @@ export default function AccountFavorite() {
               </div>
             )
           })}
-          <Pagination queryConfig={queryConfig} pageSize={data?.data.pagination.page_size ?? 1} />
+          <Pagination queryConfig={queryConfig} pageSize={data?.data.data.pagination.page_size ?? 1} />
         </div>
       )}
     </div>
