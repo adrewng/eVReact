@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { omit } from 'lodash'
 import { Bell, Check, Clock, Trash2 } from 'lucide-react'
 import { useState } from 'react'
@@ -25,31 +25,55 @@ export default function AccountNotification() {
     const search =
       key === 'all'
         ? createSearchParams(omit({ ...queryConfig, page: '1' }, ['isRead'])).toString()
-        : createSearchParams({ ...queryConfig, isRead: 'false', page: '1' }).toString()
+        : createSearchParams({ ...queryConfig, isRead: '0', page: '1' }).toString()
     navigate({
       pathname: '',
       search: search
     })
   }
 
+  const qc = useQueryClient()
+  const readANotifictionMutation = useMutation({
+    mutationKey: ['read-notification'],
+    mutationFn: (id: number | string) => notificationApi.readANotification(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['notifications'] })
+    }
+  })
+  const readAllNotifictionMutation = useMutation({
+    mutationKey: ['read-notifications'],
+    mutationFn: () => notificationApi.readAllNotification(),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['notifications'] })
+    }
+  })
+  const deleteNotificationMutation = useMutation({
+    mutationKey: ['delete-notifications'],
+    mutationFn: (id: number | string) => notificationApi.deleteNotification(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['notifications'] })
+    }
+  })
+
   const { data: noticationData, isLoading } = useQuery({
     queryKey: ['notifications', queryConfig],
-    queryFn: () => notificationApi.getNotificationByUser(queryConfig as NotificationListConfig)
+    queryFn: () => notificationApi.getNotificationByUser(queryConfig as NotificationListConfig),
+    placeholderData: keepPreviousData
   })
 
   const notification = noticationData?.data.data.notifications || []
 
-  // const markAsRead = (id: number) => {
-  //   setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)))
-  // }
+  const markAsRead = (id: number | string) => {
+    readANotifictionMutation.mutate(id)
+  }
 
-  // const markAllAsRead = () => {
-  //   setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })))
-  // }
+  const markAllAsRead = () => {
+    readAllNotifictionMutation.mutate()
+  }
 
-  // const deleteNotification = (id: number) => {
-  //   setNotifications((prev) => prev.filter((n) => n.id !== id))
-  // }
+  const deleteNotification = (id: number) => {
+    deleteNotificationMutation.mutate(id)
+  }
 
   return (
     <div className='flex-1 bg-white min-h-screen p-8 text-gray-900'>
@@ -61,7 +85,7 @@ export default function AccountNotification() {
         </div>
         <div className='flex items-center gap-3'>
           <button
-            // onClick={markAllAsRead}
+            onClick={markAllAsRead}
             disabled={isLoading || !noticationData || noticationData.data.data.static.unreadCount === 0}
             className='flex items-center gap-2 text-sm border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-100 transition disabled:opacity-50'
           >
@@ -141,7 +165,7 @@ export default function AccountNotification() {
                     <div className='flex gap-2 opacity-0 group-hover:opacity-100 transition'>
                       {!item.isRead && (
                         <button
-                          // onClick={() => markAsRead(item.id)}
+                          onClick={() => markAsRead(item.id)}
                           className='text-gray-500 hover:text-black transition'
                           title='Đánh dấu đã đọc'
                         >
@@ -149,7 +173,7 @@ export default function AccountNotification() {
                         </button>
                       )}
                       <button
-                        // onClick={() => deleteNotification(item.id)}
+                        onClick={() => deleteNotification(item.id)}
                         className='text-gray-400 hover:text-black transition'
                         title='Xóa thông báo'
                       >

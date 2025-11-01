@@ -27,7 +27,7 @@ export interface NotificationList {
 export interface NotificationListConfig {
   page?: number | string
   limit?: number | string
-  isRead?: boolean
+  isRead?: 1 | 0
 }
 export interface NavNotificationsData {
   items: Notification[]

@@ -1,6 +1,8 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import classNames from 'classnames'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
+import postApi from '~/apis/post.api'
 import Pagination from '~/components/Pagination'
 import PostCard from '~/components/PostCard'
 import ProductCardSkeletonLight from '~/components/ProductCardSkeleton/ProductCardSkeleton'
@@ -19,7 +21,28 @@ export default function AllProductList() {
   const toggleFilter = () => {
     setIsFilterOpen((s) => !s)
   }
-
+  const qc = useQueryClient()
+  const addFavoritePost = useMutation({
+    mutationKey: ['add-favorite'],
+    mutationFn: (id: number | string) => postApi.addFavoritePost(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['favorite-posts'] })
+      qc.invalidateQueries({ queryKey: ['posts'] })
+    }
+  })
+  const deleteFavoriteMutation = useMutation({
+    mutationKey: ['delete-favorite'],
+    mutationFn: (id: number | string) => postApi.deleteFavoritePost(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['favorite-posts'] })
+    }
+  })
+  const handleDeleteFavorite = (id: number | string) => {
+    deleteFavoriteMutation.mutate(id)
+  }
+  const handleAddFavoritePost = (id: number | string) => {
+    addFavoritePost.mutate(id)
+  }
   return (
     <div className='min-h-screen text-zinc-900'>
       <SortBar
@@ -84,7 +107,11 @@ export default function AllProductList() {
                       className='group'
                     >
                       <div className='flex flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white transition-shadow duration-300 hover:shadow-lg'>
-                        <PostCard post={post} />
+                        <PostCard
+                          post={post}
+                          handleAddFavoritePost={handleAddFavoritePost}
+                          handleDeleteFavorite={handleDeleteFavorite}
+                        />
                       </div>
                     </motion.div>
                   ))}
@@ -131,7 +158,11 @@ export default function AllProductList() {
                         className='group'
                       >
                         <div className='flex flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white transition-shadow duration-300 hover:shadow-lg'>
-                          <PostCard post={post} />
+                          <PostCard
+                            post={post}
+                            handleAddFavoritePost={handleAddFavoritePost}
+                            handleDeleteFavorite={handleDeleteFavorite}
+                          />
                         </div>
                       </motion.div>
                     ))}
