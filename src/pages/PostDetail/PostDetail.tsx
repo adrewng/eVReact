@@ -82,6 +82,7 @@ export default function PostDetail() {
     queryFn: () => auctionApi.getAuctionByProduct(Number(id)),
     enabled: !!id
   })
+  console.log('auction-', auctionData)
 
   // Build specs (memo)
   const specs = useMemo(() => {

@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import { Bell, CreditCard, FileText, Gavel, Home, LogOutIcon, MessageSquare, Package, Users } from 'lucide-react'
+import { CreditCard, FileText, Gavel, Home, LogOutIcon, Package, Users } from 'lucide-react'
 import { useContext } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { authApi } from '~/apis/auth.api'
@@ -17,10 +17,10 @@ const menuItems = [
   { label: 'Package', icon: Package, path: path.adminPackages }
 ]
 
-const generalItems = [
-  { label: 'Notifications', icon: Bell, path: path.adminDashboard },
-  { label: 'Feedback', icon: MessageSquare, path: path.adminDashboard }
-]
+// const generalItems = [
+//   { label: 'Notifications', icon: Bell, path: path.adminDashboard },
+//   { label: 'Feedback', icon: MessageSquare, path: path.adminDashboard }
+// ]
 
 export default function Sidebar() {
   // const [active, setActive] = useState('Dashboard')
@@ -93,7 +93,7 @@ export default function Sidebar() {
         })}
 
         {/* General Section */}
-        <div className='mt-8'>
+        {/* <div className='mt-8'>
           <p className='text-xs uppercase text-gray-400 mb-2 px-4'>General</p>
           {generalItems.map((item) => {
             const Icon = item.icon
@@ -113,7 +113,7 @@ export default function Sidebar() {
               </button>
             )
           })}
-        </div>
+        </div> */}
       </nav>
       {/* Bottom logout button */}
       <div className='mt-auto px-4 py-3 border-t border-gray-200'>

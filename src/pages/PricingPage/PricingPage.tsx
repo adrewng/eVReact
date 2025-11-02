@@ -4,53 +4,10 @@ import { useState } from 'react'
 import VehiclePackage from './components/VehiclePackage'
 import BatteryPackage from './components/BatteryPackage'
 
-interface Package {
-  id: string
-  name: string
-  priceMonthly: number
-  priceAnnually: number
-  description: string
-  features: string[]
-  isMostPopular?: boolean
-}
-
 interface Question {
   question: string
   answer: string
 }
-
-const packages: Package[] = [
-  {
-    id: 'starter',
-    name: 'Starter',
-    priceMonthly: 0,
-    priceAnnually: 0,
-    description: 'Phù hợp cho người mới bắt đầu đăng tin xe điện.',
-    features: ['Đăng tối đa 3 tin/tháng', 'Hiển thị cơ bản', 'Báo cáo lượt xem đơn giản']
-  },
-  {
-    id: 'pro',
-    name: 'Pro',
-    priceMonthly: 199000,
-    priceAnnually: 1990000,
-    description: 'Dành cho người dùng thường xuyên muốn tăng lượt tiếp cận.',
-    features: ['Đăng tối đa 15 tin/tháng', 'Tin nổi bật trên trang chủ', 'Báo cáo chi tiết', 'Hỗ trợ ưu tiên'],
-    isMostPopular: true
-  },
-  {
-    id: 'enterprise',
-    name: 'Enterprise',
-    priceMonthly: 499000,
-    priceAnnually: 4990000,
-    description: 'Tối ưu cho đại lý hoặc doanh nghiệp có nhiều tài khoản và tin đăng.',
-    features: [
-      'Không giới hạn tin đăng',
-      'Quản lý nhóm & tài khoản con',
-      'Tin ưu tiên trong kết quả tìm kiếm',
-      'Báo cáo chuyên sâu & xuất file'
-    ]
-  }
-]
 
 const popularQuestions: Question[] = [
   {
@@ -120,7 +77,7 @@ export default function PricingPage() {
 
         {type === 'vehicle' ? <VehiclePackage /> : <BatteryPackage />}
         {/* ===== COMPARE SECTION ===== */}
-        <section className='mb-20'>
+        {/* <section className='mb-20'>
           <div className='text-center mb-12'>
             <h2 className='text-3xl font-bold text-neutral-900'>So sánh các gói</h2>
             <p className='text-neutral-500 mt-2'>Tìm gói phù hợp nhất cho nhu cầu đăng tin của bạn</p>
@@ -183,7 +140,7 @@ export default function PricingPage() {
               </tbody>
             </table>
           </div>
-        </section>
+        </section> */}
         {/* ===== FAQ SECTION ===== */}
         <section className='max-w-3xl mx-auto'>
           <h2 className='text-3xl font-bold text-center mb-10'>Câu hỏi thường gặp</h2>

@@ -1,5 +1,3 @@
-'use client'
-
 // import Link from 'next/link'
 import {
   Bar,
@@ -20,34 +18,32 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/com
 
 import { AlertCircle, ArrowDownRight, ArrowUpRight, DollarSign, Users, Zap, type LucideIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import dashboardApi from '~/apis/home.api'
+import { path } from '~/constants/path'
 
 // Mock data
-const dashboardData = {
-  totalRevenue: 2847500,
-  revenueChange: 12.5,
-  activeUsers: 3421,
-  usersChange: 8.2,
-  totalTransactions: 1847,
-  transactionsChange: -3.1,
-  platformHealth: 98.5,
-  healthChange: 2.1
-}
+// const dashboardData = {
+//   totalRevenue: 2847500,
+//   revenueChange: 12.5,
+//   activeUsers: 3421,
+//   usersChange: 8.2,
+//   totalTransactions: 1847,
+//   transactionsChange: -3.1,
+//   totalPost: 98,
+//   postChange: 2.1
+// }
 
-const revenueByMonth = [
-  { month: 'Jan', revenue: 180000, transactions: 120 },
-  { month: 'Feb', revenue: 220000, transactions: 145 },
-  { month: 'Mar', revenue: 195000, transactions: 130 },
-  { month: 'Apr', revenue: 280000, transactions: 185 },
-  { month: 'May', revenue: 320000, transactions: 210 },
-  { month: 'Jun', revenue: 380000, transactions: 245 }
-]
+// const revenueByMonth = [
+//   { month: 'Jan', revenue: 180000, transactions: 120 },
+//   { month: 'Feb', revenue: 220000, transactions: 145 },
+//   { month: 'Mar', revenue: 195000, transactions: 130 },
+//   { month: 'Apr', revenue: 280000, transactions: 185 },
+//   { month: 'May', revenue: 320000, transactions: 210 },
+//   { month: 'Jun', revenue: 380000, transactions: 245 }
+// ]
 
-const categoryDistribution = [
-  { name: 'EV Vehicles', value: 45, color: '#3b82f6' },
-  { name: 'Batteries', value: 35, color: '#10b981' },
-  { name: 'Parts', value: 15, color: '#f59e0b' },
-  { name: 'Accessories', value: 5, color: '#8b5cf6' }
-]
+// 📢 Phân bố bài đăng theo danh mục
 
 const userGrowth = [
   { month: 'Jan', buyers: 280, sellers: 120 },
@@ -90,7 +86,32 @@ const StatCard = ({
 )
 
 export default function Home() {
-  // const [selectedCategory, setSelectedCategory] = useState(null)
+  const { data: dashboardData } = useQuery({
+    queryKey: ['dashboard'],
+    queryFn: dashboardApi.getDashboardInfo
+  })
+
+  console.log('dashboard-', dashboardData)
+  const dashboard = dashboardData?.data.data
+  console.log('dashboard- summary', dashboard)
+
+  const categoryDistribution = dashboard?.categoryDistribution ?? []
+  const totalPosts = dashboard?.summary?.totalPost ?? 1 // tránh chia cho 0
+
+  const categoryPercentData = categoryDistribution.map((item) => ({
+    ...item,
+    value: parseFloat(((item.posts / totalPosts) * 100).toFixed(1)),
+    color:
+      item.name === 'Electric Car'
+        ? '#3b82f6'
+        : item.name === 'Electric Motorcycle'
+          ? '#10b981'
+          : item.name === 'Car Battery'
+            ? '#f59e0b'
+            : item.name === 'Motorcycle Battery'
+              ? '#ef4444'
+              : '#6b7280'
+  }))
 
   return (
     <div className='min-h-screen bg-background flex-1'>
@@ -115,31 +136,31 @@ export default function Home() {
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8'>
           <StatCard
             title='Total Revenue'
-            value={`$${(dashboardData.totalRevenue / 1000000).toFixed(2)}M`}
-            change={dashboardData.revenueChange}
+            value={`${((dashboard?.summary.totalRevenue as number) / 1000000).toFixed(2)}M`}
+            change={dashboard?.summary.revenueChange as number}
             icon={DollarSign}
-            href='/transactions'
+            href={path.adminTransactions}
           />
           <StatCard
             title='Active Users'
-            value={dashboardData.activeUsers.toLocaleString()}
-            change={dashboardData.usersChange}
+            value={dashboard?.summary.activeUsers.toLocaleString() as string | number}
+            change={dashboard?.summary.usersChange as number}
             icon={Users}
-            href='/users'
+            href={path.adminUsers}
           />
           <StatCard
             title='Transactions'
-            value={dashboardData.totalTransactions.toLocaleString()}
-            change={dashboardData.transactionsChange}
+            value={dashboard?.summary.totalTransactions.toLocaleString() as string | number}
+            change={dashboard?.summary.transactionsChange as number}
             icon={Zap}
-            href='/transactions'
+            href={path.adminTransactions}
           />
           <StatCard
-            title='Platform Health'
-            value={`${dashboardData.platformHealth}%`}
-            change={dashboardData.healthChange}
+            title='Total posts'
+            value={`${dashboard?.summary.totalPost}`}
+            change={dashboard?.summary.postChange as number}
             icon={AlertCircle}
-            href='/'
+            href={path.adminPosts}
           />
         </div>
 
@@ -153,7 +174,7 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width='100%' height={300}>
-                <LineChart data={revenueByMonth}>
+                <LineChart data={dashboard?.revenueByMonth}>
                   <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
                   <XAxis dataKey='month' stroke='#6b7280' />
                   <YAxis stroke='#6b7280' />
@@ -170,27 +191,27 @@ export default function Home() {
           {/* Category Distribution */}
           <Card>
             <CardHeader>
-              <CardTitle>Sales by Category</CardTitle>
-              <CardDescription>Product distribution</CardDescription>
+              <CardTitle>Posts by Category</CardTitle>
+              <CardDescription>Distribution of posts</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width='100%' height={300}>
                 <PieChart>
                   <Pie
-                    data={categoryDistribution}
+                    data={categoryPercentData}
                     cx='50%'
                     cy='50%'
                     labelLine={false}
                     label={({ name, value }) => `${name}: ${value}%`}
-                    outerRadius={80}
+                    outerRadius={90}
                     fill='#8884d8'
                     dataKey='value'
                   >
-                    {categoryDistribution.map((entry, index) => (
+                    {categoryPercentData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip formatter={(value) => `${value}%`} labelFormatter={(label) => `${label}`} />
                 </PieChart>
               </ResponsiveContainer>
             </CardContent>

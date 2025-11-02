@@ -60,13 +60,14 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
   // })
 
   const auctionInfo = auctionData?.data?.data
+  const isAuctionEnded = auctionInfo?.status === 'ended' || isEnded
+
   const auctionId = auctionInfo?.id
   const step = Number(auctionInfo?.step || 0)
   const startingPrice = Number(auctionInfo?.starting_price || 0)
   const targetPrice = Number(auctionInfo?.target_price || 0)
   const deposit = Number(auctionInfo?.deposit || 0)
 
-  // --- Socket connect & join ---
   useEffect(() => {
     if (!auctionId || !token) {
       console.log('⚠️ Missing auctionId or token', { auctionId, hasToken: !!token })
@@ -74,7 +75,7 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
     }
 
     console.log('🔌 Connecting to auction socket...' + SERVER_URL)
-    const socketInstance = io(`${SERVER_URL}/auction`, {
+    const socketInstance: Socket = io(`${SERVER_URL}/auction`, {
       auth: { token },
       transports: ['websocket', 'polling'],
       reconnection: true,
@@ -83,56 +84,54 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
     })
 
     // Khi connect thành công
-    socketInstance.on('connect', () => {
+    const onConnect = () => {
       console.log('✅ Connected to auction socket:', socketInstance.id)
       setIsConnected(true)
-      // Join auction room
+      // Join auction room (server sẽ trả need_deposit nếu chưa đặt cọc)
       socketInstance.emit('auction:join', { auctionId })
-    })
+    }
 
     // Khi connect lỗi
-    socketInstance.on('connect_error', (error) => {
-      console.error('❌ Connection error:', error.message)
+    const onConnectError = (error: any) => {
+      console.error('❌ Connection error:', error?.message || error)
       setIsConnected(false)
       toast.error('Không thể kết nối đến server đấu giá')
-    })
+    }
 
     // Nhận thông tin khi join thành công
-    socketInstance.on('auction:joined', (data) => {
+    const onJoined = (data: any) => {
       console.log('📥 Joined auction successfully:', data)
       setHasJoined(true)
       setCurrentPrice(data.auction?.winning_price || startingPrice)
       setWinnerId(data.auction?.winner_id || null)
       setTimeLeft(data.remainingTime || 0)
       toast.success('Đã tham gia phòng đấu giá!')
-    })
+    }
 
     // Khi có người khác join
-    socketInstance.on('auction:user_joined', (data) => {
+    const onUserJoined = (data: any) => {
       console.log('👤 User joined:', data)
-    })
+    }
 
     // Cập nhật giá mới khi có người đặt giá
-    socketInstance.on('auction:bid_update', (data) => {
+    const onBidUpdate = (data: any) => {
       console.log('💰 Bid update:', data)
       setCurrentPrice(data.winningPrice)
       setWinnerId(data.winnerId)
-
-      // Thông báo cho user
       if (data.winnerId === profile?.id) {
         toast.success(`🎉 Bạn đang dẫn đầu với giá ${data.winningPrice.toLocaleString('vi-VN')}đ!`)
       } else {
         toast.info(`Giá mới: ${data.winningPrice.toLocaleString('vi-VN')}đ`)
       }
-    })
+    }
 
     // Cập nhật thời gian còn lại
-    socketInstance.on('auction:time_update', (data) => {
+    const onTimeUpdate = (data: any) => {
       setTimeLeft(data.remainingTime)
-    })
+    }
 
     // Auction đóng
-    socketInstance.on('auction:closed', (data) => {
+    const onClosed = (data: any) => {
       console.log('🎉 Auction closed:', data)
       setIsEnded(true)
       setWinnerId(data.winnerId)
@@ -145,32 +144,48 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
       } else {
         toast.info('Đấu giá đã kết thúc mà không có người thắng')
       }
-    })
+    }
 
     // Lỗi từ server
-    socketInstance.on('auction:error', (data) => {
-      console.error('❌ Auction error:', data.message)
-      toast.error(data.message || 'Có lỗi xảy ra')
-    })
+    const onAuctionError = (data: any) => {
+      console.error('❌ Auction error:', data?.message)
+      toast.error(data?.message || 'Có lỗi xảy ra')
+    }
 
     // Disconnect
-    socketInstance.on('disconnect', (reason) => {
+    const onDisconnect = (reason: string) => {
       console.log('❌ Disconnected:', reason)
       setIsConnected(false)
       setHasJoined(false)
-    })
+    }
+
+    socketInstance.on('connect', onConnect)
+    socketInstance.on('connect_error', onConnectError)
+    socketInstance.on('auction:joined', onJoined)
+    socketInstance.on('auction:user_joined', onUserJoined)
+    socketInstance.on('auction:bid_update', onBidUpdate)
+    socketInstance.on('auction:time_update', onTimeUpdate)
+    socketInstance.on('auction:closed', onClosed)
+    socketInstance.on('auction:error', onAuctionError)
+    socketInstance.on('disconnect', onDisconnect)
 
     setSocket(socketInstance)
 
     return () => {
       console.log('🔌 Cleaning up socket connection')
-      if (socketInstance) {
-        socketInstance.emit('auction:leave', { auctionId })
-        socketInstance.disconnect()
-      }
+      socketInstance.off('connect', onConnect)
+      socketInstance.off('connect_error', onConnectError)
+      socketInstance.off('auction:joined', onJoined)
+      socketInstance.off('auction:user_joined', onUserJoined)
+      socketInstance.off('auction:bid_update', onBidUpdate)
+      socketInstance.off('auction:time_update', onTimeUpdate)
+      socketInstance.off('auction:closed', onClosed)
+      socketInstance.off('auction:error', onAuctionError)
+      socketInstance.off('disconnect', onDisconnect)
+      socketInstance.emit('auction:leave', { auctionId })
+      socketInstance.disconnect()
     }
   }, [auctionId, token, profile?.id, startingPrice])
-
   // --- update initial bidAmount ---
   useEffect(() => {
     if (auctionInfo && step > 0) {
@@ -234,6 +249,21 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
   // --- Tách timeLeft ra phút/giây để render ---
   const minutes = Math.floor(timeLeft / 60)
   const seconds = timeLeft % 60
+  // --- Countdown effect ---
+  useEffect(() => {
+    if (!timeLeft || isEnded) return
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [timeLeft, isEnded])
 
   return (
     <div className='rounded-2xl border border-zinc-100 bg-white/90 p-5 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/70'>
@@ -274,36 +304,43 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
       </div>
 
       {/* Price Info */}
-      <hr className='my-4 border-zinc-900 pb-2' />
-      <div className='mb-5 space-y-2 text-sm'>
-        <div className='flex items-center justify-between text-zinc-600'>
-          <span>Giá khởi điểm:</span>
-          <span className='font-bold text-lg text-zinc-900'>{startingPrice.toLocaleString('vi-VN')}đ</span>
-        </div>
-        <div className='flex items-center justify-between text-zinc-600'>
-          <span>Bước nhảy:</span>
-          <span className='font-bold text-lg text-zinc-900'>{step.toLocaleString('vi-VN')}đ</span>
-        </div>
-        <div className='flex items-center justify-between border-t border-zinc-100 pt-2'>
-          <span className='text-zinc-600'>Giá hiện tại:</span>
-          <span className='text-xl font-bold text-emerald-600'>
-            {currentPrice > 0 ? currentPrice.toLocaleString('vi-VN') : startingPrice.toLocaleString('vi-VN')}đ
-          </span>
-        </div>
-        {winnerId && (
-          <div className='flex items-center justify-between text-zinc-600'>
-            <span>Người dẫn đầu:</span>
-            <span className='font-semibold text-zinc-900'>
-              {winnerId === profile?.id ? 'Bạn 🏆' : `User ${winnerId}`}
-            </span>
+
+      {!isAuctionEnded ? (
+        <>
+          <hr className='my-4 border-zinc-900 pb-2' />
+          <div className='mb-5 space-y-2 text-sm'>
+            <div className='flex items-center justify-between text-zinc-600'>
+              <span>Giá khởi điểm:</span>
+              <span className='font-bold text-lg text-zinc-900'>{startingPrice.toLocaleString('vi-VN')}đ</span>
+            </div>
+            <div className='flex items-center justify-between text-zinc-600'>
+              <span>Bước nhảy:</span>
+              <span className='font-bold text-lg text-zinc-900'>{step.toLocaleString('vi-VN')}đ</span>
+            </div>
+            <div className='flex items-center justify-between border-t border-zinc-100 pt-2'>
+              <span className='text-zinc-600'>Giá hiện tại:</span>
+              <span className='text-xl font-bold text-emerald-600'>
+                {currentPrice > 0 ? currentPrice.toLocaleString('vi-VN') : startingPrice.toLocaleString('vi-VN')}đ
+              </span>
+            </div>
+            {winnerId && (
+              <div className='flex items-center justify-between text-zinc-600'>
+                <span>Người dẫn đầu:</span>
+                <span className='font-semibold text-zinc-900'>
+                  {winnerId === profile?.id ? 'Bạn 🏆' : `User ${winnerId}`}
+                </span>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      ) : (
+        ''
+      )}
 
       <hr className='my-4 border-zinc-900 pt-3' />
 
       {/* Bid Input */}
-      {!isEnded ? (
+      {!isAuctionEnded ? (
         <>
           <div className='mb-4'>
             <label className='mb-2 block text-xs uppercase tracking-wide text-zinc-500'>Giá đặt của bạn</label>
@@ -337,7 +374,7 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
 
           {/* Action Buttons */}
           <div className='space-y-2'>
-            <JoinABidButton deposit={String(deposit)} auction_id={auctionId} />
+            {hasJoined ? '' : <JoinABidButton deposit={String(deposit)} auction_id={auctionId} socket={socket} />}
 
             <Button
               onClick={handlePlaceBid}

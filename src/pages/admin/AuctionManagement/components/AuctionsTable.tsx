@@ -75,20 +75,6 @@ export default function AuctionsTable() {
     setEditingAuction(auction)
     setDuration(auction.duration || 0)
   }
-  // const handleUpdateAuction = (auctionId: number, duration: number) => {
-  //   if (isVerify) {
-  //     updateAuction.mutate({ auctionId, duration })
-  //   }
-  // }
-
-  // Lọc
-  // let filteredAuctions = auctions
-  // if (filters.status !== 'all') {
-  //   filteredAuctions = filteredAuctions.filter((a) => a.status === filters.status)
-  // }
-  // if (filters.search) {
-  //   filteredAuctions = filteredAuctions.filter((a) => a.note.toLowerCase().includes(filters.search.toLowerCase()))
-  // }
 
   const handleCreateContract = (auction: Auction) => {
     setContractAuction(auction)
@@ -165,7 +151,7 @@ export default function AuctionsTable() {
                   className='grid grid-cols-1 gap-4 px-6 py-4 transition hover:bg-slate-50 sm:grid-cols-12 sm:items-center cursor-pointer'
                 >
                   <div className='col-span-1 sm:col-span-4'>
-                    <p className='font-medium text-slate-900 line-clamp-1'>{auction.note}</p>
+                    <p className='font-medium text-slate-900 line-clamp-1'>{auction.title}</p>
                     <p className='mt-1 text-xs text-slate-500'>Mã sản phẩm: {auction.product_id}</p>
                   </div>
 
@@ -225,7 +211,7 @@ export default function AuctionsTable() {
                       </div>
                       <div>
                         <p className='text-xs font-semibold uppercase text-slate-600'>Thời Lượng</p>
-                        <p className='mt-1 text-sm text-slate-900'>{auction.duration} giờ</p>
+                        <p className='mt-1 text-sm text-slate-900'>{auction.duration} giây</p>
                       </div>
                       <div>
                         <p className='text-xs font-semibold uppercase text-slate-600'>Người Bán</p>
@@ -256,7 +242,7 @@ export default function AuctionsTable() {
             <div className='space-y-4'>
               {/* Thời lượng */}
               <div>
-                <label className='block text-sm font-medium text-slate-700'>Thời lượng (giờ)</label>
+                <label className='block text-sm font-medium text-slate-700'>Thời lượng (giây))</label>
                 <input
                   type='number'
                   value={duration}

@@ -13,6 +13,9 @@ const packageApi = {
   },
   createPackage(payload: { user_id: number; service_id: number }) {
     return http.post('/api/payment/package-payment', payload)
+  },
+  getPackageByAdmin() {
+    return http.get<SuccessResponse<Packages>>('/api/package/get-all')
   }
 }
 

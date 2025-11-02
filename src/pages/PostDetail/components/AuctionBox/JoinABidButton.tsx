@@ -1,4 +1,6 @@
 import { Plus } from 'lucide-react'
+import { useState } from 'react'
+import type { Socket } from 'socket.io-client'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,15 +14,16 @@ import {
 } from '~/components/ui/alert-dialog'
 import { Checkbox } from '~/components/ui/checkbox'
 import { Label } from '~/components/ui/label'
-import { useState } from 'react'
 import DepositModal from './DepositModal'
 
 interface JoinABidButtonProps {
   deposit?: string
   auction_id?: number
+  socket?: Socket | null
 }
+
 export function JoinABidButton(props: JoinABidButtonProps) {
-  const { deposit, auction_id } = props
+  const { deposit, auction_id, socket } = props
   const [agree, setAgree] = useState(false)
   const [openDeposit, setOpenDeposit] = useState(false)
 
@@ -28,19 +31,17 @@ export function JoinABidButton(props: JoinABidButtonProps) {
     setAgree(false)
     setOpenDeposit(true)
   }
+
   return (
     <div>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <button
-            // onClick={handleJoin}
-            //   disabled={bidAmount < currentPrice + step}
-            className='flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-3 font-medium text-white shadow-sm transition hover:translate-y-[-1px] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0'
-          >
+          <button className='flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-3 font-medium text-white shadow-sm transition hover:translate-y-[-1px] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0'>
             <Plus className='h-5 w-5' />
             Tham gia đấu giá
           </button>
         </AlertDialogTrigger>
+
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>THỎA THUẬN THAM GIA ĐẤU GIÁ</AlertDialogTitle>
@@ -128,6 +129,7 @@ export function JoinABidButton(props: JoinABidButtonProps) {
         onClose={() => setOpenDeposit(false)}
         deposit={deposit}
         auction_id={auction_id}
+        socket={socket} // truyền socket xuống để Modal tự re-join
       />
     </div>
   )

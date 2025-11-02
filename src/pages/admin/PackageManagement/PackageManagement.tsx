@@ -3,79 +3,31 @@ import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import { PackageForm } from './components/PackageForm'
-import { PackageList } from './components/PackageList'
-
-interface Package {
-  id: number
-  name: string
-  type: string
-  cost: number
-  number_of_post: number
-  number_of_push: number
-  service_ref: string
-  product_type: string
-  description: string
-  feature: string
-}
+import { useQuery } from '@tanstack/react-query'
+import packageApi from '~/apis/package.api'
+import type { Package } from '~/types/package.type'
+import PackageList from './components/PackageList'
 
 export default function PackageManagment() {
-  const [packages, setPackages] = useState<Package[]>([])
   const [isFormOpen, setIsFormOpen] = useState(false)
-  const [editingPackage, setEditingPackage] = useState<Package | null>(null)
-  const [loading] = useState(true)
+
+  const { data: packageData, isLoading } = useQuery({
+    queryKey: ['package-admin'],
+    queryFn: packageApi.getPackageByAdmin
+  })
+  console.log('package -', packageData)
+  const packages = packageData?.data.data
 
   const handleAddPackage = () => {
-    setEditingPackage(null)
     setIsFormOpen(true)
   }
 
   const handleEditPackage = (pkg: Package) => {
-    setEditingPackage(pkg)
     setIsFormOpen(true)
   }
 
   const handleCloseForm = () => {
     setIsFormOpen(false)
-    setEditingPackage(null)
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleSavePackage = async (formData: any) => {
-    try {
-      if (editingPackage) {
-        // Update existing package
-        const response = await fetch(`/api/packages/${editingPackage.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
-        })
-        const updated = await response.json()
-        setPackages(packages.map((p) => (p.id === updated.id ? updated : p)))
-      } else {
-        // Create new package
-        const response = await fetch('/api/packages', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
-        })
-        const newPackage = await response.json()
-        setPackages([...packages, newPackage])
-      }
-      handleCloseForm()
-    } catch (error) {
-      console.error('Error saving package:', error)
-    }
-  }
-
-  const handleDeletePackage = async (id: number) => {
-    if (confirm('Bạn có chắc chắn muốn xóa gói này?')) {
-      try {
-        await fetch(`/api/packages/${id}`, { method: 'DELETE' })
-        setPackages(packages.filter((p) => p.id !== id))
-      } catch (error) {
-        console.error('Error deleting package:', error)
-      }
-    }
   }
 
   return (
@@ -91,10 +43,12 @@ export default function PackageManagment() {
             Thêm Gói Mới
           </Button>
         </div>
-
-        <PackageList packages={packages} loading={loading} onEdit={handleEditPackage} onDelete={handleDeletePackage} />
-
-        {isFormOpen && <PackageForm package={editingPackage} onSave={handleSavePackage} onClose={handleCloseForm} />}
+        {packages && (
+          <>
+            <PackageList packages={packages} loading={isLoading} />
+            {<PackageForm onClose={handleCloseForm} />}
+          </>
+        )}
       </div>
     </main>
   )
