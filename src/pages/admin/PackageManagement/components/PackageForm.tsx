@@ -22,12 +22,11 @@ interface PackageItem {
 }
 
 interface PackageFormProps {
-  package: PackageItem | null
-  onSave: (data: any) => void
   onClose: () => void
+  isFormOpen: boolean
 }
 
-export function PackageForm({ package: editingPackage, onSave, onClose }: PackageFormProps) {
+export function PackageForm({ package: editingPackage, onClose }: PackageFormProps) {
   const [formData, setFormData] = useState({
     name: '',
     cost: 0,

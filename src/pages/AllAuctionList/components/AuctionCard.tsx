@@ -5,7 +5,7 @@ import type { Auction } from '~/types/auction.type'
 import { formatCurrencyVND, generateNameId } from '~/utils/util'
 
 export default function AuctionCard({ auction }: { auction: Auction }) {
-  const to = `${path.post}/${generateNameId({ name: auction.title, id: auction.id })}`
+  const to = `${path.post}/${generateNameId({ name: auction.title, id: auction.product_id })}`
 
   let statusDisplay
 

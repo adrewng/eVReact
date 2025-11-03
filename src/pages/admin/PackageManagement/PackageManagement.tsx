@@ -18,10 +18,6 @@ export default function PackageManagment() {
   console.log('package -', packageData)
   const packages = packageData?.data.data
 
-  const handleAddPackage = () => {
-    setIsFormOpen(true)
-  }
-
   const handleEditPackage = (pkg: Package) => {
     setIsFormOpen(true)
   }
@@ -38,7 +34,12 @@ export default function PackageManagment() {
             <h1 className='text-3xl font-bold text-foreground'>Quản lý Gói Tin</h1>
             <p className='text-muted-foreground mt-2'>Quản lý và cập nhật các gói dịch vụ của hệ thống</p>
           </div>
-          <Button onClick={handleAddPackage} className='gap-2'>
+          <Button
+            onClick={() => {
+              setIsFormOpen(true)
+            }}
+            className='gap-2'
+          >
             <Plus className='w-4 h-4' />
             Thêm Gói Mới
           </Button>
@@ -46,7 +47,7 @@ export default function PackageManagment() {
         {packages && (
           <>
             <PackageList packages={packages} loading={isLoading} />
-            {<PackageForm onClose={handleCloseForm} />}
+            {isFormOpen && <PackageForm onClose={handleCloseForm} isFormOpen={isFormOpen} />}
           </>
         )}
       </div>

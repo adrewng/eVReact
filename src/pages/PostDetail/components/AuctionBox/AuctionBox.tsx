@@ -7,6 +7,7 @@ import { JoinABidButton } from './JoinABidButton'
 import type { AxiosResponse } from 'axios'
 import type { SuccessResponse } from '~/types/util.type'
 import type { Auction } from '~/types/auction.type'
+import auctionApi from '~/apis/auction.api'
 
 const SERVER_URL = import.meta.env.VITE_API_URL
 
@@ -102,7 +103,7 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
     const onJoined = (data: any) => {
       console.log('📥 Joined auction successfully:', data)
       setHasJoined(true)
-      setCurrentPrice(data.auction?.winning_price || startingPrice)
+      setCurrentPrice(Number(data.auction?.winning_price || startingPrice))
       setWinnerId(data.auction?.winner_id || null)
       setTimeLeft(data.remainingTime || 0)
       toast.success('Đã tham gia phòng đấu giá!')
@@ -116,7 +117,7 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
     // Cập nhật giá mới khi có người đặt giá
     const onBidUpdate = (data: any) => {
       console.log('💰 Bid update:', data)
-      setCurrentPrice(data.winningPrice)
+      setCurrentPrice(Number(data.winningPrice))
       setWinnerId(data.winnerId)
       if (data.winnerId === profile?.id) {
         toast.success(`🎉 Bạn đang dẫn đầu với giá ${data.winningPrice.toLocaleString('vi-VN')}đ!`)
@@ -127,6 +128,7 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
 
     // Cập nhật thời gian còn lại
     const onTimeUpdate = (data: any) => {
+      console.log('time update from backend: ', data.remainingTime, 'second')
       setTimeLeft(data.remainingTime)
     }
 
@@ -189,7 +191,7 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
   // --- update initial bidAmount ---
   useEffect(() => {
     if (auctionInfo && step > 0) {
-      const minBid = currentPrice > 0 ? currentPrice + step : startingPrice
+      const minBid = Number(currentPrice > 0 ? currentPrice + step : startingPrice)
       setBidAmount(minBid)
     }
   }, [auctionInfo, currentPrice, startingPrice, step])
@@ -229,6 +231,38 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
 
     console.log(`📤 Placing bid: ${bidAmount}`)
     socket.emit('auction:bid', { auctionId, bidAmount })
+  }
+
+  //change to useMutation after
+  const handleBuyNow = async () => {
+    if (!isConnected) {
+      toast.error('Chưa kết nối đến server')
+      return
+    }
+
+    if (!hasJoined) {
+      toast.error('Bạn cần nộp tiền cọc trước khi mua ngay')
+      return
+    }
+
+    if (!auctionId) {
+      toast.error('Không tìm thấy thông tin đấu giá')
+      return
+    }
+
+    try {
+      const response = await auctionApi.buyNow(auctionId)
+      if (response.data) {
+        toast.success(`🎉 Mua ngay thành công với giá ${targetPrice.toLocaleString('vi-VN')}đ!`)
+        setIsEnded(true)
+        setWinnerId(profile?.id || null)
+        // Socket sẽ emit auction:closed event cho tất cả clients
+      }
+    } catch (error: any) {
+      const errorMsg = error?.response?.data?.message || 'Không thể mua ngay'
+      toast.error(errorMsg)
+      console.error('Buy now error:', error)
+    }
   }
 
   // --- TimeBlock component ---
@@ -386,7 +420,8 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
             </Button>
 
             <Button
-              disabled={!isConnected}
+              onClick={handleBuyNow}
+              disabled={!isConnected || !hasJoined}
               className='flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-300 bg-white px-4 py-3 font-medium text-zinc-900 shadow-sm transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50'
             >
               <Zap className='h-5 w-5' />

@@ -39,6 +39,9 @@ const auctionApi = {
       auctionId,
       duration
     })
+  },
+  buyNow(auctionId: number) {
+    return http.post<SuccessResponse<{ auction: Auction }>>('/api/auction/buy-now', { auctionId })
   }
 }
 
