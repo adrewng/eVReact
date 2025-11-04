@@ -1,4 +1,3 @@
-import { Phone, UserRound } from 'lucide-react'
 import type { JSX } from 'react'
 import { BATTERY_HEALTH_OPTIONS, COLOR_OPTIONS, WARRANTY_OPTIONS } from '~/constants/options'
 import type { Order } from '~/types/order.type'
@@ -10,43 +9,6 @@ export function DetailRow({ label, value }: { label: string; value?: string | nu
     <div className='flex items-start justify-between gap-4 py-1.5'>
       <div className='text-sm text-gray-500'>{label}</div>
       <div className='text-right text-sm font-medium text-gray-800'>{value ?? '—'}</div>
-    </div>
-  )
-}
-
-type Appt = NonNullable<Order['viewingAppointment']>
-export function AppointmentBox({ title, appt }: { title: string; appt?: Appt }) {
-  if (!appt) return null
-  return (
-    <div className='rounded-2xl border border-gray-200 p-4'>
-      <div className='mb-2 text-sm font-medium'>{title}</div>
-      <DetailRow label='Thời gian' value={fmtDate(appt.time)} />
-      <DetailRow label='Địa điểm' value={appt.address} />
-      <DetailRow
-        label='Liên hệ'
-        value={
-          appt.contactName || appt.contactPhone ? (
-            <span className='flex items-center justify-end gap-2'>
-              {appt.contactName && (
-                <>
-                  <UserRound className='h-4 w-4 text-gray-400' />
-                  {appt.contactName}
-                </>
-              )}
-              {appt.contactPhone && (
-                <>
-                  <Phone className='h-4 w-4 text-gray-400' />
-                  {appt.contactPhone}
-                </>
-              )}
-            </span>
-          ) : (
-            '—'
-          )
-        }
-      />
-      <DetailRow label='Trạng thái' value={appt.status ?? '—'} />
-      {appt.notes && <div className='mt-2 text-xs italic text-gray-500'>{appt.notes}</div>}
     </div>
   )
 }
@@ -66,7 +28,7 @@ export function ProductDetail({ order }: { order: Order }) {
       <DetailRow label='Năm' value={pr.year ?? '—'} />
       <DetailRow label='Màu' value={labelFromOptions(COLOR_OPTIONS, pr.color, '—')} />
       <DetailRow label='Bảo hành' value={labelFromOptions(WARRANTY_OPTIONS, pr.warranty, '—')} />
-      <DetailRow label='Tình trạng' value={labelFromOptions(BATTERY_HEALTH_OPTIONS, pr.health, '—')} />
+      <DetailRow label='Tình trạng pin' value={labelFromOptions(BATTERY_HEALTH_OPTIONS, pr.health, '—')} />
       <DetailRow label='Địa chỉ' value={pr.address ?? '—'} />
     </div>
   )
@@ -120,7 +82,7 @@ export function ServiceDetail({ order }: { order: Order }) {
           <DetailRow label='Loại' value='Yêu cầu đấu giá' />
           <DetailRow label='Phí dịch vụ' value={formatCurrencyVND(Number(order.price) || 0)} />
         </div>
-        <AppointmentBox title='Ngày nhận xe' appt={order.viewingAppointment as Appt} />
+        {/* <AppointmentBox title='Ngày nhận xe' appt={order.viewingAppointment as Appt} /> */}
         {a && (
           <div className='rounded-2xl border border-gray-200 p-4'>
             <div className='mb-2 text-sm font-medium'>Thông tin phiên đấu giá</div>
@@ -151,7 +113,6 @@ export function ServiceDetail({ order }: { order: Order }) {
           <DetailRow label='Loại' value='Tham gia đấu giá (đặt cọc)' />
           <DetailRow label='Số tiền cọc' value={formatCurrencyVND(Number(order.price) || 0)} />
         </div>
-        {order.handoverAppointment && <AppointmentBox title='Lịch bàn giao' appt={order.handoverAppointment as Appt} />}
         {a && (
           <div className='rounded-2xl border border-gray-200 p-4'>
             <div className='mb-2 text-sm font-medium'>Thông tin phiên đấu giá</div>

@@ -18,7 +18,7 @@ export default function OrderDetail({
   onClose: () => void
   order: Order | null
 }) {
-  const steps = getStepsByType(order?.type)
+  const steps = getStepsByType(order?.type, order?.tracking as OrderStatus)
   const activeKey = order && mapStatusToStepKey(order.type, order.tracking as OrderStatus)
   const activeIndex = Math.max(
     0,

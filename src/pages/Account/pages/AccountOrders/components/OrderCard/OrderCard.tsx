@@ -1,5 +1,5 @@
 import { ClipboardList, CreditCard, MessageSquare, Receipt, RefreshCcw, Undo2, X } from 'lucide-react'
-import { ORDER_TYPE_LABEL, ORDERSTATUS } from '~/constants/order'
+import { getOrderStatusLabel, ORDER_TYPE_LABEL, ORDERSTATUS } from '~/constants/order'
 import { CategoryType } from '~/types/category.type'
 import type { Order } from '~/types/order.type'
 import { fmtDate, formatCurrencyVND } from '~/utils/util'
@@ -32,9 +32,8 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
           </span>
         </div>
 
-        {/* Status pill theo tracking */}
-        {/* Nếu StatusPill hiện nhận prop "status", bạn có thể truyền thẳng tracking */}
-        <StatusPill status={tracking} />
+        {/* Status pill theo tracking và type để tuỳ biến label */}
+        <StatusPill status={tracking} type={o.type} />
       </div>
 
       <div className='p-4 text-sm'>
@@ -137,7 +136,7 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
 
       <div className='flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 p-4'>
         <div className='text-sm text-gray-600'>
-          Trạng thái: <span className='font-medium text-gray-800'>{ORDERSTATUS[tracking].label}</span>
+          Trạng thái: <span className='font-medium text-gray-800'>{getOrderStatusLabel(tracking, o.type)}</span>
         </div>
         <div className='text-right'>
           <div className='text-xs text-gray-500'>Thành tiền</div>
