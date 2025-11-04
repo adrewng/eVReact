@@ -95,8 +95,8 @@ export function ServiceDetail({ order }: { order: Order }) {
               label='Giá đăng bán'
               value={a.originalPrice ? formatCurrencyVND(Number(a.originalPrice)) : '—'}
             />
-            {a.winning_price && <DetailRow label='Giá thắng' value={formatCurrencyVND(Number(a.winning_price))} />}
-            {a.winner && <DetailRow label='Người chiến thắng' value={a.winner.full_name} />}
+            <DetailRow label='Giá thắng' value={a.winning_price ? formatCurrencyVND(Number(a.winning_price)) : '—'} />
+            <DetailRow label='Người chiến thắng' value={a.winner?.full_name ?? '—'} />
             <DetailRow label='Ghi chú' value={a.note ?? '—'} />
           </div>
         )}
