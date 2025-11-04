@@ -1,5 +1,6 @@
 import { CheckCircle, ClipboardList, Loader2, RefreshCcw, Truck, X } from 'lucide-react'
-import { ORDERSTATUS, type OrderStatus } from '~/constants/order'
+import { ORDERSTATUS, getOrderStatusLabel, type OrderStatus } from '~/constants/order'
+import type { Order } from '~/types/order.type'
 
 const STATUS_ICON: Record<OrderStatus, React.ComponentType<{ className?: string }>> = {
   PENDING: ClipboardList,
@@ -11,12 +12,16 @@ const STATUS_ICON: Record<OrderStatus, React.ComponentType<{ className?: string 
   REFUND: RefreshCcw,
   AUCTION_PROCESSING: Truck,
   AUCTION_SUCCESS: CheckCircle,
-  AUCTION_FAILED: X
+  AUCTION_FAILED: X,
+  DEALING: Loader2,
+  DEALING_SUCCESS: CheckCircle,
+  DEALING_FAIL: X
 }
 
-export function StatusPill({ status }: { status: OrderStatus }) {
+export function StatusPill({ status, type }: { status: OrderStatus; type?: Order['type'] }) {
   const meta = ORDERSTATUS[status]
   const Icon = STATUS_ICON[status]
+  const label = getOrderStatusLabel(status, type)
 
   return (
     <span
@@ -24,10 +29,10 @@ export function StatusPill({ status }: { status: OrderStatus }) {
         'inline-flex items-center gap-1 rounded-xl px-2.5 py-1 text-xs font-medium ring-1',
         meta.className
       ].join(' ')}
-      title={meta.label}
+      title={label}
     >
-      <Icon className={`h-3.5 w-3.5 ${status === 'PROCESSING' ? 'animate-spin-slow' : ''}`} />
-      {meta.label}
+      <Icon className={`h-3.5 w-3.5 ${status === 'AUCTION_PROCESSING' ? 'animate-spin-slow' : ''}`} />
+      {label}
     </span>
   )
 }

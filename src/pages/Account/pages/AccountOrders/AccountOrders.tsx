@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { omit } from 'lodash'
 import { Filter, Search } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createSearchParams, useNavigate } from 'react-router-dom'
 import orderApi from '~/apis/order.api'
 import { ORDER_TYPE_LABEL, type OrderType } from '~/constants/order'
@@ -22,6 +22,13 @@ export default function AccountOrders() {
   const [open, setOpen] = useState(false)
   const [current, setCurrent] = useState<Order | null>(null)
   const [id, setId] = useState<number | string>()
+
+  useEffect(() => {
+    const urlType = (queryConfig.type as OrderType) || 'post'
+    if (urlType !== activeTab) {
+      setActiveTab(urlType)
+    }
+  }, [queryConfig.type, activeTab])
 
   const { data: orderData, isLoading } = useQuery({
     queryKey: ['order', queryConfig],
