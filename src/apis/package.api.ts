@@ -1,4 +1,4 @@
-import type { Packages, PackageConfig } from '~/types/package.type'
+import type { Packages, PackageConfig, FormCreatePackage, FormUpdatePackage } from '~/types/package.type'
 import type { SuccessResponse } from '~/types/util.type'
 import http from '~/utils/http'
 const packageApi = {
@@ -16,6 +16,15 @@ const packageApi = {
   },
   getPackageByAdmin() {
     return http.get<SuccessResponse<Packages>>('/api/package/get-all')
+  },
+  deletePackageByAdmin(id: number) {
+    return http.delete(`/api/package/${id}`)
+  },
+  createPackageByAdmin(formData: FormCreatePackage) {
+    return http.post('/api/package/create', formData)
+  },
+  updatePackageByAdmin(formData: FormUpdatePackage, id: number) {
+    return http.put(`/api/package/${id}`, formData)
   }
 }
 

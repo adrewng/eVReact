@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Card, CardContent } from '~/components/ui/card'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
-import { Loader2, Edit, Trash2, Eye, MoreVertical, DollarSign, Clock, FileText, PackageOpen } from 'lucide-react'
+import { Loader2, Edit, Trash2, Clock, FileText, PackageOpen } from 'lucide-react'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,18 +14,31 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from '~/components/ui/alert-dialog'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import packageApi from '~/apis/package.api'
+import type { Package, Packages } from '~/types/package.type'
 
 interface PackageListProps {
-  packages: any[]
+  packages: Packages
   loading?: boolean
   onEdit?: (pkg: any) => void
-  onDelete?: (id: string) => void
-  onView?: (pkg: any) => void
+  onClose?: (pkg: any) => void
 }
 
-export default function PackageList({ packages, loading = false, onEdit, onDelete, onView }: PackageListProps) {
+export default function PackageList({ packages, loading = false, onClose, onEdit }: PackageListProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [selectedPackage, setSelectedPackage] = useState<any>(null)
+
+  const qc = useQueryClient()
+
+  const deletePackage = useMutation({
+    mutationFn: (id: number) => packageApi.deletePackageByAdmin(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['package-admin'] })
+      setDeleteDialogOpen(false)
+      setSelectedPackage(null)
+    }
+  })
 
   const handleDeleteClick = (pkg: any) => {
     setSelectedPackage(pkg)
@@ -33,11 +46,9 @@ export default function PackageList({ packages, loading = false, onEdit, onDelet
   }
 
   const handleConfirmDelete = () => {
-    if (selectedPackage && onDelete) {
-      onDelete(selectedPackage.id)
+    if (selectedPackage) {
+      deletePackage.mutate(selectedPackage.id)
     }
-    setDeleteDialogOpen(false)
-    setSelectedPackage(null)
   }
 
   if (loading) {
@@ -89,8 +100,8 @@ export default function PackageList({ packages, loading = false, onEdit, onDelet
                 </tr>
               </thead>
               <tbody>
-                {packages.map((pkg: any, index: number) => (
-                  <tr key={pkg.id} className='border-b hover:bg-muted/30 transition-colors'>
+                {packages.map((pkg: Package, index: number) => (
+                  <tr key={pkg.id} className='border-b hover:bg-muted/30 transition-colors duration-150'>
                     <td className='px-4 py-4 text-center text-sm font-medium text-muted-foreground'>{index + 1}</td>
 
                     <td className='px-4 py-4'>
@@ -110,7 +121,6 @@ export default function PackageList({ packages, loading = false, onEdit, onDelet
 
                     <td className='px-4 py-4 text-right'>
                       <div className='flex items-center justify-end gap-1'>
-                        <DollarSign className='h-3.5 w-3.5 text-green-600' />
                         <span className='font-semibold text-foreground text-sm'>
                           {Number(pkg.cost).toLocaleString()}
                         </span>
@@ -128,13 +138,13 @@ export default function PackageList({ packages, loading = false, onEdit, onDelet
 
                     <td className='px-4 py-4 text-center'>
                       <Badge variant='secondary' className='font-mono text-xs'>
-                        {pkg.number_of_post}
+                        {pkg.number_of_post} tin
                       </Badge>
                     </td>
 
                     <td className='px-4 py-4 text-center'>
                       <Badge variant='secondary' className='font-mono text-xs'>
-                        {pkg.number_of_push}
+                        {pkg.number_of_push} lượt
                       </Badge>
                     </td>
 
@@ -150,18 +160,11 @@ export default function PackageList({ packages, loading = false, onEdit, onDelet
                         <Button
                           variant='ghost'
                           size='icon'
-                          className='h-8 w-8'
-                          onClick={() => onView?.(pkg)}
-                          title='Xem chi tiết'
-                        >
-                          <Eye className='h-4 w-4' />
-                        </Button>
-
-                        <Button
-                          variant='ghost'
-                          size='icon'
                           className='h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50'
-                          onClick={() => onEdit?.(pkg)}
+                          onClick={() => {
+                            onEdit?.(pkg)
+                            setSelectedPackage(pkg)
+                          }}
                           title='Chỉnh sửa'
                         >
                           <Edit className='h-4 w-4' />
@@ -197,8 +200,18 @@ export default function PackageList({ packages, loading = false, onEdit, onDelet
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Hủy</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmDelete} className='bg-red-600 hover:bg-red-700'>
-              Xóa
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              className='bg-red-600 hover:bg-red-700'
+              disabled={deletePackage.isPending}
+            >
+              {deletePackage.isPending ? (
+                <>
+                  <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Đang xoá...
+                </>
+              ) : (
+                'Xóa'
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

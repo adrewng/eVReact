@@ -40,6 +40,12 @@ export default function AuctionsTable() {
   const auctions = allAuctionData?.data?.data.auctions
   console.log('auctions-', allAuctionData)
 
+  const { data: contractData } = useQuery({
+    queryKey: ['contract'],
+    queryFn: contractApi.getAllContract
+  })
+  console.log('contract -', contractData)
+
   // start auction
   const startAuction = useMutation({
     mutationFn: (auction_id: number) => auctionApi.startAuction(auction_id),
@@ -97,7 +103,7 @@ export default function AuctionsTable() {
 
       const url = res?.data?.data?.url
       if (url) {
-        window.open(url, '_blank') // mở DocuSeal trong tab mới
+        window.open(url, '_blank')
       }
 
       setContractAuction(null)
@@ -170,6 +176,7 @@ export default function AuctionsTable() {
                       {badge.label}
                     </span>
                   </div>
+                  
                   {auction.status === 'ended' ? (
                     <div className='col-span-1 sm:col-span-2 flex justify-end gap-2 cursor-default'>
                       <button

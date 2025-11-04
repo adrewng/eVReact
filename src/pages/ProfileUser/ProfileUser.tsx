@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { createSearchParams, useLocation, useNavigate, useParams } from 'react-router-dom'
 import accountApi from '~/apis/account.api'
@@ -18,13 +18,13 @@ export default function ProfileUser() {
   const queryConfig = useOverviewQueryConfig()
   const location = useLocation()
 
-  const { data, isLoading, isFetching, isError, error } = useQuery({
+  const { data, isLoading, isFetching } = useQuery({
     queryKey: ['over-view', id, queryConfig],
     enabled: !!id,
-    queryFn: () => accountApi.getInfoUser(id, queryConfig)
+    queryFn: () => accountApi.getInfoUser(id, queryConfig),
+    placeholderData: keepPreviousData
   })
 
-  console.log('data: ', data)
   const handleTabClick = (key: 'feedback' | 'post' | 'info') => {
     setActiveTab(key)
     navigate({
@@ -37,19 +37,11 @@ export default function ProfileUser() {
     })
   }
 
-  const seller = data?.data.overview.seller
-  const posts = data?.data.overview.posts ?? []
-  const feedbacks = data?.data.overview.feedbacks ?? []
-  const pagination = data?.data.pagination ?? {}
+  const seller = data?.data.data.overview.seller
 
-  // Lỗi
-  if (isError) {
-    return (
-      <div className='mx-auto max-w-4xl p-6 text-center text-sm text-red-600'>
-        Có lỗi khi tải dữ liệu: {(error as Error)?.message || 'Unknown error'}
-      </div>
-    )
-  }
+  const posts = data?.data.data.overview.posts ?? []
+  const feedbacks = data?.data.data.overview.feedbacks ?? []
+  const pagination = data?.data.data.pagination ?? {}
 
   return (
     <div className='min-h-screen bg-white'>
@@ -89,7 +81,7 @@ export default function ProfileUser() {
         <div className='mb-8 border-b border-neutral-200'>
           <div className='flex gap-8'>
             {[
-              { key: 'feedback', label: 'Đánh giá', count: feedbacks.length },
+              { key: 'feedback', label: 'Đánh giá', count: seller?.totalFeedbacks ?? 0 },
               { key: 'post', label: 'Bài đăng đang hiển thị', count: seller?.totalActivePosts ?? 0 },
               { key: 'info', label: 'Thông tin' }
             ].map((tab) => (
@@ -122,8 +114,8 @@ export default function ProfileUser() {
           </div>
         ) : (
           <>
-            {activeTab === 'feedback' && (
-              <Feedback pagination={pagination} queryConfig={queryConfig} seller={seller!} feedbacks={feedbacks} />
+            {activeTab === 'feedback' && !!pagination && !!seller && (
+              <Feedback pagination={pagination} queryConfig={queryConfig} seller={seller} feedbacks={feedbacks} />
             )}
             {activeTab === 'post' && <ProfilePost queryConfig={queryConfig} pagination={pagination} posts={posts} />}
             {activeTab === 'info' && <ProfileInfo seller={seller!} />}

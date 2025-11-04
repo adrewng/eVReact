@@ -24,6 +24,7 @@ export interface User {
   totalActivePosts?: number
   totalSoldPosts?: number
   totalTransactions?: number
+  totalFeedbacks?: number
 
   recentTransactions?: {
     description: string

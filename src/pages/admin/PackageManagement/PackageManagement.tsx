@@ -10,6 +10,7 @@ import PackageList from './components/PackageList'
 
 export default function PackageManagment() {
   const [isFormOpen, setIsFormOpen] = useState(false)
+  const [selectedPackage, setSelectedPackage] = useState<Package | null>(null)
 
   const { data: packageData, isLoading } = useQuery({
     queryKey: ['package-admin'],
@@ -19,6 +20,7 @@ export default function PackageManagment() {
   const packages = packageData?.data.data
 
   const handleEditPackage = (pkg: Package) => {
+    setSelectedPackage(pkg)
     setIsFormOpen(true)
   }
 
@@ -46,8 +48,8 @@ export default function PackageManagment() {
         </div>
         {packages && (
           <>
-            <PackageList packages={packages} loading={isLoading} />
-            {isFormOpen && <PackageForm onClose={handleCloseForm} isFormOpen={isFormOpen} />}
+            <PackageList packages={packages} loading={isLoading} onClose={handleCloseForm} onEdit={handleEditPackage} />
+            {isFormOpen && <PackageForm editingPackage={selectedPackage} onClose={handleCloseForm} />}
           </>
         )}
       </div>

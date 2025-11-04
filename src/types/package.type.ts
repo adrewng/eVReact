@@ -23,3 +23,22 @@ export interface PackageConfig {
   id: string
   product_type: string
 }
+
+export interface FormCreatePackage {
+  name: string
+  description: string
+  cost: number
+  number_of_post: number
+  number_of_push: number
+  product_type: string
+  feature: string
+}
+
+export interface FormUpdatePackage {
+  name: string
+  description: string
+  cost: number
+  number_of_post: number
+  number_of_push: number
+  feature: string
+}

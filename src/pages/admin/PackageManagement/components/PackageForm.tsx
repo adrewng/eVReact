@@ -7,27 +7,17 @@ import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Textarea } from '~/components/ui/textarea'
 import { X } from 'lucide-react'
-
-interface PackageItem {
-  id: number
-  name: string
-  type: string
-  cost: number
-  number_of_post: number
-  number_of_push: number
-  service_ref: string
-  product_type: string
-  description: string
-  feature: string
-}
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import packageApi from '~/apis/package.api'
+import type { FormCreatePackage, FormUpdatePackage, Package } from '~/types/package.type'
 
 interface PackageFormProps {
   onClose: () => void
-  isFormOpen: boolean
+  editingPackage?: Package | null
 }
 
-export function PackageForm({ package: editingPackage, onClose }: PackageFormProps) {
-  const [formData, setFormData] = useState({
+export function PackageForm({ editingPackage: editingPackage, onClose }: PackageFormProps) {
+  const [formData, setFormData] = useState<FormCreatePackage>({
     name: '',
     cost: 0,
     number_of_post: 0,
@@ -37,31 +27,55 @@ export function PackageForm({ package: editingPackage, onClose }: PackageFormPro
     feature: ''
   })
 
+  const qc = useQueryClient()
+
   useEffect(() => {
     if (editingPackage) {
       setFormData({
         name: editingPackage.name,
-        cost: editingPackage.cost,
-        number_of_post: editingPackage.number_of_post,
-        number_of_push: editingPackage.number_of_push,
+        cost: Number(editingPackage.cost),
+        number_of_post: Number(editingPackage.number_of_post),
+        number_of_push: Number(editingPackage.number_of_push),
         product_type: editingPackage.product_type,
         description: editingPackage.description,
         feature: editingPackage.feature
       })
     }
   }, [editingPackage])
+  console.log('formdata - ', formData)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({
       ...prev,
-      [name]: name.includes('number_of') || name === 'cost' ? Number.parseInt(value) || 0 : value
+      [name]: name.includes('number_of') || name === 'cost' ? Number.parseInt(value) : value
     }))
   }
 
+  const createPackage = useMutation({
+    mutationFn: (formData: FormCreatePackage) => packageApi.createPackageByAdmin(formData),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['package-admin'] })
+      onClose()
+    }
+  })
+
+  const updatePackage = useMutation({
+    mutationFn: ({ formData, id }: { formData: FormUpdatePackage; id: number }) =>
+      packageApi.updatePackageByAdmin(formData, id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['package-admin'] })
+      onClose()
+    }
+  })
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onSave(formData)
+    if (editingPackage) {
+      updatePackage.mutate({ formData, id: editingPackage.id })
+      return
+    }
+    createPackage.mutate(formData as FormCreatePackage)
   }
 
   return (
@@ -90,14 +104,20 @@ export function PackageForm({ package: editingPackage, onClose }: PackageFormPro
 
             <div>
               <label className='block text-sm font-medium text-foreground mb-2'>Loại Sản Phẩm *</label>
-              <Input
-                type='text'
+              <select
                 name='product_type'
                 value={formData.product_type}
                 onChange={handleChange}
-                placeholder='Ví dụ: vehicle'
                 required
-              />
+                disabled={!!editingPackage}
+                className={`w-full border border-input bg-background rounded-md p-2 text-sm focus:ring-2 focus:ring-ring focus:outline-none ${
+                  editingPackage ? 'opacity-70 cursor-not-allowed' : ''
+                }`}
+              >
+                <option value=''>-- Chọn loại sản phẩm --</option>
+                <option value='vehicle'>Vehicle</option>
+                <option value='battery'>Battery</option>
+              </select>
             </div>
 
             <div>
@@ -165,7 +185,13 @@ export function PackageForm({ package: editingPackage, onClose }: PackageFormPro
             <Button type='button' variant='outline' onClick={onClose}>
               Hủy
             </Button>
-            <Button type='submit'>{editingPackage ? 'Cập Nhật' : 'Thêm Gói'}</Button>
+            <Button type='submit' disabled={createPackage.isPending || updatePackage.isPending}>
+              {createPackage.isPending || updatePackage.isPending
+                ? 'Đang lưu...'
+                : editingPackage
+                  ? 'Cập Nhật'
+                  : 'Thêm Gói'}
+            </Button>
           </div>
         </form>
       </div>

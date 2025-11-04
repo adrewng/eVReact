@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Clock, Gavel, Minus, Plus, Zap } from 'lucide-react'
 import { useContext, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
@@ -111,7 +112,7 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
 
     // Khi có người khác join
     const onUserJoined = (data: any) => {
-      console.log('👤 User joined:', data)
+      setTimeLeft(data.remainingTime)
     }
 
     // Cập nhật giá mới khi có người đặt giá
