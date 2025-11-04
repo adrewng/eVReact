@@ -68,36 +68,39 @@ export default function Feedback({ feedbacks, seller, pagination, queryConfig }:
         </div>
       </div>
 
-      {/* Danh sách feedbacks */}
-      <div className='space-y-4'>
-        {feedbacks.map((feedback) => (
-          <div
-            key={feedback.id}
-            className='rounded-2xl border border-neutral-200 bg-white p-6 transition hover:shadow-sm'
-          >
-            <div className='flex gap-4'>
-              <img
-                src={feedback.user.avatar || 'https://api.iconify.design/solar:user-bold.svg?color=%23999999'}
-                alt={feedback.user.full_name}
-                className='h-12 w-12 rounded-full bg-neutral-100 object-cover'
-              />
+      {feedbacks.length !== 0 && (
+        <>
+          <div className='space-y-4'>
+            {feedbacks.map((feedback) => (
+              <div
+                key={feedback.id}
+                className='rounded-2xl border border-neutral-200 bg-white p-6 transition hover:shadow-sm'
+              >
+                <div className='flex gap-4'>
+                  <img
+                    src={feedback.user.avatar || 'https://api.iconify.design/solar:user-bold.svg?color=%23999999'}
+                    alt={feedback.user.full_name}
+                    className='h-12 w-12 rounded-full bg-neutral-100 object-cover'
+                  />
 
-              <div className='flex-1'>
-                <div className='flex items-start justify-between'>
-                  <div>
-                    <p className='font-semibold text-neutral-900'>{feedback.user.full_name}</p>
-                    <Rating rating={feedback.start} />
+                  <div className='flex-1'>
+                    <div className='flex items-start justify-between'>
+                      <div>
+                        <p className='font-semibold text-neutral-900'>{feedback.user.full_name}</p>
+                        <Rating rating={feedback.start} />
+                      </div>
+                      <span className='text-xs text-neutral-500'>{getTimeAgo(feedback.createdAt)}</span>
+                    </div>
+                    {/* <h4 className='mt-3 font-medium text-neutral-900'>{feedback.title}</h4> */}
+                    <p className='mt-2 text-sm leading-relaxed text-neutral-600'>{feedback.text}</p>
                   </div>
-                  <span className='text-xs text-neutral-500'>{getTimeAgo(feedback.createdAt)}</span>
                 </div>
-                <h4 className='mt-3 font-medium text-neutral-900'>{feedback.title}</h4>
-                <p className='mt-2 text-sm leading-relaxed text-neutral-600'>{feedback.text}</p>
               </div>
-            </div>
+            ))}
           </div>
-        ))}
-        {!!pagination && <Pagination pageSize={pagination.page_size ?? 1} queryConfig={queryConfig} />}
-      </div>
+          {!!pagination && <Pagination pageSize={pagination.page_size ?? 1} queryConfig={queryConfig} />}
+        </>
+      )}
     </div>
   )
 }

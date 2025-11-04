@@ -6,8 +6,8 @@ const transactionApi = {
   getUserTransaction() {
     return http.get<SuccessResponse<Transactions>>('/api/order/get-transaction-detail')
   },
-  topUpWallet() {
-    return http.post('/api/payment/topup')
+  topUpWallet({ user_id, amount, description }: { user_id: number; amount: number; description: string }) {
+    return http.post('/api/payment/topup', { user_id, amount, description })
   }
 }
 

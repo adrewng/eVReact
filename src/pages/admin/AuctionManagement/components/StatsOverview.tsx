@@ -1,6 +1,6 @@
 'use client'
 
-import { TrendingUp, Gavel, Users, DollarSign } from 'lucide-react'
+import { Gavel, Users } from 'lucide-react'
 
 const stats = [
   {
@@ -10,32 +10,19 @@ const stats = [
     icon: Gavel,
     color: 'from-blue-500 to-blue-600'
   },
-  {
-    label: 'Tổng Lượt Đấu Giá',
-    value: '1,247',
-    change: '+23%',
-    icon: TrendingUp,
-    color: 'from-emerald-500 to-emerald-600'
-  },
+
   {
     label: 'Người Tham Gia',
     value: '342',
     change: '+8%',
     icon: Users,
     color: 'from-purple-500 to-purple-600'
-  },
-  {
-    label: 'Doanh Thu',
-    value: '2.4B',
-    change: '+18%',
-    icon: DollarSign,
-    color: 'from-orange-500 to-orange-600'
   }
 ]
 
 export default function StatsOverview() {
   return (
-    <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4'>
+    <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2'>
       {stats.map((stat) => {
         const Icon = stat.icon
         return (
