@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 export function StepLine({ steps, activeIndex }: { steps: { key: string; title: string }[]; activeIndex: number }) {
   const pct = steps.length > 1 ? (activeIndex / (steps.length - 1)) * 100 : 0
   return (
-    <div className='px-1'>
+    <div className='px-1 mt-12'>
       {/* Line */}
       <div className='relative mt-4 h-1.5 w-full rounded-full bg-gray-200'>
         {/* Filled line */}
@@ -32,10 +32,11 @@ export function StepLine({ steps, activeIndex }: { steps: { key: string; title: 
         {steps.map((s, i) => {
           const left = steps.length > 1 ? (i / (steps.length - 1)) * 100 : 0
           const active = i <= activeIndex
+          const isOdd = i % 2 === 1
           return (
             <div
               key={s.key}
-              className={`absolute top-0 -translate-x-1/2 text-[11px] leading-4 text-center w-24 md:w-28 ${
+              className={`absolute ${isOdd ? '-top-15' : 'top-0'} -translate-x-1/2 text-[11px] leading-4 text-center w-24 md:w-28 whitespace-normal ${
                 active ? 'text-emerald-700 font-medium' : 'text-gray-500'
               }`}
               style={{ left: `${left}%` }}
