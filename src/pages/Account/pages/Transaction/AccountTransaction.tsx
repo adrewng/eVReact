@@ -132,7 +132,7 @@ export default function AccountTransaction() {
 
   const tabs = [
     { id: 'history', label: 'Payment History', icon: CreditCard },
-    { id: 'wallet', label: 'Wallet Balance', icon: Wallet },
+    // { id: 'wallet', label: 'Wallet Balance', icon: Wallet },
     { id: 'packages', label: 'Active Packages', icon: Package }
   ]
 
@@ -236,7 +236,7 @@ export default function AccountTransaction() {
         {/* Content Section */}
         {activeTab === 'history' && <TransactionHistory transactions={transactions} />}
 
-        {activeTab === 'wallet' && (
+        {/* {activeTab === 'wallet' && (
           <div className='space-y-6'>
             <div className='bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 text-white'>
               <div className='flex items-center justify-between mb-8'>
@@ -305,7 +305,7 @@ export default function AccountTransaction() {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {activeTab === 'packages' && (
           <div className='space-y-6'>

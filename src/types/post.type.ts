@@ -151,3 +151,12 @@ export interface RelatedPostList {
   total: number
   related_posts: RelatedPost[]
 }
+
+export interface PostStats {
+  total_post: number
+  vehicle_post: number
+  battery_post: number
+  pending_post: number
+  approved_post: number
+  rejected_post: number
+}

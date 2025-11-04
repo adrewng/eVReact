@@ -15,7 +15,12 @@ import type { Auction } from '~/types/auction.type'
 // }
 
 // export default function AuctionsTable({ filters }: { filters: FilterProps }) {
-export default function AuctionsTable() {
+
+interface PropsType {
+  auctions: Auction[] | undefined
+}
+export default function AuctionsTable(props: PropsType) {
+  const { auctions } = props
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const [editingAuction, setEditingAuction] = useState<Auction | null>(null)
   const [contractAuction, setContractAuction] = useState<Auction | null>(null)
@@ -33,12 +38,6 @@ export default function AuctionsTable() {
     status: 'pending'
   })
   const qc = useQueryClient()
-  const { data: allAuctionData } = useQuery({
-    queryKey: ['all-auction'],
-    queryFn: auctionApi.getAllAuction
-  })
-  const auctions = allAuctionData?.data?.data.auctions
-  console.log('auctions-', allAuctionData)
 
   const { data: contractData } = useQuery({
     queryKey: ['contract'],
@@ -176,15 +175,30 @@ export default function AuctionsTable() {
                       {badge.label}
                     </span>
                   </div>
-                  
+
                   {auction.status === 'ended' ? (
                     <div className='col-span-1 sm:col-span-2 flex justify-end gap-2 cursor-default'>
-                      <button
-                        onClick={() => handleCreateContract(auction)}
-                        className='rounded-lg bg-green-500 px-3 py-2 text-xs font-medium text-white hover:bg-green-600 transition-colors'
-                      >
-                        Tạo hợp đồng
-                      </button>
+                      {auction.contract_status === 'signed' && auction.contract_url ? (
+                        <button
+                          onClick={() => {
+                            if (auction.contract_url) {
+                              window.open(auction.contract_url, '_blank')
+                            } else {
+                              toast.error('Không tìm thấy đường dẫn hợp đồng!')
+                            }
+                          }}
+                          className='rounded-lg bg-blue-600 px-3 py-2 text-xs font-medium text-white hover:bg-blue-700 transition-colors'
+                        >
+                          Xem hợp đồng
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleCreateContract(auction)}
+                          className='rounded-lg bg-green-500 px-3 py-2 text-xs font-medium text-white hover:bg-green-600 transition-colors'
+                        >
+                          Tạo hợp đồng
+                        </button>
+                      )}
                     </div>
                   ) : (
                     <div className='col-span-1 sm:col-span-2 flex justify-end gap-2 cursor-default'>

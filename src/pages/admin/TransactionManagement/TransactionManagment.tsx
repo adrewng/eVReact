@@ -120,8 +120,6 @@ export default function TransactionManagement() {
   const [searchTerm] = useState('')
   const [statusFilter] = useState('all')
 
-  
-
   const filteredTransactions = recentTransactions.filter((txn) => {
     const matchesSearch =
       txn.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -149,18 +147,6 @@ export default function TransactionManagement() {
             icon={TrendingUp}
             color='bg-green-500'
           />
-          {/* <StatCard
-            title='Avg Transaction'
-            value={`$${transactionStats.avgTransactionValue.toLocaleString()}`}
-            icon={DollarSign}
-            color='bg-purple-500'
-          />
-          <StatCard
-            title='Success Rate'
-            value={`${transactionStats.successRate}%`}
-            icon={CheckCircle}
-            color='bg-emerald-500'
-          /> */}
         </div>
 
         {/* Charts */}

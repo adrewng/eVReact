@@ -8,7 +8,8 @@ const transactionApi = {
   },
   topUpWallet({ user_id, amount, description }: { user_id: number; amount: number; description: string }) {
     return http.post('/api/payment/topup', { user_id, amount, description })
-  }
+  },
+  
 }
 
 export default transactionApi

@@ -1,4 +1,4 @@
-import { CheckCircle, Clock, Package, TrendingUp, XCircle } from 'lucide-react'
+import { ArrowUpRight, CheckCircle, Clock, CreditCard, Gavel, Package, TrendingUp, XCircle } from 'lucide-react'
 import type { Transaction, Transactions } from '~/types/transaction.type'
 type PropsType = {
   transactions: Transactions | undefined
@@ -39,21 +39,27 @@ const TransactionItem = ({ transaction }: { transaction: Transaction }) => {
       icon: XCircle
     }
   } as const
-
   const typeConfig = {
+    deposit: {
+      icon: CreditCard,
+      color: 'bg-green-100 text-green-600'
+    },
     package: {
       icon: Package,
       color: 'bg-blue-100 text-blue-600'
+    },
+    auction: {
+      icon: Gavel,
+      color: 'bg-violet-100 text-violet-600'
+    },
+    topup: {
+      icon: ArrowUpRight,
+      color: 'bg-emerald-100 text-emerald-600'
     },
     post: {
       icon: TrendingUp,
       color: 'bg-orange-100 text-orange-600'
     }
-
-    // ⚠️ Các loại này chưa có trong data thực tế
-    // nhưng để sẵn comment cho mở rộng sau
-    // topup: { icon: ArrowUpRight, color: 'bg-emerald-100 text-emerald-600' },
-    // certification: { icon: CheckCircle, color: 'bg-purple-100 text-purple-600' }
   } as const
 
   const statusKey = transaction.status?.toLowerCase() as keyof typeof statusConfig
@@ -63,7 +69,9 @@ const TransactionItem = ({ transaction }: { transaction: Transaction }) => {
     icon: Clock
   }
 
-  const typeKey = transaction.service_type?.toLowerCase() as keyof typeof typeConfig
+  // const typeKey = transaction.service_type?.toLowerCase() as keyof typeof typeConfig
+  const typeKey = transaction.service_type?.toLowerCase().replace(/\s+/g, '') as keyof typeof typeConfig
+
   const typeStyle = typeConfig[typeKey] || {
     color: 'bg-gray-100 text-gray-600',
     icon: Package
@@ -105,7 +113,8 @@ const TransactionItem = ({ transaction }: { transaction: Transaction }) => {
             className={`text-2xl font-bold ${transaction.service_type === 'refund' || transaction.service_type === 'topup' ? 'text-emerald-600' : 'text-gray-900'}`}
           >
             {transaction.service_type === 'refund' || transaction.service_type === 'topup' ? '+' : '-'}
-            {transaction.cost.toLocaleString()} VND
+            {Number(transaction.credits).toLocaleString()}
+            VND
           </div>
         </div>
       </div>
