@@ -1,8 +1,9 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { CreditCard, DollarSign, Package, Wallet, CheckCircle, Clock, TrendingUp, Plus, Zap } from 'lucide-react'
 import { useState } from 'react'
 import transactionApi from '~/apis/transaction.api'
 import TransactionHistory from './components/TransactionHistory'
+import TopupModal from './components/TopupModal'
 
 // Mock data for demonstration
 // const mockTransactions = [
@@ -127,6 +128,7 @@ const PackageCard = ({ pkg }: { pkg: (typeof mockPackages)[0] }) => {
 // Main Component
 export default function AccountTransaction() {
   const [activeTab, setActiveTab] = useState('history')
+  const [showTopUp, setShowTopUp] = useState(false)
 
   const tabs = [
     { id: 'history', label: 'Payment History', icon: CreditCard },
@@ -139,14 +141,7 @@ export default function AccountTransaction() {
     queryFn: transactionApi.getUserTransaction
   })
   const transactions = transactionsData?.data.data
-  console.log(transactionsData)
-
-  const topUpWallet = useMutation({
-    mutationFn: transactionApi.topUpWallet
-  })
-  const handleTopUp = () => {
-    topUpWallet.mutate()
-  }
+  console.log('transaction -', transactionsData)
 
   return (
     <div className='flex-1 bg-white min-h-screen'>
@@ -158,12 +153,13 @@ export default function AccountTransaction() {
             <p className='text-gray-600'>Manage your transactions, wallet balance and subscriptions</p>
           </div>
           <button
-            onClick={handleTopUp}
+            onClick={() => setShowTopUp(true)}
             className='flex items-center gap-2 px-5 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-medium shadow-lg transition-all'
           >
             <Plus className='w-5 h-5' /> Top Up Wallet
           </button>
         </div>
+        {showTopUp && <TopupModal setShowTopup={() => setShowTopUp(false)} />}
 
         {/* Quick Stats */}
         <div className='grid grid-cols-4 gap-4'>

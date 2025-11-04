@@ -1,9 +1,11 @@
-import { ClipboardList, CreditCard, MessageSquare, Receipt, RefreshCcw, Undo2, X } from 'lucide-react'
+import { ClipboardList, CreditCard, MessageSquare, Receipt, RefreshCcw, Star, Undo2, X } from 'lucide-react'
 import { ORDER_TYPE_LABEL, ORDERSTATUS } from '~/constants/order'
 import { CategoryType } from '~/types/category.type'
 import type { Order } from '~/types/order.type'
 import { fmtDate, formatCurrencyVND } from '~/utils/util'
 import StatusPill from '../StatusPill'
+import { useState } from 'react'
+import clsx from 'clsx'
 
 const SHOP_NAME = 'Eviest'
 const makeCode = (id: number) => `OD${String(id).padStart(6, '0')}`
@@ -13,6 +15,13 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
   const code = makeCode(o.id)
   const viewingTime = o.viewingAppointment?.time
   const handoverTime = o.handoverAppointment?.time
+  console.log('o-', o)
+
+  //dành cho đánh giá
+  const [showRating, setShowRating] = useState(false)
+  const [rating, setRating] = useState(0)
+  const [hoverRating, setHoverRating] = useState(0)
+  const [comment, setComment] = useState('')
 
   // Đảm bảo có default để tránh crash khi dữ liệu xấu
   const tracking: TrackingKey = (o.tracking ?? 'PENDING') as TrackingKey
@@ -186,7 +195,71 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
         >
           <Receipt className='mr-2 inline h-4 w-4' /> Chi tiết
         </button>
+        <button
+          onClick={() => setShowRating(!showRating)}
+          className='rounded-xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'
+        >
+          <MessageSquare className='mr-2 inline h-4 w-4' /> Đánh giá
+        </button>
       </div>
+      {showRating && (
+        <div className='animate-fadeIn border-t border-gray-100 bg-gray-50 p-4'>
+          <div className='mb-3 flex justify-center'>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star
+                key={star}
+                className={clsx(
+                  'mx-1 h-7 w-7 cursor-pointer transition-colors',
+                  (hoverRating || rating) >= star ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                )}
+                onMouseEnter={() => setHoverRating(star)}
+                onMouseLeave={() => setHoverRating(0)}
+                onClick={() => setRating(star)}
+              />
+            ))}
+          </div>
+
+          <textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            placeholder='Nhập nhận xét của bạn...'
+            className='w-full rounded-xl border border-gray-300 bg-white p-3 text-sm focus:border-gray-400 focus:outline-none'
+            rows={3}
+          />
+
+          <div className='mt-3 flex justify-end gap-2'>
+            <button
+              onClick={() => setShowRating(false)}
+              className='rounded-xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-100'
+            >
+              Hủy
+            </button>
+            <button
+              onClick={() => {
+                const payload = {
+                  contract_id: o.contract?.id ?? 0,
+                  seller_id: o.seller?.id ?? 0,
+                  buyer_id: o.buyer?.id ?? 0,
+                  rating,
+                  comment
+                }
+                console.log('📤 Gửi đánh giá:', payload)
+                // TODO: gọi API ở đây
+                setShowRating(false)
+                setRating(0)
+                setComment('')
+              }}
+              disabled={!rating}
+              className={clsx(
+                'rounded-xl px-4 py-2 text-sm font-medium text-white transition-colors',
+                rating ? 'bg-gray-900 hover:bg-black' : 'bg-gray-400 cursor-not-allowed'
+              )}
+            >
+              Gửi đánh giá
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
