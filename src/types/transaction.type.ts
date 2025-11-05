@@ -49,10 +49,9 @@ export interface TransactionListAdmin {
   totalRevenue: number
 }
 export interface RevenueByType {
-  revenue: {
-    revenue: number
-    revenue_auctions: number
-    revenue_packages: number
-    revenue_post: number
-  }
+  revenue: number
+  revenue_auctions: number
+  revenue_packages: number
+  revenue_post: number
+  daily_revenue: { date: string; revenue: number }[]
 }

@@ -18,16 +18,6 @@ import PaginationAdmin from '~/components/Pagination/PaginationAdmin'
 import useQueryParam from '~/hooks/useQueryParam'
 import TransactionTable from './components/TransactionTable'
 
-const dailyRevenue = [
-  { date: 'Jun 1', revenue: 45000 },
-  { date: 'Jun 2', revenue: 52000 },
-  { date: 'Jun 3', revenue: 48000 },
-  { date: 'Jun 4', revenue: 61000 },
-  { date: 'Jun 5', revenue: 55000 },
-  { date: 'Jun 6', revenue: 58000 },
-  { date: 'Jun 7', revenue: 64000 }
-]
-
 const StatCard = ({
   title,
   value,
@@ -73,7 +63,7 @@ export default function TransactionManagement() {
   })
   console.log('revenue-', revenueByTypeData)
 
-  const revenueByType = revenueByTypeData?.data.revenue
+  const revenueByType = revenueByTypeData?.data.data
   const statusData = [
     { name: 'Tin đăng trả phí', value: revenueByType?.revenue_post, color: '#3b82f6' }, // Post
     { name: 'Mua gói', value: revenueByType?.revenue_packages, color: '#f59e0b' }, // Package
@@ -122,7 +112,7 @@ export default function TransactionManagement() {
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width='100%' height={300}>
-                    <AreaChart data={dailyRevenue}>
+                    <AreaChart data={revenueByType?.daily_revenue}>
                       <defs>
                         <linearGradient id='colorRevenue' x1='0' y1='0' x2='0' y2='1'>
                           <stop offset='5%' stopColor='#3b82f6' stopOpacity={0.3} />
@@ -201,7 +191,9 @@ export default function TransactionManagement() {
                           <span className='text-slate-600'>{item.name}</span>
                         </div>
 
-                        <span className='font-semibold text-slate-900'>{item.value.toLocaleString('vi-VN')}đ</span>
+                        <span className='font-semibold text-slate-900'>
+                          {(item.value ?? 0).toLocaleString('vi-VN')}đ
+                        </span>
                       </div>
                     ))}
                 </div>
