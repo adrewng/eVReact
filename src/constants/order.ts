@@ -81,18 +81,36 @@ const ACTIVE_STEP_STATUSES: ReadonlyArray<StepKey> = [
 export function getStepsByType(type?: Order['type'], status?: OrderStatus): Step[] {
   switch (type) {
     case 'topup':
+      if (status === 'FAILED' || status === 'CANCELLED') {
+        return [
+          { key: 'PENDING', title: 'Chờ thanh toán' },
+          { key: 'RESULT', title: 'Kết quả' }
+        ]
+      }
       return [
         { key: 'PENDING', title: 'Chờ thanh toán' },
         { key: 'PROCESSING', title: 'Đang xử lý' },
         { key: 'RESULT', title: 'Kết quả' }
       ]
     case 'post':
+      if (status === 'FAILED' || status === 'CANCELLED') {
+        return [
+          { key: 'PENDING', title: 'Chuẩn bị & thanh toán' },
+          { key: 'RESULT', title: 'Kết quả' }
+        ]
+      }
       return [
         { key: 'PENDING', title: 'Chuẩn bị & thanh toán' },
         { key: 'PROCESSING', title: 'Đang duyệt bài' },
         { key: 'RESULT', title: 'Kết quả' }
       ]
     case 'package':
+      if (status === 'FAILED' || status === 'CANCELLED') {
+        return [
+          { key: 'PENDING', title: 'Chờ thanh toán' },
+          { key: 'RESULT', title: 'Kết quả' }
+        ]
+      }
       return [
         { key: 'PENDING', title: 'Chờ thanh toán' },
         { key: 'PROCESSING', title: 'Kích hoạt gói' },

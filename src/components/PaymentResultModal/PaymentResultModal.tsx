@@ -79,7 +79,7 @@ export default function PaymentResultModal({
         isOrderCancelled = true
         // Gọi API hủy để BE biết mà chỉnh status của order
         await paymentApi.cancel(orderCode, ctrl.signal)
-        finalize('cancelled', 'Bạn đã huỷ thanh toán.', () => toast.error('Thanh toán không thành công'))
+        finalize('cancelled', 'Bạn đã huỷ thanh toán.', () => toast.info('Thanh toán không thành công'))
         return
       }
       // các trạng thái khác coi là pending (PENDING/PROCESSING/UNKNOWN)
