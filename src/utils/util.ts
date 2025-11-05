@@ -25,6 +25,10 @@ export function isAxiosPaymentRequiredError<T>(error: unknown): error is AxiosEr
   return isAxiosError(error) && error.response?.status === HttpStatusCode.PaymentRequired
 }
 
+export function isAxiosForbiddenError<T>(error: unknown): error is AxiosError<T> {
+  return isAxiosError(error) && error.response?.status === HttpStatusCode.Forbidden
+}
+
 //Format number
 export function formatCurrency(currency: number) {
   return new Intl.NumberFormat('de-DE').format(currency)
