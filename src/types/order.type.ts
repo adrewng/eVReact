@@ -33,6 +33,12 @@ export interface Order {
   post?: PostType
   service?: Service
   auction?: AuctionType
+  contract?: {
+    contract_code: string
+    id: number
+    status: string
+    url: string
+  }
 }
 
 export interface OrderList {

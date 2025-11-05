@@ -9,6 +9,7 @@ import clsx from 'clsx'
 import { useMutation } from '@tanstack/react-query'
 import feedbackApi from '~/apis/feedback.api'
 import type { FeedbackType } from '~/types/feedback.type'
+import { toast } from 'react-toastify'
 
 const SHOP_NAME = 'Eviest'
 const makeCode = (id: number) => `OD${String(id).padStart(6, '0')}`
@@ -25,20 +26,24 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
   const [rating, setRating] = useState(0)
   const [hoverRating, setHoverRating] = useState(0)
   const [comment, setComment] = useState('')
+  const [isRated, setIsRated] = useState(false)
 
   console.log('rating -', rating)
 
   const createFeedback = useMutation({
     mutationFn: (formData: FeedbackType) => feedbackApi.createFeedback(formData),
     onSuccess: () => {
+      toast.success('Đánh giá thành công! 🎉') // ✅ hiện thông báo
+
       setShowRating(false)
       setRating(0)
       setComment('')
+      setIsRated(true)
     }
   })
   const handleFeedback = () => {
     const payload = {
-      contract_id: o.auction?.id as number,
+      contract_id: o.contract?.id as number,
       seller_id: o.seller?.id ?? 0,
       buyer_id: o.buyer?.id ?? 0,
       rating,
@@ -221,7 +226,9 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
         {o.type === 'deposit' && (o.tracking === 'DEALING_SUCCESS' || o.tracking === 'DEALING_FAIL') && (
           <button
             onClick={() => setShowRating(!showRating)}
-            className='rounded-xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'
+            className={`rounded-xl border border-gray-200 px-3 py-2 text-sm
+      ${isRated ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'hover:bg-gray-50'}
+    `}
           >
             <MessageSquare className='mr-2 inline h-4 w-4' /> Đánh giá
           </button>

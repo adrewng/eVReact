@@ -15,4 +15,44 @@ export interface Transaction {
   created_at: string
 }
 
-export type Transactions = Transaction[]
+export type Transactions = {
+  data: Transaction[]
+  total_spend: number
+  total_topup: number
+  total_credit: number
+}
+
+export interface TransactionAdmin {
+  id: number
+  type: string
+  status: string
+  price: string
+  service_id: number
+  product_id: number
+  buyer_id: number
+  created_at: string
+  code: string
+  payment_method: string
+  description: string
+  updated_at: string
+  tracking: string
+}
+
+export interface TransactionListAdmin {
+  orders: TransactionAdmin[]
+  pagination: {
+    limmit: number
+    page: number
+    page_size: number
+  }
+  total: number
+  totalRevenue: number
+}
+export interface RevenueByType {
+  revenue: {
+    revenue: number
+    revenue_auctions: number
+    revenue_packages: number
+    revenue_post: number
+  }
+}

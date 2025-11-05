@@ -28,6 +28,13 @@ export interface AuctionList {
   totalMembers: number
 }
 
+export interface ReportAuction {
+  auction_id: number
+  user_id: number
+  reason: string
+  fault_type: 'seller' | 'winner'
+}
+
 export interface AuctionType {
   id: number
   product_id: number

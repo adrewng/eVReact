@@ -1,7 +1,7 @@
 import { ArrowUpRight, CheckCircle, Clock, CreditCard, Gavel, Package, TrendingUp, XCircle } from 'lucide-react'
-import type { Transaction, Transactions } from '~/types/transaction.type'
+import type { Transaction } from '~/types/transaction.type'
 type PropsType = {
-  transactions: Transactions | undefined
+  transactions: Transaction[] | undefined
 }
 
 export default function TransactionHistory(props: PropsType) {

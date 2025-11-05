@@ -1,4 +1,4 @@
-import type { Auction, AuctionList, AuctionType, AuctionUserList } from '~/types/auction.type'
+import type { Auction, AuctionList, AuctionType, AuctionUserList, ReportAuction } from '~/types/auction.type'
 import type { SuccessResponse } from '~/types/util.type'
 import http from '~/utils/http'
 
@@ -42,6 +42,9 @@ const auctionApi = {
   },
   buyNow(auctionId: number) {
     return http.post<SuccessResponse<{ auction: Auction }>>('/api/auction/buy-now', { auctionId })
+  },
+  createReportAuction(formData: ReportAuction) {
+    return http.post('/api/admin/report', formData)
   }
 }
 
