@@ -38,7 +38,6 @@ export default function ProfileUser() {
   }
 
   const seller = data?.data.data.overview.seller
-
   const posts = data?.data.data.overview.posts ?? []
   const feedbacks = data?.data.data.overview.feedbacks ?? []
   const pagination = data?.data.data.pagination ?? {}

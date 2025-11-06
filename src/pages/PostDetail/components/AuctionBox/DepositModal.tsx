@@ -1,12 +1,11 @@
-'use client'
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
+import type { Socket } from 'socket.io-client'
 import auctionApi from '~/apis/auction.api'
 import { Button } from '~/components/ui/button'
-import type { Socket } from 'socket.io-client'
 import {
   Dialog,
   DialogContent,
@@ -23,7 +22,6 @@ interface DepositModalProps {
   deposit?: string
   auction_id?: number
   socket?: Socket | null
-
   onSuccess?: (res: any) => void
 }
 

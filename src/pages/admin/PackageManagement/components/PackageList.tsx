@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Clock, Edit, FileText, Loader2, PackageOpen, Trash2 } from 'lucide-react'
 import { useState } from 'react'
-import { Card, CardContent } from '~/components/ui/card'
-import { Badge } from '~/components/ui/badge'
-import { Button } from '~/components/ui/button'
-import { Loader2, Edit, Trash2, Clock, FileText, PackageOpen } from 'lucide-react'
+import packageApi from '~/apis/package.api'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,18 +13,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from '~/components/ui/alert-dialog'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import packageApi from '~/apis/package.api'
-import type { Package, Packages } from '~/types/package.type'
+import { Badge } from '~/components/ui/badge'
+import { Button } from '~/components/ui/button'
+import { Card, CardContent } from '~/components/ui/card'
+import type { Package } from '~/types/package.type'
 
 interface PackageListProps {
-  packages: Packages
+  packages: Package[]
   loading?: boolean
   onEdit?: (pkg: any) => void
   onClose?: (pkg: any) => void
 }
 
-export default function PackageList({ packages, loading = false, onClose, onEdit }: PackageListProps) {
+export default function PackageList({ packages, loading = false, onEdit }: PackageListProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [selectedPackage, setSelectedPackage] = useState<any>(null)
 

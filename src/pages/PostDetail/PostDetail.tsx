@@ -75,14 +75,12 @@ export default function PostDetail() {
 
   const post = postQ.data
   const product = post?.product
-  console.log('post-', post)
 
   const { data: auctionData } = useQuery({
     queryKey: ['auction-info', id],
     queryFn: () => auctionApi.getAuctionByProduct(Number(id)),
     enabled: !!id
   })
-  console.log('auction-', auctionData)
 
   // Build specs (memo)
   const specs = useMemo(() => {

@@ -5,3 +5,16 @@ export interface FeedbackType {
   rating: number
   comment: string
 }
+
+export interface Feedback {
+  createdAt: string
+  id: number
+  start: number
+  text: string
+  title: string
+  user: {
+    avatar: string
+    full_name: string
+    id: number
+  }
+}

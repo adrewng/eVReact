@@ -3,12 +3,12 @@ import { useMemo } from 'react'
 import Pagination from '~/components/Pagination'
 import Rating from '~/components/Rating'
 import type { OverviewQueryConfig } from '~/hooks/useOverviewQueryConfig'
-import type { FeedbackType } from '~/types/feedback.type'
+import type { Feedback } from '~/types/feedback.type'
 import type { User } from '~/types/user.type'
 import { getTimeAgo } from '~/utils/util'
 
 interface Prop {
-  feedbacks: FeedbackType[]
+  feedbacks: Feedback[]
   seller: User
   pagination: { page?: number; limit?: number; page_size?: number }
   queryConfig: OverviewQueryConfig
