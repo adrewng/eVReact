@@ -121,12 +121,13 @@ export default function AuctionsTable(props: PropsType) {
 
   const getStatusBadge = (status: string) => {
     const badges = {
-      live: { bg: 'bg-blue-50', text: 'text-blue-700', label: 'Live' },
-      draft: { bg: 'bg-amber-50', text: 'text-amber-700', label: 'Draft' },
-      verified: { bg: 'bg-green-50', text: 'text-blue-700', label: 'Verified' },
-      ended: { bg: 'bg-slate-50', text: 'text-slate-700', label: 'Ended' },
-      signed: { bg: 'bg-purple-50', text: 'text-purple-700', label: 'Signed' },
-      reported: { bg: 'bg-red-50', text: 'text-red-700', label: 'Reported' }
+      live: { bg: 'bg-blue-50', text: 'text-blue-700', label: 'Đang đấu giá' },
+      draft: { bg: 'bg-amber-50', text: 'text-amber-700', label: 'Nháp' },
+      verified: { bg: 'bg-green-50', text: 'text-blue-700', label: 'Đã kiểm tra' },
+      ended: { bg: 'bg-slate-50', text: 'text-slate-700', label: 'Kết thúc' },
+      signed: { bg: 'bg-purple-50', text: 'text-purple-700', label: 'Đã kí' },
+      reported: { bg: 'bg-red-50', text: 'text-red-700', label: 'Đã báo cáo' },
+      pending: { bg: 'bg-gray-50', text: 'text-gray-700', label: 'Đang ký' }
     }
     return badges[status as keyof typeof badges] || badges.ended
   }
@@ -155,6 +156,8 @@ export default function AuctionsTable(props: PropsType) {
               badge = getStatusBadge('reported')
             } else if (auction.contract_status === 'signed' && auction.contract_url) {
               badge = getStatusBadge('signed')
+            } else if (auction.contract_status === 'pending') {
+              badge = getStatusBadge('pending')
             }
             const isExpanded = expandedId === auction.id
 
@@ -220,12 +223,14 @@ export default function AuctionsTable(props: PropsType) {
 
                           {!auction.has_report && (
                             <>
-                              <button
-                                onClick={() => handleCreateContract(auction)}
-                                className='rounded-lg bg-green-500 px-3 py-2 text-xs font-medium text-white hover:bg-green-600 transition-colors'
-                              >
-                                Tạo hợp đồng
-                              </button>
+                              {auction.contract_status !== 'pending' && (
+                                <button
+                                  onClick={() => handleCreateContract(auction)}
+                                  className='rounded-lg bg-green-500 px-3 py-2 text-xs font-medium text-white hover:bg-green-600 transition-colors'
+                                >
+                                  Tạo hợp đồng
+                                </button>
+                              )}
                               <button
                                 onClick={() => setOpenModal(true)}
                                 className='rounded-lg bg-red-500 px-3 py-2 text-xs font-medium text-white hover:bg-red-600 transition-colors'

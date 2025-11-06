@@ -1,7 +1,7 @@
 'use client'
 
 import { Dialog } from '@headlessui/react' // hoặc dùng modal lib khác tùy bạn
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { XCircle } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
@@ -25,9 +25,11 @@ export default function ReportModal({
   const [faultType, setFaultType] = useState<'seller' | 'winner' | ''>('')
   const [userId, setUserId] = useState<number | null>(null)
 
+  const queryClient = useQueryClient()
   const createReport = useMutation({
     mutationFn: (data: ReportAuction) => auctionApi.createReportAuction(data),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['all-auction'] })
       toast.success('Báo cáo đã được gửi thành công!')
       onClose()
       setReason('')
