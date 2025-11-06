@@ -56,7 +56,14 @@ export default function Popover({
   const { getReferenceProps, getFloatingProps } = useInteractions([hover, focus, dismiss])
 
   return (
-    <Element className={className} ref={refs.setReference} {...getReferenceProps}>
+    <Element
+      className={`group ${className ?? ''}`}
+      ref={refs.setReference}
+      data-open={isOpen ? '' : undefined}
+      aria-haspopup='menu'
+      aria-expanded={isOpen}
+      {...getReferenceProps()}
+    >
       {children}
       <FloatingPortal id={id}>
         <AnimatePresence>

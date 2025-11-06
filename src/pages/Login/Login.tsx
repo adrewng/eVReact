@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
@@ -33,13 +33,15 @@ const LoginPage = () => {
     mutationFn: (body: FormData) => authApi.loginAccount(body)
   })
 
+  const queryClient = useQueryClient()
   const onSubmit = handleSubmit((body) => {
     loginMutation.mutate(body, {
       onSuccess: (data) => {
+        queryClient.clear()
         reset()
         setIsAuthenticated(true)
         setProfile(data.data.data.user)
-        navigate('/')
+        navigate(path.home)
       },
       onError: (error) => {
         if (isUnprocessableEntityError<ErrorResponse<FormData>>(error)) {

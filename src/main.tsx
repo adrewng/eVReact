@@ -13,7 +13,8 @@ import './index.css'
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnMount: false
+      refetchOnMount: false,
+      retry: 0
     }
   }
 })

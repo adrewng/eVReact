@@ -2,6 +2,8 @@ import { usePrefetchQuery } from '@tanstack/react-query'
 import { memo } from 'react'
 import { Outlet } from 'react-router-dom'
 import categoryApi from '~/apis/categories.api'
+import ChatDock from '~/components/ChatDock'
+import Footer from '~/components/Footer'
 import NavHeader from '~/components/NavHeader'
 
 interface Props {
@@ -18,6 +20,8 @@ function MainLayoutInner({ children }: Props) {
       <NavHeader />
       {children}
       <Outlet />
+      <Footer />
+      <ChatDock />
     </div>
   )
 }
