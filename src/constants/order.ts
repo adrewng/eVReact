@@ -81,24 +81,48 @@ const ACTIVE_STEP_STATUSES: ReadonlyArray<StepKey> = [
 export function getStepsByType(type?: Order['type'], status?: OrderStatus): Step[] {
   switch (type) {
     case 'topup':
+      if (status === 'FAILED' || status === 'CANCELLED') {
+        return [
+          { key: 'PENDING', title: 'Chờ thanh toán' },
+          { key: 'RESULT', title: 'Kết quả' }
+        ]
+      }
       return [
         { key: 'PENDING', title: 'Chờ thanh toán' },
         { key: 'PROCESSING', title: 'Đang xử lý' },
         { key: 'RESULT', title: 'Kết quả' }
       ]
     case 'post':
+      if (status === 'FAILED' || status === 'CANCELLED') {
+        return [
+          { key: 'PENDING', title: 'Chuẩn bị & thanh toán' },
+          { key: 'RESULT', title: 'Kết quả' }
+        ]
+      }
       return [
         { key: 'PENDING', title: 'Chuẩn bị & thanh toán' },
         { key: 'PROCESSING', title: 'Đang duyệt bài' },
         { key: 'RESULT', title: 'Kết quả' }
       ]
     case 'package':
+      if (status === 'FAILED' || status === 'CANCELLED') {
+        return [
+          { key: 'PENDING', title: 'Chờ thanh toán' },
+          { key: 'RESULT', title: 'Kết quả' }
+        ]
+      }
       return [
         { key: 'PENDING', title: 'Chờ thanh toán' },
         { key: 'PROCESSING', title: 'Kích hoạt gói' },
         { key: 'RESULT', title: 'Kết quả' }
       ]
     case 'auction':
+      if (status === 'FAILED' || status === 'CANCELLED') {
+        return [
+          { key: 'PENDING', title: 'Thanh toán phí' },
+          { key: 'RESULT', title: 'Kết quả' }
+        ]
+      }
       return [
         { key: 'PENDING', title: 'Thanh toán phí' },
         { key: 'VERIFYING', title: 'Kiểm duyệt/nhận xe' },
@@ -107,6 +131,7 @@ export function getStepsByType(type?: Order['type'], status?: OrderStatus): Step
         { key: 'DEALING', title: 'Giao dịch' },
         { key: 'RESULT', title: 'Kết quả' }
       ]
+
     case 'deposit':
       if (status === 'REFUND') {
         return [
@@ -120,7 +145,8 @@ export function getStepsByType(type?: Order['type'], status?: OrderStatus): Step
         status === 'AUCTION_SUCCESS' ||
         status === 'DEALING' ||
         status === 'DEALING_SUCCESS' ||
-        status === 'DEALING_FAIL'
+        status === 'DEALING_FAIL' ||
+        status === 'AUCTION_PROCESSING'
       ) {
         return [
           { key: 'PENDING', title: 'Thanh toán cọc' },
@@ -132,7 +158,6 @@ export function getStepsByType(type?: Order['type'], status?: OrderStatus): Step
       }
       return [
         { key: 'PENDING', title: 'Thanh toán cọc' },
-        { key: 'AUCTION_PROCESSING', title: 'Đang tham gia' },
         { key: 'RESULT', title: 'Kết quả' }
       ]
     default:
