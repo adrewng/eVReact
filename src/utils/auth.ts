@@ -24,3 +24,15 @@ export const clearLS = () => {
   const clearLSEvent = new Event('clearLS')
   LocalStorageEventTarget.dispatchEvent(clearLSEvent)
 }
+
+/**
+ * Xóa tất cả React Query cache từ localStorage
+ * Bao gồm cả persister cache
+ */
+export const clearReactQueryCache = () => {
+  // Xóa tất cả keys liên quan đến React Query persister
+  const persistKeys = Object.keys(localStorage).filter(
+    (key) => key.startsWith('REACT_QUERY_OFFLINE_CACHE') || key.startsWith('tanstack')
+  )
+  persistKeys.forEach((key) => localStorage.removeItem(key))
+}

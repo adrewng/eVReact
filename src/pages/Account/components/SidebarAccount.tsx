@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Bell, ChevronDown, ChevronRight, Gavel, LogOutIcon, Newspaper, ShoppingCart, UserPen } from 'lucide-react'
 import { useContext, useEffect, useMemo, useState } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { authApi } from '~/apis/auth.api'
 import { path } from '~/constants/path'
 import { AppContext } from '~/contexts/app.context'
+import { clearReactQueryCache } from '~/utils/auth'
 
 const accountItems = [
   { label: 'Thông báo', icon: Bell, path: path.accountNotification, children: [] },
@@ -32,13 +33,26 @@ const accountItems = [
 ] as const
 
 export default function SidebarAccount() {
-  const { profile, setIsAuthenticated } = useContext(AppContext)
+  const { profile, reset } = useContext(AppContext)
   const { pathname } = useLocation()
+  const navigate = useNavigate()
   const [openState, setOpenState] = useState<Record<string, boolean>>({})
+  const queryClient = useQueryClient()
 
   const logoutMutation = useMutation({
     mutationFn: authApi.logout,
-    onSuccess: () => setIsAuthenticated(false)
+    onSuccess: () => {
+      // Cancel tất cả queries đang chạy
+      queryClient.cancelQueries()
+      // Xóa tất cả cache React Query trong memory
+      queryClient.clear()
+      // Xóa localStorage của React Query persister
+      clearReactQueryCache()
+      // Reset profile và isAuthenticated
+      reset()
+      // Navigate về landing page
+      navigate(path.landingPage)
+    }
   })
   const handleLogout = () => logoutMutation.mutate()
 

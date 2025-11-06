@@ -1,12 +1,13 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { CreditCard, FileText, Gavel, Home, LogOutIcon, Package, Users } from 'lucide-react'
 import { useContext } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { authApi } from '~/apis/auth.api'
 import { path } from '~/constants/path'
 import { AppContext } from '~/contexts/app.context'
 import { cn } from '~/lib/utils'
 import logoUrl from '~/shared/logo.svg'
+import { clearReactQueryCache } from '~/utils/auth'
 
 const menuItems = [
   { label: 'Dashboard', icon: Home, path: path.adminDashboard },
@@ -30,10 +31,23 @@ export default function Sidebar() {
   console.log('location -', location)
   console.log('currentPath -', currentPath)
 
-  const { setIsAuthenticated } = useContext(AppContext)
+  const { reset } = useContext(AppContext)
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const logoutMutation = useMutation({
     mutationFn: authApi.logout,
-    onSuccess: () => setIsAuthenticated(false)
+    onSuccess: () => {
+      // Cancel tất cả queries đang chạy
+      queryClient.cancelQueries()
+      // Xóa tất cả cache React Query trong memory
+      queryClient.clear()
+      // Xóa localStorage của React Query persister
+      clearReactQueryCache()
+      // Reset profile và isAuthenticated
+      reset()
+      // Navigate về landing page
+      navigate(path.landingPage)
+    }
   })
   return (
     <div className='h-full flex flex-col p-4 bg-white shadow-md border-r border-gray-200'>

@@ -1,8 +1,6 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import classNames from 'classnames'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
-import postApi from '~/apis/post.api'
 import Pagination from '~/components/Pagination'
 import PostCard from '~/components/PostCard'
 import ProductCardSkeletonLight from '~/components/ProductCardSkeleton/ProductCardSkeleton'
@@ -18,27 +16,6 @@ export default function BatteryList() {
   })
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(true)
 
-  const qc = useQueryClient()
-  const addFavoritePost = useMutation({
-    mutationKey: ['add-favorite'],
-    mutationFn: (id: number | string) => postApi.addFavoritePost(id),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['favorite-posts'] })
-    }
-  })
-  const handleAddFavoritePost = (id: number | string) => {
-    addFavoritePost.mutate(id)
-  }
-  const deleteFavoriteMutation = useMutation({
-    mutationKey: ['delete-favorite'],
-    mutationFn: (id: number | string) => postApi.deleteFavoritePost(id),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['favorite-posts'] })
-    }
-  })
-  const handleDeleteFavorite = (id: number | string) => {
-    deleteFavoriteMutation.mutate(id)
-  }
   const toggleFilter = () => {
     setIsFilterOpen((s) => !s)
   }
@@ -121,11 +98,7 @@ export default function BatteryList() {
                       className='group'
                     >
                       <div className='flex flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white transition-shadow duration-300 hover:shadow-lg'>
-                        <PostCard
-                          post={post}
-                          handleAddFavoritePost={handleAddFavoritePost}
-                          handleDeleteFavorite={handleDeleteFavorite}
-                        />
+                        <PostCard post={post} />
                       </div>
                     </motion.div>
                   ))}
@@ -177,11 +150,7 @@ export default function BatteryList() {
                         className='group'
                       >
                         <div className='flex flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white transition-shadow duration-300 hover:shadow-lg'>
-                          <PostCard
-                            post={post}
-                            handleAddFavoritePost={handleAddFavoritePost}
-                            handleDeleteFavorite={handleDeleteFavorite}
-                          />
+                          <PostCard post={post} />
                         </div>
                       </motion.div>
                     ))}

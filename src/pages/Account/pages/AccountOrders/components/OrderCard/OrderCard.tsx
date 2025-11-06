@@ -19,7 +19,6 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
   const code = makeCode(o.id)
   const viewingTime = o.viewingAppointment?.time
   const handoverTime = o.handoverAppointment?.time
-  console.log('o-', o)
 
   //dành cho đánh giá
   const [showRating, setShowRating] = useState(false)
@@ -27,8 +26,6 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
   const [hoverRating, setHoverRating] = useState(0)
   const [comment, setComment] = useState('')
   const [isRated, setIsRated] = useState(false)
-
-  console.log('rating -', rating)
 
   const createFeedback = useMutation({
     mutationFn: (formData: FeedbackType) => feedbackApi.createFeedback(formData),

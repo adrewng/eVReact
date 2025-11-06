@@ -1,8 +1,10 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import clsx from 'clsx'
 import { Battery, Car } from 'lucide-react'
 import { useState } from 'react'
 import { FaHeart, FaUsers } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
+import postApi from '~/apis/post.api'
 import { path } from '~/constants/path'
 import { CategoryType } from '~/types/category.type'
 import type { PostType } from '~/types/post.type'
@@ -10,20 +12,41 @@ import { formatCurrencyVND, generateNameId } from '~/utils/util'
 
 interface PropType {
   post: PostType
-  handleAddFavoritePost: (id: number | string) => void
-  handleDeleteFavorite: (id: number | string) => void
 }
 
-export default function PostCard({ post, handleAddFavoritePost, handleDeleteFavorite }: PropType) {
+export default function PostCard({ post }: PropType) {
   const to = `${path.post}/${generateNameId({ name: post.title, id: post.id })}`
   const [favorited, setFavorited] = useState<boolean>(post.isFavorite ?? false)
+
+  const qc = useQueryClient()
+  const addFavoriteMutation = useMutation({
+    mutationKey: ['add-favorite'],
+    mutationFn: (id: number | string) => postApi.addFavoritePost(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['favorite-posts'] })
+      qc.invalidateQueries({ queryKey: ['posts'] })
+    }
+  })
+  const deleteFavoriteMutation = useMutation({
+    mutationKey: ['delete-favorite'],
+    mutationFn: (id: number | string) => postApi.deleteFavoritePost(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['favorite-posts'] })
+    }
+  })
   const handleClick = (id: number | string) => {
     if (favorited) {
-      setFavorited((prev) => !prev)
-      handleDeleteFavorite(id)
+      deleteFavoriteMutation.mutate(id, {
+        onSuccess: () => {
+          setFavorited(false)
+        }
+      })
     } else {
-      setFavorited((prev) => !prev)
-      handleAddFavoritePost(id)
+      addFavoriteMutation.mutate(id, {
+        onSuccess: () => {
+          setFavorited(true)
+        }
+      })
     }
   }
   return (

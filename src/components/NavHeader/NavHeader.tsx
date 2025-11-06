@@ -1,4 +1,4 @@
-import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { omit } from 'lodash'
 import { useContext, useEffect, useState } from 'react'
 import { createSearchParams, Link, useLocation, useNavigate } from 'react-router-dom'
@@ -12,6 +12,7 @@ import useQueryConfig from '~/hooks/useQueryConfig'
 import logoUrl from '~/shared/logo.svg'
 import { CategoryType } from '~/types/category.type'
 import type { NavNotificationsData, NotificationListConfig } from '~/types/notification.type'
+import { clearReactQueryCache } from '~/utils/auth'
 import Popover from '../Popover'
 
 import type { FavNavData } from '~/types/post.type'
@@ -22,7 +23,7 @@ export default function NavHeader() {
   const pathname = useLocation().pathname
   const [title, setTitle] = useState<string>('')
   const navigate = useNavigate()
-  const { isAuthenticated, profile, setIsAuthenticated } = useContext(AppContext)
+  const { isAuthenticated, profile, reset } = useContext(AppContext)
   const queryConfig = useQueryConfig()
   useEffect(() => {
     if (queryConfig.title) {
@@ -47,9 +48,21 @@ export default function NavHeader() {
       ).toString()
     })
   }
+  const queryClient = useQueryClient()
   const logoutMutation = useMutation({
     mutationFn: authApi.logout,
-    onSuccess: () => setIsAuthenticated(false)
+    onSuccess: () => {
+      // Cancel tất cả queries đang chạy
+      queryClient.cancelQueries()
+      // Xóa tất cả cache React Query trong memory
+      queryClient.clear()
+      // Xóa localStorage của React Query persister
+      clearReactQueryCache()
+      // Reset profile và isAuthenticated
+      reset()
+      // Navigate về landing page
+      navigate(path.landingPage)
+    }
   })
   const handleLogout = () => logoutMutation.mutate()
 

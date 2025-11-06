@@ -12,7 +12,7 @@ const STATUS_ICON: Record<OrderStatus, React.ComponentType<{ className?: string 
   REFUND: RefreshCcw,
   AUCTION_PROCESSING: Truck,
   AUCTION_SUCCESS: CheckCircle,
-  AUCTION_FAILED: X,
+  AUCTION_FAIL: X,
   DEALING: Loader2,
   DEALING_SUCCESS: CheckCircle,
   DEALING_FAIL: X

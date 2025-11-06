@@ -11,7 +11,7 @@ export type OrderStatus =
   | 'REFUND' // hoàn tiền (nếu có)
   | 'AUCTION_PROCESSING'
   | 'AUCTION_SUCCESS'
-  | 'AUCTION_FAILED'
+  | 'AUCTION_FAIL'
   | 'DEALING'
   | 'DEALING_SUCCESS'
   | 'DEALING_FAIL'
@@ -26,7 +26,7 @@ export const ORDERSTATUS: Record<OrderStatus, { label: string; className: string
   REFUND: { label: 'Hoàn tiền', className: 'bg-gray-100 text-gray-700 ring-gray-200' },
   AUCTION_PROCESSING: { label: 'Đang tham gia', className: 'bg-blue-100 text-blue-700 ring-blue-200' },
   AUCTION_SUCCESS: { label: 'Đấu giá thành công', className: 'bg-emerald-100 text-emerald-700 ring-emerald-200' },
-  AUCTION_FAILED: { label: 'Đấu giá thất bại', className: 'bg-rose-100 text-rose-700 ring-rose-200' },
+  AUCTION_FAIL: { label: 'Không có người thắng đấu giá', className: 'bg-rose-100 text-rose-700 ring-rose-200' },
   DEALING: { label: 'Đang giao dịch', className: 'bg-violet-100 text-violet-700 ring-violet-200' },
   DEALING_SUCCESS: { label: 'Giao dịch thành công', className: 'bg-emerald-100 text-emerald-700 ring-emerald-200' },
   DEALING_FAIL: { label: 'Giao dịch thất bại', className: 'bg-rose-100 text-rose-700 ring-rose-200' }
@@ -63,7 +63,7 @@ const RESULT_STATUSES: ReadonlyArray<OrderStatus> = [
   'SUCCESS',
   'FAILED',
   'CANCELLED',
-  'AUCTION_FAILED',
+  'AUCTION_FAIL',
   'DEALING_SUCCESS',
   'DEALING_FAIL'
 ]
@@ -120,6 +120,14 @@ export function getStepsByType(type?: Order['type'], status?: OrderStatus): Step
       if (status === 'FAILED' || status === 'CANCELLED') {
         return [
           { key: 'PENDING', title: 'Thanh toán phí' },
+          { key: 'RESULT', title: 'Kết quả' }
+        ]
+      }
+      if (status === 'AUCTION_FAIL') {
+        return [
+          { key: 'PENDING', title: 'Thanh toán phí' },
+          { key: 'VERIFYING', title: 'Kiểm duyệt/nhận xe' },
+          { key: 'AUCTION_PROCESSING', title: 'Đang mở phiên đấu giá' },
           { key: 'RESULT', title: 'Kết quả' }
         ]
       }

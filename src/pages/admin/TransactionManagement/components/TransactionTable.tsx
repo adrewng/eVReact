@@ -1,5 +1,5 @@
-import type { TransactionListAdmin } from '~/types/transaction.type'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
+import type { TransactionListAdmin } from '~/types/transaction.type'
 
 export default function TransactionTable({ transaction }: { transaction: TransactionListAdmin }) {
   const STATUS_STYLES: Record<string, { bg: string; text: string; label: string }> = {
@@ -12,7 +12,7 @@ export default function TransactionTable({ transaction }: { transaction: Transac
     REFUND: { bg: 'bg-purple-100', text: 'text-purple-800', label: 'Refund' },
     AUCTION_PROCESSING: { bg: 'bg-blue-50', text: 'text-blue-700', label: 'Auction Processing' },
     AUCTION_SUCCESS: { bg: 'bg-emerald-100', text: 'text-emerald-800', label: 'Auction Success' },
-    AUCTION_FAILED: { bg: 'bg-rose-100', text: 'text-rose-800', label: 'Auction Failed' },
+    AUCTION_FAIL: { bg: 'bg-rose-100', text: 'text-rose-800', label: 'Auction Failed' },
     DEALING: { bg: 'bg-orange-100', text: 'text-orange-800', label: 'Dealing' },
     DEALING_SUCCESS: { bg: 'bg-green-100', text: 'text-green-800', label: 'Dealing Success' },
     DEALING_FAIL: { bg: 'bg-red-100', text: 'text-red-800', label: 'Dealing Fail' }
