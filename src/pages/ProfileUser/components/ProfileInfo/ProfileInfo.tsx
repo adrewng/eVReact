@@ -88,7 +88,6 @@ export default function ProfileInfo({ seller }: Prop) {
             subText={seller.email ? 'Đã xác minh' : 'Chưa xác minh'}
           />
 
-          {/* Phone verified: dùng seller.isVerify nếu bạn đang set cờ xác minh phone */}
           <VerifyCard
             title='Số điện thoại'
             verified={Boolean(seller.isVerify && seller.phone)}

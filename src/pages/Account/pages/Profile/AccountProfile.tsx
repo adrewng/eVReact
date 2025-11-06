@@ -5,11 +5,11 @@ import accountApi from '~/apis/account.api'
 import { AppContext } from '~/contexts/app.context'
 import { setProfileToLS } from '~/utils/auth'
 import ProfileOverview from './components/ProfileOverview'
-import ProfileSecurity from './components/ProfileSecurity'
+// import ProfileSecurity from './components/ProfileSecurity'
 import StatsProfile from './components/StatsProfile'
 
 export default function AccountProfile() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'security'>('overview')
+  // const [activeTab, setActiveTab] = useState<'overview' | 'security'>('overview')
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [file, setFile] = useState<File>()
   const [isEditAvatar, setIsEditAvatar] = useState(false)
@@ -158,7 +158,7 @@ export default function AccountProfile() {
           <StatsProfile profile={profile} />
 
           {/* Tabs điều hướng */}
-          <div className='border-b border-gray-200'>
+          {/* <div className='border-b border-gray-200'>
             <div className='flex gap-8'>
               {(['overview', 'security'] as const).map((tab) => (
                 <button
@@ -173,11 +173,12 @@ export default function AccountProfile() {
                 </button>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Nội dung theo tab */}
-          {activeTab === 'overview' && <ProfileOverview profile={profile} refetch={refetch} />}
-          {activeTab === 'security' && <ProfileSecurity />}
+          {/* {activeTab === 'overview' && <ProfileOverview profile={profile} refetch={refetch} />} */}
+          <ProfileOverview profile={profile} refetch={refetch} />
+          {/* {activeTab === 'security' && <ProfileSecurity />} */}
         </div>
       )}
     </div>

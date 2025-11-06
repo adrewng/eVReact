@@ -7,7 +7,8 @@ import { AppContext } from '~/contexts/app.context'
 import type { BodyUpdateProfile, User } from '~/types/user.type'
 import type { SuccessResponse } from '~/types/util.type'
 import { setProfileToLS } from '~/utils/auth'
-import { formatCurrencyVND } from '~/utils/util'
+// import { formatCurrencyVND } from '~/utils/util'
+import ProfileSecurity from './ProfileSecurity'
 
 type Props = {
   profile?: User
@@ -213,7 +214,7 @@ export default function ProfileOverview(props: Props) {
         </fieldset>
       </div>
 
-      <div className='bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 text-white flex flex-col justify-between'>
+      {/* <div className='bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 text-white flex flex-col justify-between'>
         <div>
           <div className='flex items-center justify-between mb-8'>
             <div>
@@ -236,7 +237,8 @@ export default function ProfileOverview(props: Props) {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
+      <ProfileSecurity />
     </div>
   )
 }

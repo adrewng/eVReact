@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { Battery, Bell, Car, Edit, Eye, Gavel, MoreVertical, Plus, Search, Trash2 } from 'lucide-react'
+import { Battery, Car, Edit, Eye, Gavel, MoreVertical, Plus, Search, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { createSearchParams, Link } from 'react-router-dom'
 import postApi from '~/apis/post.api'
@@ -35,10 +35,6 @@ export default function AccountPost() {
             <p className='text-gray-600'>Quản lý danh sách các bài đăng về xe và pin của bạn</p>
           </div>
           <div className='flex items-center gap-3'>
-            <button className='relative p-3 hover:bg-gray-100 rounded-xl transition-all' aria-label='Thông báo'>
-              <Bell className='w-5 h-5 text-gray-700' />
-              <span className='absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full'></span>
-            </button>
             <Link
               to={path.post}
               className='flex items-center gap-2 px-5 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-medium shadow-lg transition-all'

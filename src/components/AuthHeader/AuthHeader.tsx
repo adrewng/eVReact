@@ -7,7 +7,7 @@ export default function AuthHeader() {
   return (
     <div className='grid grid-cols-3 items-center px-4 md:px-8 h-16'>
       <div className='flex-shrink-0 justify-self-start w-[120px] h-[60px]'>
-        <Link to={path.home} className='inline-flex items-center gap-2'>
+        <Link to={path.landingPage} className='inline-flex items-center gap-2'>
           <img
             src={logoUrl}
             alt='EViest'
@@ -19,7 +19,7 @@ export default function AuthHeader() {
 
       {/* Navigation giữa màn hình */}
       <div className='hidden md:flex justify-center gap-6 text-sm md:text-base font-medium'>
-        <NavPillLink to={path.home}>Ecovolt</NavPillLink>
+        <NavPillLink to={path.home}>Home</NavPillLink>
         <NavPillLink to={path.vehicle}>Vehicles</NavPillLink>
         <NavPillLink to={path.battery}>Battery</NavPillLink>
       </div>
