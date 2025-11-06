@@ -79,6 +79,7 @@ export interface PostListType {
     auctioning?: number
     auctioned?: number
     sold?: number
+    banned?: number
   }
 }
 export interface FavNavData {
@@ -88,7 +89,7 @@ export interface FavNavData {
   total?: number
 }
 
-export type PostStatus = 'pending' | 'approved' | 'rejected' | 'auctioning' | 'auctioned' | 'sold'
+export type PostStatus = 'pending' | 'approved' | 'rejected' | 'auctioning' | 'auctioned' | 'sold' | 'banned'
 export interface ProductListConfig {
   page?: number | string
   limit?: number | string
@@ -108,7 +109,9 @@ export interface ProductListConfig {
   price_min?: number | string
   category_type?: Omit<CategoryType, 'notFound' | 'all'>
   category_id?: string
-  status?: Extract<PostStatus, 'pending' | 'approved' | 'rejected' | 'auctioning' | 'auctioned' | 'sold'> | 'all'
+  status?:
+    | Extract<PostStatus, 'pending' | 'approved' | 'rejected' | 'auctioning' | 'auctioned' | 'sold' | 'banned'>
+    | 'all'
   // status_verify?: Extract<PostStatus, 'verifying' | 'verified' | 'unverified'>
 }
 

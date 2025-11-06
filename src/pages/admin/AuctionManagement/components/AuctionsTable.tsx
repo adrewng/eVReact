@@ -25,9 +25,9 @@ export default function AuctionsTable(props: PropsType) {
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const [editingAuction, setEditingAuction] = useState<Auction | null>(null)
   const [contractAuction, setContractAuction] = useState<Auction | null>(null)
-
   const [duration, setDuration] = useState<number>(0)
   const [isVerify, setIsVerify] = useState<boolean>(false)
+  const [openModal, setOpenModal] = useState<boolean>(false)
   const [form, setForm] = useState<FormContract>({
     seller_id: 0,
     buyer_id: 0,
@@ -125,7 +125,8 @@ export default function AuctionsTable(props: PropsType) {
       draft: { bg: 'bg-amber-50', text: 'text-amber-700', label: 'Draft' },
       verified: { bg: 'bg-green-50', text: 'text-blue-700', label: 'Verified' },
       ended: { bg: 'bg-slate-50', text: 'text-slate-700', label: 'Ended' },
-      signed: { bg: 'bg-purple-50', text: 'text-purple-700', label: 'Signed' }
+      signed: { bg: 'bg-purple-50', text: 'text-purple-700', label: 'Signed' },
+      reported: { bg: 'bg-red-50', text: 'text-red-700', label: 'Reported' }
     }
     return badges[status as keyof typeof badges] || badges.ended
   }
@@ -149,7 +150,10 @@ export default function AuctionsTable(props: PropsType) {
           auctions.map((auction: Auction) => {
             let badge = getStatusBadge(auction.status)
 
-            if (auction.contract_status === 'signed' && auction.contract_url) {
+            // Ưu tiên hiển thị reported nếu có báo cáo
+            if (auction.has_report) {
+              badge = getStatusBadge('reported')
+            } else if (auction.contract_status === 'signed' && auction.contract_url) {
               badge = getStatusBadge('signed')
             }
             const isExpanded = expandedId === auction.id
@@ -198,9 +202,6 @@ export default function AuctionsTable(props: PropsType) {
                           >
                             Xem hợp đồng
                           </button>
-                          {/* <button className='rounded-lg bg-red-600 px-3 py-2 text-xs font-medium text-white hover:bg-red-700 transition-colors'>
-                            Báo cáo
-                          </button> */}
                         </>
                       ) : (
                         <>
@@ -208,13 +209,31 @@ export default function AuctionsTable(props: PropsType) {
                             auctionId={auction.id}
                             winnerId={auction.winner_id}
                             sellerId={auction.seller_id}
+                            onClose={() => setOpenModal(false)}
+                            open={openModal}
                           />
-                          <button
-                            onClick={() => handleCreateContract(auction)}
-                            className='rounded-lg bg-green-500 px-3 py-2 text-xs font-medium text-white hover:bg-green-600 transition-colors'
-                          >
-                            Tạo hợp đồng
-                          </button>
+                          {auction.has_report && (
+                            <div className='rounded-lg bg-gray-300 px-3 py-2 text-xs font-medium text-gray-700 cursor-not-allowed'>
+                              Đã báo cáo
+                            </div>
+                          )}
+
+                          {!auction.has_report && (
+                            <>
+                              <button
+                                onClick={() => handleCreateContract(auction)}
+                                className='rounded-lg bg-green-500 px-3 py-2 text-xs font-medium text-white hover:bg-green-600 transition-colors'
+                              >
+                                Tạo hợp đồng
+                              </button>
+                              <button
+                                onClick={() => setOpenModal(true)}
+                                className='rounded-lg bg-red-500 px-3 py-2 text-xs font-medium text-white hover:bg-red-600 transition-colors'
+                              >
+                                Báo cáo
+                              </button>
+                            </>
+                          )}
                         </>
                       )}
                     </div>

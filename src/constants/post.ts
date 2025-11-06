@@ -6,7 +6,8 @@ export const postStatus = {
   published: 'published',
   auctioning: 'auctioning',
   auctioned: 'auctioned',
-  sold: 'sold'
+  sold: 'sold',
+  banned: 'banned'
 } as const
 
 export const tabs = [
@@ -16,11 +17,12 @@ export const tabs = [
   { id: 'rejected', label: 'Từ chối', param: 'status', statusQuery: 'rejected' },
   { id: 'auctioning', label: 'Đang đấu giá', param: 'status', statusQuery: 'auctioning' },
   { id: 'auctioned', label: 'Đã đấu gia', param: 'status', statusQuery: 'auctioned' },
-  { id: 'sold', label: 'Đã bán', param: 'status', statusQuery: 'sold' }
+  { id: 'sold', label: 'Đã bán', param: 'status', statusQuery: 'sold' },
+  { id: 'banned', label: 'Đã cấm', param: 'status', statusQuery: 'banned' }
 ]
 
 export const statusTone: Record<
-  NonNullable<PostType['status']> | 'auctioning' | 'auctioned' | 'sold',
+  NonNullable<PostType['status']> | 'auctioning' | 'auctioned' | 'sold' | 'banned',
   { text: string; cls: string }
 > = {
   pending: { text: 'Chờ duyệt', cls: 'bg-amber-50 text-amber-700 ring-amber-100' },
@@ -31,5 +33,6 @@ export const statusTone: Record<
   unverified: { text: 'Chưa xác minh', cls: 'bg-slate-50 text-slate-700 ring-slate-200' },
   auctioning: { text: 'Đang đấu giá', cls: 'bg-indigo-50 text-indigo-700 ring-indigo-100' },
   auctioned: { text: 'Đã đấu giá xong', cls: 'bg-slate-50 text-slate-700 ring-slate-200' },
-  sold: { text: 'Đã bán', cls: 'bg-slate-50 text-slate-700 ring-slate-200' }
+  sold: { text: 'Đã bán', cls: 'bg-slate-50 text-slate-700 ring-slate-200' },
+  banned: { text: 'Đã cấm', cls: 'bg-red-50 text-red-700 ring-red-100' }
 }

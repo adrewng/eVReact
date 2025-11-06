@@ -49,7 +49,7 @@ export default function AccountPost() {
         </div>
 
         {/* Tabs */}
-        <div className='bg-white border border-gray-200 rounded-2xl p-2 grid grid-cols-7 gap-2'>
+        <div className='bg-white border border-gray-200 rounded-2xl p-2 grid grid-cols-8 gap-2'>
           {tabs.map((tab) => (
             <Link
               to={{
@@ -116,7 +116,7 @@ export default function AccountPost() {
                           ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
                           : post.status === 'pending'
                             ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-200'
-                            : post.status === 'rejected'
+                            : post.status === 'rejected' || post.status === 'banned'
                               ? 'bg-rose-50 text-rose-700 ring-1 ring-rose-200'
                               : 'bg-gray-100 text-gray-700 ring-1 ring-gray-200'
                       }`}
@@ -133,7 +133,9 @@ export default function AccountPost() {
                                 ? 'Đã đấu giá'
                                 : post.status === 'sold'
                                   ? 'Đã bán'
-                                  : 'Không rõ'}
+                                  : post.status === 'banned'
+                                    ? 'Đã cấm'
+                                    : 'Không rõ'}
                     </span>
                   </div>
 

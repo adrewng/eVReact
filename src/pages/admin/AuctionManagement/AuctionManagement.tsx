@@ -3,8 +3,8 @@
 import auctionApi from '~/apis/auction.api'
 import AuctionsTable from './components/AuctionsTable'
 // import FilterBar from './components/FilterBar'
-import StatsOverview from './components/StatsOverview'
 import { useQuery } from '@tanstack/react-query'
+import StatsOverview from './components/StatsOverview'
 
 export default function AuctionManagement() {
   // const [filters, setFilters] = useState({

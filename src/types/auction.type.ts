@@ -20,6 +20,7 @@ export interface Auction {
   title: string
   location: string
   contract_status: string
+  has_report: boolean
   contract_url: string
 }
 export interface AuctionList {

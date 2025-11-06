@@ -1,40 +1,41 @@
 'use client'
 
-import { useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
-import { toast } from 'react-toastify'
 import { Dialog } from '@headlessui/react' // hoặc dùng modal lib khác tùy bạn
-import type { ReportAuction } from '~/types/auction.type'
-import auctionApi from '~/apis/auction.api'
+import { useMutation } from '@tanstack/react-query'
 import { XCircle } from 'lucide-react'
+import { useState } from 'react'
+import { toast } from 'react-toastify'
+import auctionApi from '~/apis/auction.api'
+import type { ReportAuction } from '~/types/auction.type'
 
 export default function ReportModal({
   auctionId,
   winnerId,
-  sellerId
+  sellerId,
+  onClose,
+  open = false
 }: {
   auctionId: number
   winnerId: number
   sellerId: number
+  onClose: () => void
+  open: boolean
 }) {
-  const [isOpen, setIsOpen] = useState(false)
   const [reason, setReason] = useState('')
   const [faultType, setFaultType] = useState<'seller' | 'winner' | ''>('')
   const [userId, setUserId] = useState<number | null>(null)
-  const [isReport, setIsReport] = useState(false)
 
   const createReport = useMutation({
     mutationFn: (data: ReportAuction) => auctionApi.createReportAuction(data),
     onSuccess: () => {
       toast.success('Báo cáo đã được gửi thành công!')
-      setIsReport(true)
-      setIsOpen(false)
+      onClose()
       setReason('')
       setFaultType('')
       setUserId(null)
     },
     onError: () => {
-      toast.error('Gửi báo cáo thất bại, vui lòng thử lại!')
+      toast.info('Gửi báo cáo thất bại, vui lòng thử lại!')
     }
   })
 
@@ -61,25 +62,8 @@ export default function ReportModal({
 
   return (
     <>
-      {/* Nút mở modal */}
-      {isReport ? (
-        <button
-          onClick={() => setIsOpen(true)}
-          className='rounded-lg bg-gray-300 px-3 py-2 text-xs font-medium text-gray-700 cursor-not-allowed'
-        >
-          Đã báo cáo
-        </button>
-      ) : (
-        <button
-          onClick={() => setIsOpen(true)}
-          className='rounded-lg bg-red-600 px-3 py-2 text-xs font-medium text-white hover:bg-red-700 transition-colors'
-        >
-          Báo cáo
-        </button>
-      )}
-
       {/* Modal */}
-      <Dialog open={isOpen} onClose={() => setIsOpen(false)} className='relative z-50'>
+      <Dialog open={open} onClose={onClose} className='relative z-50'>
         <div className='fixed inset-0 bg-black/30' aria-hidden='true' />
         <div className='fixed inset-0 flex items-center justify-center p-4'>
           <Dialog.Panel className='w-full max-w-md rounded-lg bg-white p-6 shadow-lg'>
@@ -124,7 +108,7 @@ export default function ReportModal({
 
             <div className='flex justify-end gap-2'>
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={onClose}
                 className='rounded-lg border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-100'
               >
                 Hủy
