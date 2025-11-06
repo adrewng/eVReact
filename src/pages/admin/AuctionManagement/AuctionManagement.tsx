@@ -13,7 +13,7 @@ export default function AuctionManagement() {
   //   sortBy: 'recent'
   // })
 
-  const { data: allAuctionData } = useQuery({
+  const { data: allAuctionData, isLoading } = useQuery({
     queryKey: ['all-auction'],
     queryFn: auctionApi.getAllAuction
   })
@@ -21,6 +21,17 @@ export default function AuctionManagement() {
   console.log('auctions-', allAuctionData)
   const totalAuctions = allAuctionData?.data.data.totalAuctions
   const totalMembers = allAuctionData?.data.data.totalMembers
+
+  if (isLoading)
+    return (
+      <div className='flex h-screen w-full items-center justify-center'>
+        <div className='flex space-x-2'>
+          <span className='w-3 h-3 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]'></span>
+          <span className='w-3 h-3 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]'></span>
+          <span className='w-3 h-3 bg-blue-500 rounded-full animate-bounce'></span>
+        </div>
+      </div>
+    )
 
   return (
     <main className='min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex-1'>

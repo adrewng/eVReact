@@ -2,7 +2,6 @@ import { motion } from 'framer-motion'
 import { Check } from 'lucide-react'
 
 export default function PricingPreview() {
-  
   const plans = [
     {
       name: 'Free',

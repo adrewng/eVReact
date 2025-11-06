@@ -110,9 +110,10 @@ const TransactionItem = ({ transaction }: { transaction: Transaction }) => {
         </div>
         <div className='text-right'>
           <div
-            className={`text-2xl font-bold ${transaction.service_type === 'refund' || transaction.service_type === 'topup' ? 'text-emerald-600' : 'text-gray-900'}`}
+            className={`text-2xl font-bold ${transaction.changing === 'Increase' ? 'text-emerald-600' : 'text-gray-900'}`}
           >
-            {transaction.service_type === 'refund' || transaction.service_type === 'topup' ? '+' : '-'}
+            {/* {transaction.service_type === 'refund' || transaction.service_type === 'topup' ? '+' : '-'} */}
+            {transaction.changing === 'Increase' ? '+' : '-'}
             {Number(transaction.credits).toLocaleString()}
             VND
           </div>

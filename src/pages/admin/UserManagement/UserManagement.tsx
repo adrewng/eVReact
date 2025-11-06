@@ -11,7 +11,7 @@ import { Input } from '~/components/ui/input'
 export default function UserManagement() {
   const [searchTerm, setSearchTerm] = useState('')
 
-  const { data: userData } = useQuery({
+  const { data: userData, isLoading } = useQuery({
     queryKey: ['user-list'],
     queryFn: userApi.getAllUser
   })
@@ -21,6 +21,16 @@ export default function UserManagement() {
 
   const totalUsers = userData?.data.data.totalUsers
 
+  if (isLoading)
+    return (
+      <div className='flex h-screen w-full items-center justify-center'>
+        <div className='flex space-x-2'>
+          <span className='w-3 h-3 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]'></span>
+          <span className='w-3 h-3 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]'></span>
+          <span className='w-3 h-3 bg-blue-500 rounded-full animate-bounce'></span>
+        </div>
+      </div>
+    )
   return (
     <div className='min-h-screen flex-1 bg-background'>
       {/* Main Content */}

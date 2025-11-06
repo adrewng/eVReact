@@ -1,7 +1,5 @@
 // import Link from 'next/link'
 import {
-  Bar,
-  BarChart,
   CartesianGrid,
   Cell,
   Legend,
@@ -45,14 +43,14 @@ import { path } from '~/constants/path'
 
 // 📢 Phân bố bài đăng theo danh mục
 
-const userGrowth = [
-  { month: 'Jan', buyers: 280, sellers: 120 },
-  { month: 'Feb', buyers: 320, sellers: 145 },
-  { month: 'Mar', buyers: 380, sellers: 160 },
-  { month: 'Apr', buyers: 450, sellers: 185 },
-  { month: 'May', buyers: 520, sellers: 210 },
-  { month: 'Jun', buyers: 620, sellers: 245 }
-]
+// const userGrowth = [
+//   { month: 'Jan', buyers: 280, sellers: 120 },
+//   { month: 'Feb', buyers: 320, sellers: 145 },
+//   { month: 'Mar', buyers: 380, sellers: 160 },
+//   { month: 'Apr', buyers: 450, sellers: 185 },
+//   { month: 'May', buyers: 520, sellers: 210 },
+//   { month: 'Jun', buyers: 620, sellers: 245 }
+// ]
 
 const StatCard = ({
   title,
@@ -132,9 +130,6 @@ export default function Home() {
             <div>
               <h1 className='text-3xl font-bold text-foreground'>Dashboard</h1>
               <p className='text-muted-foreground mt-1'>Welcome back! Here's your platform overview.</p>
-            </div>
-            <div className='text-right'>
-              <p className='text-sm text-muted-foreground'>Last updated: Today at 2:30 PM</p>
             </div>
           </div>
         </div>
@@ -229,7 +224,7 @@ export default function Home() {
         </div>
 
         {/* User Growth */}
-        <Card className='mb-8'>
+        {/* <Card className='mb-8'>
           <CardHeader>
             <CardTitle>User Growth</CardTitle>
             <CardDescription>Buyers vs Sellers growth over time</CardDescription>
@@ -249,7 +244,7 @@ export default function Home() {
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </div>
   )
