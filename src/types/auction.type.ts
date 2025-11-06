@@ -19,10 +19,20 @@ export interface Auction {
   image: string
   title: string
   location: string
+  contract_status: string
+  contract_url: string
 }
 export interface AuctionList {
   auctions: Auction[]
   totalAuctions: number
+  totalMembers: number
+}
+
+export interface ReportAuction {
+  auction_id: number
+  user_id: number
+  reason: string
+  fault_type: 'seller' | 'winner'
 }
 
 export interface AuctionType {

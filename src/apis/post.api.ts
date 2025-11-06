@@ -1,6 +1,13 @@
 import type { PostFormValues, PostFormValuesFileOrUrl } from '~/schemas/post.schema'
 import type { PostListTypeConfig } from '~/types/admin/post.type'
-import type { PostListType, PostStatus, PostType, ProductListConfig, RelatedPostList } from '~/types/post.type'
+import type {
+  PostListType,
+  PostStats,
+  PostStatus,
+  PostType,
+  ProductListConfig,
+  RelatedPostList
+} from '~/types/post.type'
 import type { SuccessResponse } from '~/types/util.type'
 import http from '~/utils/http'
 
@@ -72,6 +79,9 @@ const postApi = {
         id
       }
     })
+  },
+  getNumberOfPost() {
+    return http.get<SuccessResponse<PostStats>>('/api/admin/get-num-of-posts')
   }
 }
 

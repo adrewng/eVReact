@@ -1,4 +1,4 @@
-import type { Packages, PackageConfig, FormCreatePackage, FormUpdatePackage } from '~/types/package.type'
+import type { Packages, PackageConfig, FormCreatePackage, FormUpdatePackage, PackageByMe } from '~/types/package.type'
 import type { SuccessResponse } from '~/types/util.type'
 import http from '~/utils/http'
 const packageApi = {
@@ -25,6 +25,9 @@ const packageApi = {
   },
   updatePackageByAdmin(formData: FormUpdatePackage, id: number) {
     return http.put(`/api/package/${id}`, formData)
+  },
+  getPackageByMe() {
+    return http.get<SuccessResponse<PackageByMe[]>>('/api/package/user')
   }
 }
 

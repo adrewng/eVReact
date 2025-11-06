@@ -78,7 +78,7 @@ const StatCard = ({
         <div className='text-2xl font-bold'>{value}</div>
         <p className={`text-xs flex items-center gap-1 ${change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
           {change >= 0 ? <ArrowUpRight className='h-3 w-3' /> : <ArrowDownRight className='h-3 w-3' />}
-          {Math.abs(change)}% from last month
+          {typeof change === 'number' ? Math.abs(change) : change} from last month
         </p>
       </CardContent>
     </Card>
@@ -86,7 +86,7 @@ const StatCard = ({
 )
 
 export default function Home() {
-  const { data: dashboardData } = useQuery({
+  const { data: dashboardData, isLoading } = useQuery({
     queryKey: ['dashboard'],
     queryFn: dashboardApi.getDashboardInfo
   })
@@ -112,6 +112,16 @@ export default function Home() {
               ? '#ef4444'
               : '#6b7280'
   }))
+  if (isLoading)
+    return (
+      <div className='flex h-screen w-full items-center justify-center'>
+        <div className='flex space-x-2'>
+          <span className='w-3 h-3 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]'></span>
+          <span className='w-3 h-3 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]'></span>
+          <span className='w-3 h-3 bg-blue-500 rounded-full animate-bounce'></span>
+        </div>
+      </div>
+    )
 
   return (
     <div className='min-h-screen bg-background flex-1'>
@@ -137,7 +147,7 @@ export default function Home() {
           <StatCard
             title='Total Revenue'
             value={`${((dashboard?.summary.totalRevenue as number) / 1000000).toFixed(2)}M`}
-            change={dashboard?.summary.revenueChange as number}
+            change={Number(((dashboard?.summary.revenueChange as number) / 1000000).toFixed(2))}
             icon={DollarSign}
             href={path.adminTransactions}
           />

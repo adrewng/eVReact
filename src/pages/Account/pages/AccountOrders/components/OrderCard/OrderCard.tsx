@@ -6,6 +6,12 @@ import { CategoryType } from '~/types/category.type'
 import type { Order } from '~/types/order.type'
 import { fmtDate, formatCurrencyVND } from '~/utils/util'
 import StatusPill from '../StatusPill'
+import { useState } from 'react'
+import clsx from 'clsx'
+import { useMutation } from '@tanstack/react-query'
+import feedbackApi from '~/apis/feedback.api'
+import type { FeedbackType } from '~/types/feedback.type'
+import { toast } from 'react-toastify'
 
 const SHOP_NAME = 'Eviest'
 const makeCode = (id: number) => `OD${String(id).padStart(6, '0')}`
@@ -22,6 +28,31 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
   const [rating, setRating] = useState(0)
   const [hoverRating, setHoverRating] = useState(0)
   const [comment, setComment] = useState('')
+  const [isRated, setIsRated] = useState(false)
+
+  console.log('rating -', rating)
+
+  const createFeedback = useMutation({
+    mutationFn: (formData: FeedbackType) => feedbackApi.createFeedback(formData),
+    onSuccess: () => {
+      toast.success('Đánh giá thành công! 🎉') // ✅ hiện thông báo
+
+      setShowRating(false)
+      setRating(0)
+      setComment('')
+      setIsRated(true)
+    }
+  })
+  const handleFeedback = () => {
+    const payload = {
+      contract_id: o.contract?.id as number,
+      seller_id: o.seller?.id ?? 0,
+      buyer_id: o.buyer?.id ?? 0,
+      rating,
+      comment
+    }
+    createFeedback.mutate(payload)
+  }
 
   // Đảm bảo có default để tránh crash khi dữ liệu xấu
   const tracking: TrackingKey = (o.tracking ?? 'PENDING') as TrackingKey
@@ -194,12 +225,16 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
         >
           <Receipt className='mr-2 inline h-4 w-4' /> Chi tiết
         </button>
-        <button
-          onClick={() => setShowRating(!showRating)}
-          className='rounded-xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'
-        >
-          <MessageSquare className='mr-2 inline h-4 w-4' /> Đánh giá
-        </button>
+        {o.type === 'deposit' && (o.tracking === 'DEALING_SUCCESS' || o.tracking === 'DEALING_FAIL') && (
+          <button
+            onClick={() => setShowRating(!showRating)}
+            className={`rounded-xl border border-gray-200 px-3 py-2 text-sm
+      ${isRated ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'hover:bg-gray-50'}
+    `}
+          >
+            <MessageSquare className='mr-2 inline h-4 w-4' /> Đánh giá
+          </button>
+        )}
       </div>
       {showRating && (
         <div className='animate-fadeIn border-t border-gray-100 bg-gray-50 p-4'>
@@ -234,20 +269,7 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
               Hủy
             </button>
             <button
-              onClick={() => {
-                const payload = {
-                  contract_id: o.contract?.id ?? 0,
-                  seller_id: o.seller?.id ?? 0,
-                  buyer_id: o.buyer?.id ?? 0,
-                  rating,
-                  comment
-                }
-                console.log('📤 Gửi đánh giá:', payload)
-                // TODO: gọi API ở đây
-                setShowRating(false)
-                setRating(0)
-                setComment('')
-              }}
+              onClick={handleFeedback}
               disabled={!rating}
               className={clsx(
                 'rounded-xl px-4 py-2 text-sm font-medium text-white transition-colors',

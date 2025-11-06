@@ -1,4 +1,4 @@
-import type { Transactions } from '~/types/transaction.type'
+import type { RevenueByType, TransactionListAdmin, Transactions } from '~/types/transaction.type'
 import type { SuccessResponse } from '~/types/util.type'
 import http from '~/utils/http'
 
@@ -8,6 +8,12 @@ const transactionApi = {
   },
   topUpWallet({ user_id, amount, description }: { user_id: number; amount: number; description: string }) {
     return http.post('/api/payment/topup', { user_id, amount, description })
+  },
+  getTransactionByAdmin(params: { page?: number; limit?: number }) {
+    return http.get<SuccessResponse<TransactionListAdmin>>('/api/admin/list-orders', { params })
+  },
+  getRevenueByType() {
+    return http.get<SuccessResponse<RevenueByType>>('/api/order/get-revenue')
   }
 }
 

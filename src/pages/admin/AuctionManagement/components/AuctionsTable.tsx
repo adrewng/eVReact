@@ -7,6 +7,7 @@ import auctionApi from '~/apis/auction.api'
 import contractApi from '~/apis/contract.api'
 import type { FormContract } from '~/types/admin/contract.type'
 import type { Auction } from '~/types/auction.type'
+import ReportModal from './ReportModal'
 
 // interface FilterProps {
 //   status: string
@@ -15,7 +16,12 @@ import type { Auction } from '~/types/auction.type'
 // }
 
 // export default function AuctionsTable({ filters }: { filters: FilterProps }) {
-export default function AuctionsTable() {
+
+interface PropsType {
+  auctions: Auction[] | undefined
+}
+export default function AuctionsTable(props: PropsType) {
+  const { auctions } = props
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const [editingAuction, setEditingAuction] = useState<Auction | null>(null)
   const [contractAuction, setContractAuction] = useState<Auction | null>(null)
@@ -33,12 +39,6 @@ export default function AuctionsTable() {
     status: 'pending'
   })
   const qc = useQueryClient()
-  const { data: allAuctionData } = useQuery({
-    queryKey: ['all-auction'],
-    queryFn: auctionApi.getAllAuction
-  })
-  const auctions = allAuctionData?.data?.data.auctions
-  console.log('auctions-', allAuctionData)
 
   const { data: contractData } = useQuery({
     queryKey: ['contract'],
@@ -124,7 +124,8 @@ export default function AuctionsTable() {
       live: { bg: 'bg-blue-50', text: 'text-blue-700', label: 'Live' },
       draft: { bg: 'bg-amber-50', text: 'text-amber-700', label: 'Draft' },
       verified: { bg: 'bg-green-50', text: 'text-blue-700', label: 'Verified' },
-      ended: { bg: 'bg-slate-50', text: 'text-slate-700', label: 'Ended' }
+      ended: { bg: 'bg-slate-50', text: 'text-slate-700', label: 'Ended' },
+      signed: { bg: 'bg-purple-50', text: 'text-purple-700', label: 'Signed' }
     }
     return badges[status as keyof typeof badges] || badges.ended
   }
@@ -146,7 +147,11 @@ export default function AuctionsTable() {
       <div className='divide-y divide-slate-200'>
         {auctions &&
           auctions.map((auction: Auction) => {
-            const badge = getStatusBadge(auction.status)
+            let badge = getStatusBadge(auction.status)
+
+            if (auction.contract_status === 'signed' && auction.contract_url) {
+              badge = getStatusBadge('signed')
+            }
             const isExpanded = expandedId === auction.id
 
             return (
@@ -176,15 +181,42 @@ export default function AuctionsTable() {
                       {badge.label}
                     </span>
                   </div>
-                  
+
                   {auction.status === 'ended' ? (
                     <div className='col-span-1 sm:col-span-2 flex justify-end gap-2 cursor-default'>
-                      <button
-                        onClick={() => handleCreateContract(auction)}
-                        className='rounded-lg bg-green-500 px-3 py-2 text-xs font-medium text-white hover:bg-green-600 transition-colors'
-                      >
-                        Tạo hợp đồng
-                      </button>
+                      {auction.contract_status === 'signed' && auction.contract_url ? (
+                        <>
+                          <button
+                            onClick={() => {
+                              if (auction.contract_url) {
+                                window.open(auction.contract_url, '_blank')
+                              } else {
+                                toast.error('Không tìm thấy đường dẫn hợp đồng!')
+                              }
+                            }}
+                            className='rounded-lg bg-blue-600 px-3 py-2 text-xs font-medium text-white hover:bg-blue-700 transition-colors'
+                          >
+                            Xem hợp đồng
+                          </button>
+                          {/* <button className='rounded-lg bg-red-600 px-3 py-2 text-xs font-medium text-white hover:bg-red-700 transition-colors'>
+                            Báo cáo
+                          </button> */}
+                        </>
+                      ) : (
+                        <>
+                          <ReportModal
+                            auctionId={auction.id}
+                            winnerId={auction.winner_id}
+                            sellerId={auction.seller_id}
+                          />
+                          <button
+                            onClick={() => handleCreateContract(auction)}
+                            className='rounded-lg bg-green-500 px-3 py-2 text-xs font-medium text-white hover:bg-green-600 transition-colors'
+                          >
+                            Tạo hợp đồng
+                          </button>
+                        </>
+                      )}
                     </div>
                   ) : (
                     <div className='col-span-1 sm:col-span-2 flex justify-end gap-2 cursor-default'>

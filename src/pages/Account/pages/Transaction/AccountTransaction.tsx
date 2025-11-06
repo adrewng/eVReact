@@ -1,129 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
-import { CreditCard, DollarSign, Package, Wallet, CheckCircle, Clock, TrendingUp, Plus, Zap } from 'lucide-react'
+import { CreditCard, DollarSign, Package, Wallet, TrendingUp, Plus, Zap } from 'lucide-react'
 import { useState } from 'react'
 import transactionApi from '~/apis/transaction.api'
 import TransactionHistory from './components/TransactionHistory'
 import TopupModal from './components/TopupModal'
-
-// Mock data for demonstration
-// const mockTransactions = [
-//   {
-//     id: 'TXN-2024-001',
-//     type: 'package',
-//     description: 'Premium Package - 30 Days',
-//     amount: 500000,
-//     status: 'completed',
-//     date: '2024-10-15T10:30:00',
-//     method: 'Visa ****4532'
-//   },
-
-const mockWalletData = {
-  balance: 2450000,
-  totalSpent: 3500000,
-  totalTopup: 5950000,
-  pendingAmount: 200000
-}
-
-const mockPackages = [
-  {
-    id: 'PKG-001',
-    name: 'Premium Package',
-    type: 'premium',
-    price: 500000,
-    startDate: '2024-10-15',
-    endDate: '2024-11-15',
-    status: 'active',
-    features: ['Featured Listings', 'Priority Support', 'Analytics Dashboard', 'Unlimited Posts']
-  },
-  {
-    id: 'PKG-002',
-    name: 'Certification Package',
-    type: 'certification',
-    price: 200000,
-    startDate: '2024-09-20',
-    endDate: '2024-12-20',
-    status: 'active',
-    features: ['Vehicle Verification', 'Trust Badge', 'Detailed Report']
-  },
-  {
-    id: 'PKG-003',
-    name: 'Basic Package',
-    type: 'basic',
-    price: 100000,
-    startDate: '2024-08-01',
-    endDate: '2024-10-01',
-    status: 'expired',
-    features: ['5 Posts/month', 'Basic Support']
-  }
-]
-
-// Package Card Component
-const PackageCard = ({ pkg }: { pkg: (typeof mockPackages)[0] }) => {
-  const statusConfig = {
-    active: { label: 'Active', color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
-    expired: { label: 'Expired', color: 'text-gray-600 bg-gray-50 border-gray-200' }
-  }
-
-  const daysRemaining = Math.ceil((new Date(pkg.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
-
-  return (
-    <div
-      className={`bg-white border-2 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 ${pkg.status === 'active' ? 'border-gray-900' : 'border-gray-200'}`}
-    >
-      <div className='flex items-start justify-between mb-4'>
-        <div>
-          <div className='flex items-center gap-2 mb-2'>
-            <h3 className='text-xl font-bold text-gray-900'>{pkg.name}</h3>
-            <span
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border ${statusConfig[pkg.status as keyof typeof statusConfig].color}`}
-            >
-              {statusConfig[pkg.status as keyof typeof statusConfig].label}
-            </span>
-          </div>
-          <p className='text-sm text-gray-600'>ID: {pkg.id}</p>
-        </div>
-        <div className='text-right'>
-          <div className='text-2xl font-bold text-gray-900'>{pkg.price.toLocaleString('vi-VN')}</div>
-          <div className='text-xs text-gray-600'>VND</div>
-        </div>
-      </div>
-
-      <div className='space-y-2 mb-4'>
-        {pkg.features.map((feature, index) => (
-          <div key={index} className='flex items-center gap-2 text-sm text-gray-700'>
-            <CheckCircle className='w-4 h-4 text-emerald-600 flex-shrink-0' />
-            <span>{feature}</span>
-          </div>
-        ))}
-      </div>
-
-      <div className='pt-4 border-t border-gray-200'>
-        <div className='flex items-center justify-between text-sm mb-2'>
-          <span className='text-gray-600'>Start Date</span>
-          <span className='font-medium text-gray-900'>{new Date(pkg.startDate).toLocaleDateString('vi-VN')}</span>
-        </div>
-        <div className='flex items-center justify-between text-sm'>
-          <span className='text-gray-600'>End Date</span>
-          <span className='font-medium text-gray-900'>{new Date(pkg.endDate).toLocaleDateString('vi-VN')}</span>
-        </div>
-        {pkg.status === 'active' && daysRemaining > 0 && (
-          <div className='mt-3 p-3 bg-gray-50 rounded-lg'>
-            <div className='flex items-center justify-center gap-2 text-sm'>
-              <Clock className='w-4 h-4 text-gray-600' />
-              <span className='font-medium text-gray-900'>{daysRemaining} days remaining</span>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {pkg.status === 'active' && (
-        <button className='w-full mt-4 px-4 py-2.5 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-medium transition-all'>
-          Renew Package
-        </button>
-      )}
-    </div>
-  )
-}
+import packageApi from '~/apis/package.api'
+import type { PackageByMe } from '~/types/package.type'
+import PackageCard from './components/PackageCard'
 
 // Main Component
 export default function AccountTransaction() {
@@ -132,7 +15,7 @@ export default function AccountTransaction() {
 
   const tabs = [
     { id: 'history', label: 'Payment History', icon: CreditCard },
-    { id: 'wallet', label: 'Wallet Balance', icon: Wallet },
+    // { id: 'wallet', label: 'Wallet Balance', icon: Wallet },
     { id: 'packages', label: 'Active Packages', icon: Package }
   ]
 
@@ -140,8 +23,15 @@ export default function AccountTransaction() {
     queryKey: ['transaction-me'],
     queryFn: transactionApi.getUserTransaction
   })
-  const transactions = transactionsData?.data.data
+  const transactions = transactionsData?.data.data.data
   console.log('transaction -', transactionsData)
+
+  const { data: packageByMeData } = useQuery({
+    queryKey: ['package-me'],
+    queryFn: packageApi.getPackageByMe
+  })
+  console.log('package -', packageByMeData)
+  const packageByMe = packageByMeData?.data.data
 
   return (
     <div className='flex-1 bg-white min-h-screen'>
@@ -162,7 +52,7 @@ export default function AccountTransaction() {
         {showTopUp && <TopupModal setShowTopup={() => setShowTopUp(false)} />}
 
         {/* Quick Stats */}
-        <div className='grid grid-cols-4 gap-4'>
+        <div className='grid grid-cols-3 gap-4'>
           <div className='bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 text-white'>
             <div className='flex items-start justify-between mb-4'>
               <div className='w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center'>
@@ -170,8 +60,10 @@ export default function AccountTransaction() {
               </div>
               <Zap className='w-5 h-5 text-white/60' />
             </div>
-            <div className='text-3xl font-bold mb-1'>{mockWalletData.balance.toLocaleString('vi-VN')}</div>
-            <div className='text-sm text-white/60'>Wallet Balance (VND)</div>
+            <div className='text-3xl font-bold mb-1'>
+              {transactionsData?.data.data.total_credit.toLocaleString('vi-VN')}đ
+            </div>
+            <div className='text-sm text-white/60'>Số dư ví (VND)</div>
           </div>
 
           <div className='bg-white border border-gray-200 rounded-2xl p-6'>
@@ -181,9 +73,9 @@ export default function AccountTransaction() {
               </div>
             </div>
             <div className='text-3xl font-bold text-gray-900 mb-1'>
-              {mockWalletData.totalTopup.toLocaleString('vi-VN')}
+              {transactionsData?.data.data.total_topup.toLocaleString('vi-VN')}đ
             </div>
-            <div className='text-sm text-gray-600'>Total Top-up (VND)</div>
+            <div className='text-sm text-gray-600'>Tổng nạp (VND)</div>
           </div>
 
           <div className='bg-white border border-gray-200 rounded-2xl p-6'>
@@ -193,12 +85,12 @@ export default function AccountTransaction() {
               </div>
             </div>
             <div className='text-3xl font-bold text-gray-900 mb-1'>
-              {mockWalletData.totalSpent.toLocaleString('vi-VN')}
+              {transactionsData?.data.data.total_spend.toLocaleString('vi-VN')}đ
             </div>
-            <div className='text-sm text-gray-600'>Total Spent (VND)</div>
+            <div className='text-sm text-gray-600'>Tổng chi (VND)</div>
           </div>
 
-          <div className='bg-white border border-gray-200 rounded-2xl p-6'>
+          {/* <div className='bg-white border border-gray-200 rounded-2xl p-6'>
             <div className='flex items-start justify-between mb-4'>
               <div className='w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center'>
                 <Clock className='w-6 h-6 text-amber-600' />
@@ -208,7 +100,7 @@ export default function AccountTransaction() {
               {mockWalletData.pendingAmount.toLocaleString('vi-VN')}
             </div>
             <div className='text-sm text-gray-600'>Pending Amount (VND)</div>
-          </div>
+          </div> */}
         </div>
 
         {/* Navigation Tabs */}
@@ -236,7 +128,7 @@ export default function AccountTransaction() {
         {/* Content Section */}
         {activeTab === 'history' && <TransactionHistory transactions={transactions} />}
 
-        {activeTab === 'wallet' && (
+        {/* {activeTab === 'wallet' && (
           <div className='space-y-6'>
             <div className='bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 text-white'>
               <div className='flex items-center justify-between mb-8'>
@@ -305,7 +197,7 @@ export default function AccountTransaction() {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {activeTab === 'packages' && (
           <div className='space-y-6'>
@@ -316,7 +208,7 @@ export default function AccountTransaction() {
               </button>
             </div>
             <div className='grid grid-cols-2 gap-6'>
-              {mockPackages.map((pkg) => (
+              {packageByMe?.map((pkg: PackageByMe) => (
                 <PackageCard key={pkg.id} pkg={pkg} />
               ))}
             </div>

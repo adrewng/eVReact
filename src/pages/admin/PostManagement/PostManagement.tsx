@@ -30,6 +30,7 @@ export default function PostManagement() {
     queryKey: ['posts', queryConfig],
     queryFn: () => postApi.getPostsByAdmin(queryConfig as PostListTypeConfig)
   })
+  console.log('post -', data)
 
   return (
     <div className='p-6 space-y-6 flex-1 overflow-y-auto'>
