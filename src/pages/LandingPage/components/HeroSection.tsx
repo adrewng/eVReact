@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import heroBg from '../../../assets/hero2.jpg'
+import heroBg from '../../../assets/hero5.jpg'
 
 export default function HeroSection() {
   return (
@@ -20,7 +20,7 @@ export default function HeroSection() {
           transition={{ duration: 1, delay: 0.3 }}
           className='text-left text-5xl  font-extrabold leading-tight  max-w-2xl drop-shadow-lg pt-25'
         >
-          Nền tảng đăng tin <br />
+          Nền tảng giao dịch <br />
           xe điện & pin cũ <br />
           đáng tin cậy nhất Việt Nam
         </motion.h1>

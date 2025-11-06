@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion'
 import { ArrowRight, Zap } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { path } from '~/constants/path'
 
 export default function FinalCTA() {
   return (
@@ -26,14 +28,18 @@ export default function FinalCTA() {
           </p>
 
           <div className='flex flex-col sm:flex-row items-center justify-center gap-4'>
-            <button className='px-8 py-4 bg-white text-black rounded-xl text-base font-semibold hover:bg-neutral-100 transition-all duration-300 flex items-center gap-2'>
-              <Zap className='w-5 h-5' />
-              Đăng tin ngay
-              <ArrowRight className='w-5 h-5' />
-            </button>
-            <button className='px-8 py-4 bg-transparent text-white border border-white/30 rounded-xl text-base font-semibold hover:bg-white/10 transition-all duration-300'>
-              Tìm hiểu thêm
-            </button>
+            <Link to={path.home}>
+              <button className='px-8 py-4 bg-transparent text-white border border-white/30 rounded-xl text-base font-semibold hover:bg-white/10 transition-all duration-300'>
+                Tìm hiểu thêm
+              </button>
+            </Link>
+            <Link to={path.post}>
+              <button className='px-8 py-4 bg-white text-black rounded-xl text-base font-semibold hover:bg-neutral-100 transition-all duration-300 flex items-center gap-2'>
+                <Zap className='w-5 h-5' />
+                Đăng tin ngay
+                <ArrowRight className='w-5 h-5' />
+              </button>
+            </Link>
           </div>
 
           <p className='text-sm text-neutral-400 mt-8'>

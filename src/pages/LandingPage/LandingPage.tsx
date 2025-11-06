@@ -1,12 +1,7 @@
-'use client'
-
-// import { Zap, Facebook, Linkedin, Mail } from 'lucide-react'
 import Header from './components/Header'
 import HeroSection from './components/HeroSection'
 import FeaturesSection from './components/FeaturesSection'
 import CategoriesSection from './components/CategoriesSection'
-// import FeaturedListings from './components/FeaturedListings'
-import TestimonialsSection from './components/TestimonialsSection'
 import HowItWorks from './components/HowItWorks'
 import PricingPreview from './components/PricingPreview'
 // import BlogSection from './components/BlogSection'
@@ -131,10 +126,10 @@ export default function LandingPage() {
       <HeroSection />
       <FeaturesSection />
       <CategoriesSection />
-      {/* <FeaturedListings /> */}
-      <TestimonialsSection />
+      {/* <FeaturedListings />
+      <TestimonialsSection /> */}
       <HowItWorks />
-      <PricingPreview />
+      {/* <PricingPreview /> */}
       {/* <BlogSection /> */}
       <FinalCTA />
       <Footer />

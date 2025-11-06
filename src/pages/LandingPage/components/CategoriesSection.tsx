@@ -7,9 +7,9 @@ import battery from '../../../assets/electricBattery3.jpg'
 
 export default function CategoriesSection() {
   const categories = [
-    { icon: Bike, title: 'Xe máy điện', count: '1,234 tin', image: bike },
-    { icon: Car, title: 'Ô tô điện', count: '567 tin', image: car },
-    { icon: Battery, title: 'Pin xe điện', count: '890 tin', image: battery }
+    { icon: Bike, title: 'Xe máy điện', image: bike },
+    { icon: Car, title: 'Ô tô điện', image: car },
+    { icon: Battery, title: 'Pin xe điện', image: battery }
   ]
 
   return (
@@ -47,7 +47,6 @@ export default function CategoriesSection() {
               {/* Text content */}
               <div className='relative z-10 flex flex-col justify-end h-full p-8 text-white'>
                 <h3 className='text-4xl font-bold mb-2'>{category.title}</h3>
-                <p className='text-neutral-200'>{category.count}</p>
               </div>
             </motion.div>
           ))}

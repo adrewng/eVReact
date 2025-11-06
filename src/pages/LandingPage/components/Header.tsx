@@ -33,17 +33,37 @@ export default function Header() {
           </div>
 
           <nav className='hidden md:flex items-center gap-8 flex-1 justify-center'>
-            <Link to={path.auction} className='text-sm font-medium text-black hover:text-black transition-colors'>
+            <Link
+              to={path.auction}
+              className={` py-2 text-sm font-medium transition-colors duration-300 ${
+                scrolled ? 'text-neutral-800 hover:text-black' : 'text-white hover:text-yellow-400'
+              }`}
+            >
               Đấu giá
             </Link>
 
-            <Link to={path.home} className='text-sm font-medium  text-black hover:text-black transition-colors'>
+            <Link
+              to={path.home}
+              className={` py-2 text-sm font-medium transition-colors duration-300 ${
+                scrolled ? 'text-neutral-800 hover:text-black' : 'text-white hover:text-yellow-400'
+              }`}
+            >
               Tin đăng
             </Link>
-            <Link to={path.pricing} className='text-sm font-medium text-black hover:text-black transition-colors'>
+            <Link
+              to={path.pricing}
+              className={` py-2 text-sm font-medium transition-colors duration-300 ${
+                scrolled ? 'text-neutral-800 hover:text-black' : 'text-white hover:text-yellow-400'
+              }`}
+            >
               Gói tin
             </Link>
-            <Link to={path.landingPage} className='text-sm font-medium text-black hover:text-black transition-colors'>
+            <Link
+              to={path.landingPage}
+              className={` py-2 text-sm font-medium transition-colors duration-300 ${
+                scrolled ? 'text-neutral-800 hover:text-black' : 'text-white hover:text-yellow-400'
+              }`}
+            >
               Liên hệ
             </Link>
           </nav>

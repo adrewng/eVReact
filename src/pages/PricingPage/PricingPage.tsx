@@ -76,71 +76,7 @@ export default function PricingPage() {
         {/* ===== PACKAGE CARDS ===== */}
 
         {type === 'vehicle' ? <VehiclePackage /> : <BatteryPackage />}
-        {/* ===== COMPARE SECTION ===== */}
-        {/* <section className='mb-20'>
-          <div className='text-center mb-12'>
-            <h2 className='text-3xl font-bold text-neutral-900'>So sánh các gói</h2>
-            <p className='text-neutral-500 mt-2'>Tìm gói phù hợp nhất cho nhu cầu đăng tin của bạn</p>
-          </div>
 
-          <div className='overflow-x-auto'>
-            <table className='min-w-full border-collapse text-sm'>
-              <thead className='bg-neutral-50 text-neutral-700'>
-                <tr className='border-b border-neutral-400'>
-                  <th className='p-5 text-left font-medium text-neutral-800'>Tính năng</th>
-                  {packages.map((pkg) => (
-                    <th
-                      key={pkg.id}
-                      className='p-5 text-center font-semibold text-neutral-900 border-l border-neutral-400'
-                    >
-                      <div>{pkg.name}</div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-
-              <tbody className='text-neutral-700'>
-                {[
-                  { name: 'Giới hạn tin đăng', values: ['3 tin/tháng', '15 tin/tháng', 'Không giới hạn'] },
-                  { name: 'Tin nổi bật', values: ['—', '✔', '✔'] },
-                  { name: 'Báo cáo chi tiết', values: ['—', '✔', '✔'] },
-                  { name: 'Quản lý nhóm & tài khoản con', values: ['—', '—', '✔'] },
-                  { name: 'Hỗ trợ ưu tiên', values: ['—', '✔', '✔'] }
-                ].map((row, i) => (
-                  <tr key={i} className='border-b border-neutral-400 hover:bg-neutral-50 transition'>
-                    <td className='p-4 font-medium text-neutral-800 border-r border-neutral-400'>{row.name}</td>
-                    {row.values.map((val, j) => (
-                      <td
-                        key={j}
-                        className={`p-4 text-center ${
-                          j !== row.values.length - 1 ? 'border-r border-neutral-400' : ''
-                        }`}
-                      >
-                        {val === '✔' ? (
-                          <div className='w-4 h-4 mx-auto flex items-center justify-center rounded-full bg-black'>
-                            <svg
-                              className='w-2.5 h-2.5 text-white'
-                              fill='none'
-                              viewBox='0 0 24 24'
-                              stroke='currentColor'
-                              strokeWidth={3}
-                            >
-                              <path strokeLinecap='round' strokeLinejoin='round' d='M5 13l4 4L19 7' />
-                            </svg>
-                          </div>
-                        ) : val === '—' ? (
-                          <span className='text-neutral-300 text-xl'>—</span>
-                        ) : (
-                          <span className='text-neutral-700'>{val}</span>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section> */}
         {/* ===== FAQ SECTION ===== */}
         <section className='max-w-3xl mx-auto'>
           <h2 className='text-3xl font-bold text-center mb-10'>Câu hỏi thường gặp</h2>
