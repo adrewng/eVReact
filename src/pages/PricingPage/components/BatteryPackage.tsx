@@ -8,7 +8,7 @@ export default function BatteryPackage() {
     queryKey: ['battery-package'],
     queryFn: packageApi.getBatteryPackage
   })
-  const batteryPackage = batteryPackageData?.data.data.packages
+  const batteryPackage = batteryPackageData?.data.data
   console.log('bapck-', batteryPackage)
 
   return (

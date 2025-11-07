@@ -25,8 +25,9 @@ class Http {
     this.refreshTokenRequest = null
     this.instance = axios.create({
       // baseURL: '/api/',
-      baseURL: 'https://electriccarmanagement-swp.up.railway.app/',
+      // baseURL: 'https://electriccarmanagement-swp.up.railway.app/',
       // baseURL: 'http://localhost:3000/',
+      baseURL: import.meta.env.VITE_API_URL,
       timeout: 10 * 1000,
       headers: { 'Content-Type': 'application/json' }
     })

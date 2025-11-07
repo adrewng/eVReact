@@ -31,7 +31,7 @@ export default function Sidebar() {
   console.log('location -', location)
   console.log('currentPath -', currentPath)
 
-  const { reset } = useContext(AppContext)
+  const { reset, profile } = useContext(AppContext)
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const logoutMutation = useMutation({
@@ -61,13 +61,13 @@ export default function Sidebar() {
       {/* mot o ve thong tin admin gom ava tron ben goc trai, ho ten chu bu va email o ben duoi */}
       <div className='flex items-center bg-gray-50 p-3 rounded-lg mb-6 mx-2 shadow-sm'>
         <img
-          src='https://via.placeholder.com/40' // avatar placeholder
+          src={profile?.avatar || 'https://via.placeholder.com/40'}
           alt='Admin Avatar'
           className='w-10 h-10 rounded-full object-cover'
         />
         <div className='ml-3'>
-          <p className='text-sm font-semibold text-gray-800'>Nguyễn Văn A</p>
-          <p className='text-xs text-gray-500'>admin@example.com</p>
+          <p className='text-sm font-semibold text-gray-800'>{profile?.full_name || 'Admin'}</p>
+          <p className='text-xs text-gray-500'>{profile?.email || 'admin@gmail.com'}</p>
         </div>
       </div>
 

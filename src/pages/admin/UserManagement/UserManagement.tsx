@@ -1,19 +1,32 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 // import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { Search, UserRound } from 'lucide-react'
 import userApi from '~/apis/user.api'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
+import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 export default function UserManagement() {
-  const [searchTerm, setSearchTerm] = useState('')
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '')
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm)
+
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm)
+    }, 1000) // Đợi 1000ms sau khi người dùng ngừng nhập
+
+    return () => clearTimeout(timer)
+  }, [searchTerm])
 
   const { data: userData, isLoading } = useQuery({
-    queryKey: ['user-list'],
-    queryFn: userApi.getAllUser
+    queryKey: ['user-list', debouncedSearchTerm],
+    queryFn: () => userApi.getAllUser(debouncedSearchTerm)
   })
 
   const userList = userData?.data.data.users
@@ -53,7 +66,20 @@ export default function UserManagement() {
                 <Input
                   placeholder='Search users...'
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value
+                    setSearchTerm(value)
+
+                    // Update URL với query param
+                    if (value) {
+                      navigate({
+                        pathname: location.pathname,
+                        search: createSearchParams({ search: value }).toString()
+                      })
+                    } else {
+                      navigate(location.pathname)
+                    }
+                  }}
                   className='pl-10'
                 />
               </div>
@@ -89,9 +115,15 @@ export default function UserManagement() {
                         <td className='py-3 px-4'>{user.full_name}</td>
                         <td className='py-3 px-4 text-muted-foreground'>{user.email}</td>
                         <td className='py-3 px-4'>
-                          <span className='px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800'>
-                            {user.phone}
-                          </span>
+                          {user.phone === null ? (
+                            <span className='px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800'>
+                              Chưa cập nhật
+                            </span>
+                          ) : (
+                            <span className='px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800'>
+                              {user.phone}
+                            </span>
+                          )}
                         </td>
                         <td className='py-3 px-4'>
                           <span
@@ -103,7 +135,7 @@ export default function UserManagement() {
                                   : 'bg-red-100 text-red-800'
                             }`}
                           >
-                            {user.status}
+                            {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
                           </span>
                         </td>
                         <td className='py-3 px-4 text-muted-foreground'>

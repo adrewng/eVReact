@@ -1,35 +1,36 @@
-import { motion } from 'framer-motion'
-import { Check } from 'lucide-react'
+// import { motion } from 'framer-motion'
+// import { Check } from 'lucide-react'
+import VehiclePackage from '~/pages/PricingPage/components/VehiclePackage'
 
 export default function PricingPreview() {
-  const plans = [
-    {
-      name: 'Free',
-      price: '0đ',
-      period: '/tháng',
-      features: ['3 tin đăng miễn phí', 'Hiển thị 7 ngày', 'Hỗ trợ cơ bản', 'Tìm kiếm thông thường']
-    },
-    {
-      name: 'Pro',
-      price: '199.000đ',
-      period: '/tháng',
-      features: ['20 tin đăng', 'Hiển thị 30 ngày', 'Ưu tiên hiển thị', 'Hỗ trợ ưu tiên', 'Phân tích chi tiết'],
-      popular: true
-    },
-    {
-      name: 'Premium',
-      price: '499.000đ',
-      period: '/tháng',
-      features: [
-        'Không giới hạn tin đăng',
-        'Hiển thị 60 ngày',
-        'Top hiển thị',
-        'Hỗ trợ 24/7',
-        'Phân tích nâng cao',
-        'Quản lý nhiều tài khoản'
-      ]
-    }
-  ]
+  // const plans = [
+  //   {
+  //     name: 'Free',
+  //     price: '0đ',
+  //     period: '/tháng',
+  //     features: ['3 tin đăng miễn phí', 'Hiển thị 7 ngày', 'Hỗ trợ cơ bản', 'Tìm kiếm thông thường']
+  //   },
+  //   {
+  //     name: 'Pro',
+  //     price: '199.000đ',
+  //     period: '/tháng',
+  //     features: ['20 tin đăng', 'Hiển thị 30 ngày', 'Ưu tiên hiển thị', 'Hỗ trợ ưu tiên', 'Phân tích chi tiết'],
+  //     popular: true
+  //   },
+  //   {
+  //     name: 'Premium',
+  //     price: '499.000đ',
+  //     period: '/tháng',
+  //     features: [
+  //       'Không giới hạn tin đăng',
+  //       'Hiển thị 60 ngày',
+  //       'Top hiển thị',
+  //       'Hỗ trợ 24/7',
+  //       'Phân tích nâng cao',
+  //       'Quản lý nhiều tài khoản'
+  //     ]
+  //   }
+  // ]
 
   return (
     <section id='pricing' className='py-20 bg-white'>
@@ -39,7 +40,7 @@ export default function PricingPreview() {
           <p className='text-lg text-neutral-500 max-w-2xl mx-auto'>Linh hoạt theo nhu cầu của bạn</p>
         </div>
 
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
+        {/* <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
           {plans.map((plan, index) => (
             <motion.div
               key={index}
@@ -83,7 +84,8 @@ export default function PricingPreview() {
               </div>
             </motion.div>
           ))}
-        </div>
+        </div> */}
+        <VehiclePackage />
       </div>
     </section>
   )

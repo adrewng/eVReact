@@ -7,6 +7,7 @@ import HowItWorks from './components/HowItWorks'
 // import BlogSection from './components/BlogSection'
 import FinalCTA from './components/FinalCTA'
 import Footer from '~/components/Footer'
+import PricingPreview from './components/PricingPreview'
 
 // ===== FOOTER =====
 // const Footer = () => {
@@ -129,7 +130,7 @@ export default function LandingPage() {
       {/* <FeaturedListings />
       <TestimonialsSection /> */}
       <HowItWorks />
-      {/* <PricingPreview /> */}
+      <PricingPreview />
       {/* <BlogSection /> */}
       <FinalCTA />
       <Footer />

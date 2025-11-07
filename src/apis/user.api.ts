@@ -3,8 +3,12 @@ import type { SuccessResponse } from '~/types/util.type'
 import http from '~/utils/http'
 
 const userApi = {
-  getAllUser() {
-    return http.get<SuccessResponse<UserListGetByAdmin>>('/api/user/get-all-users')
+  getAllUser(search?: string) {
+    return http.get<SuccessResponse<UserListGetByAdmin>>('/api/user/get-all-users', {
+      params: {
+        search
+      }
+    })
   }
 }
 

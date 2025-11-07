@@ -58,14 +58,6 @@ export default function Header() {
             >
               Gói tin
             </Link>
-            <Link
-              to={path.landingPage}
-              className={` py-2 text-sm font-medium transition-colors duration-300 ${
-                scrolled ? 'text-neutral-800 hover:text-black' : 'text-white hover:text-yellow-400'
-              }`}
-            >
-              Liên hệ
-            </Link>
           </nav>
 
           <div className='hidden md:flex items-center gap-3 flex-1 justify-end'>

@@ -28,6 +28,8 @@ export default function AccountProfile() {
     refetchOnWindowFocus: true, // focus tab là refetch (nên bật)
     refetchOnReconnect: true
   })
+
+  // Ưu tiên dùng profileContext nếu có, fallback về profileData
   const profile = profileData?.data.data.user
 
   // Chọn file ảnh đại diện
@@ -47,12 +49,24 @@ export default function AccountProfile() {
     mutationFn: (data: FormData) => accountApi.updateAvatar(data),
     onSuccess: async (data) => {
       const user = data.data.data.user
+      console.log('✅ Avatar uploaded successfully:', user.avatar)
+
+      // Cập nhật context trước
       setProfile(user)
       setProfileToLS(user)
+
+      // Reset file state
+      setFile(undefined)
+      setIsEditAvatar(false)
+
+      // Refetch để đảm bảo đồng bộ
       await refetch()
+
+      console.log('✅ Profile updated in context:', user)
     },
     onError: (error) => {
       console.log('❌ Cập nhật ảnh đại diện thất bại!', error)
+      setIsEditAvatar(false)
     }
   })
 

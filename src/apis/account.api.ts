@@ -27,8 +27,8 @@ const accountApi = {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
   },
-  updateNewPassword(newPassword: string) {
-    return http.put('/api/user/change-password', { newPassword })
+  updateNewPassword(currentPassword: string, newPassword: string, confirmPassword: string) {
+    return http.put('/api/user/change-password', { currentPassword, newPassword, confirmPassword })
   },
 
   getInfoUser(_id: number | string, config: OverviewConfig) {

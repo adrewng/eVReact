@@ -9,7 +9,7 @@ export default function VehiclePackage() {
     queryFn: packageApi.getVehiclePackage
   })
 
-  const vehiclePackage = vehiclePackageData?.data.data.packages
+  const vehiclePackage = vehiclePackageData?.data.data
   console.log('vepck-', vehiclePackage)
 
   return (

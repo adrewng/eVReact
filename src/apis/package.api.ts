@@ -10,10 +10,10 @@ import type { SuccessResponse } from '~/types/util.type'
 import http from '~/utils/http'
 const packageApi = {
   getVehiclePackage() {
-    return http.get<SuccessResponse<Packages>>('/api/package/get-all?product_type=vehicle')
+    return http.get<SuccessResponse<Package[]>>('/api/package/get-all?product_type=vehicle')
   },
   getBatteryPackage() {
-    return http.get<SuccessResponse<Packages>>('/api/package/get-all?product_type=battery')
+    return http.get<SuccessResponse<Package[]>>('/api/package/get-all?product_type=battery')
   },
   getCheckoutPackage(params: PackageConfig) {
     return http.get<SuccessResponse<Packages>>('/api/service/packages', { params })
