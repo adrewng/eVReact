@@ -1,12 +1,12 @@
+import CategoriesSection from './components/CategoriesSection'
+import FeaturesSection from './components/FeaturesSection'
 import Header from './components/Header'
 import HeroSection from './components/HeroSection'
-import FeaturesSection from './components/FeaturesSection'
-import CategoriesSection from './components/CategoriesSection'
 import HowItWorks from './components/HowItWorks'
 // import PricingPreview from './components/PricingPreview'
 // import BlogSection from './components/BlogSection'
-import FinalCTA from './components/FinalCTA'
 import Footer from '~/components/Footer'
+import FinalCTA from './components/FinalCTA'
 import PricingPreview from './components/PricingPreview'
 
 // ===== FOOTER =====

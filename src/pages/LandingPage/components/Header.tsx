@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { path } from '~/constants/path'
+import { AppContext } from '~/contexts/app.context'
 import logoUrl from '~/shared/logo.svg'
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false)
+  const { isAuthenticated } = useContext(AppContext)
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20)
@@ -61,14 +63,16 @@ export default function Header() {
           </nav>
 
           <div className='hidden md:flex items-center gap-3 flex-1 justify-end'>
-            <Link
-              to={path.login}
-              className={`px-5 py-2 text-sm font-medium transition-colors duration-300 ${
-                scrolled ? 'text-neutral-800 hover:text-black' : 'text-white hover:text-yellow-400'
-              }`}
-            >
-              Đăng nhập
-            </Link>
+            {!isAuthenticated && (
+              <Link
+                to={path.login}
+                className={`px-5 py-2 text-sm font-medium transition-colors duration-300 ${
+                  scrolled ? 'text-neutral-800 hover:text-black' : 'text-white hover:text-yellow-400'
+                }`}
+              >
+                Đăng nhập
+              </Link>
+            )}
 
             <Link
               to={path.post}

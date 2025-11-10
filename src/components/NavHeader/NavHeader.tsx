@@ -12,15 +12,15 @@ import useQueryConfig from '~/hooks/useQueryConfig'
 import logoUrl from '~/shared/logo.svg'
 import { CategoryType } from '~/types/category.type'
 import type { NavNotificationsData, NotificationListConfig } from '~/types/notification.type'
+import type { FavNavData } from '~/types/post.type'
 import { clearReactQueryCache } from '~/utils/auth'
 import Popover from '../Popover'
-
-import type { FavNavData } from '~/types/post.type'
 import FavoriteMenu from './components/FavoriteMenu/FavoriteMenu'
 import NotificationMenu from './components/NotificationMenu/NotificationMenu'
 
 export default function NavHeader() {
-  const pathname = useLocation().pathname
+  const { pathname } = useLocation()
+  const normalizedPathname = pathname === path.vehicle || pathname === path.battery ? pathname : path.home
   const [title, setTitle] = useState<string>('')
   const navigate = useNavigate()
   const { isAuthenticated, profile, reset } = useContext(AppContext)
@@ -34,7 +34,7 @@ export default function NavHeader() {
   }, [queryConfig.title])
   function onSearch() {
     navigate({
-      pathname: pathname,
+      pathname: normalizedPathname,
       search: createSearchParams(
         omit(
           {
