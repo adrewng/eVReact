@@ -104,7 +104,9 @@ const TransactionItem = ({ transaction }: { transaction: Transaction }) => {
                 <StatusIcon className='w-3 h-3' />
                 {statusStyle.label}
               </span>
-              <span className='text-xs text-gray-500'>{new Date(transaction.created_at).toLocaleString('vi-VN')}</span>
+              <span className='text-xs text-gray-500'>
+                {new Date(transaction.created_at).toISOString().replace('T', ' ').replace('Z', '')}
+              </span>
             </div>
           </div>
         </div>
