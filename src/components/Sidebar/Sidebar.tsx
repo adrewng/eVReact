@@ -105,29 +105,6 @@ export default function Sidebar() {
             </Link>
           )
         })}
-
-        {/* General Section */}
-        {/* <div className='mt-8'>
-          <p className='text-xs uppercase text-gray-400 mb-2 px-4'>General</p>
-          {generalItems.map((item) => {
-            const Icon = item.icon
-            const isActive = currentPath === item.path
-
-            return (
-              <button
-                key={item.label}
-                // onClick={() => setActive(item.label)}
-                className={cn(
-                  'flex items-center space-x-3 w-full px-4 py-2 rounded-lg transition duration-200 font-medium text-gray-700 mb-1',
-                  isActive ? 'bg-green-100 text-green-700' : 'hover:bg-gray-100'
-                )}
-              >
-                <Icon size={20} />
-                <span>{item.label}</span>
-              </button>
-            )
-          })}
-        </div> */}
       </nav>
       {/* Bottom logout button */}
       <div className='mt-auto px-4 py-3 border-t border-gray-200'>

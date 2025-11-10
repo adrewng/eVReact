@@ -222,29 +222,6 @@ export default function Home() {
             </CardContent>
           </Card>
         </div>
-
-        {/* User Growth */}
-        {/* <Card className='mb-8'>
-          <CardHeader>
-            <CardTitle>User Growth</CardTitle>
-            <CardDescription>Buyers vs Sellers growth over time</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width='100%' height={300}>
-              <BarChart data={userGrowth}>
-                <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
-                <XAxis dataKey='month' stroke='#6b7280' />
-                <YAxis stroke='#6b7280' />
-                <Tooltip
-                  contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px', color: '#fff' }}
-                />
-                <Legend />
-                <Bar dataKey='buyers' fill='#3b82f6' radius={[8, 8, 0, 0]} />
-                <Bar dataKey='sellers' fill='#10b981' radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card> */}
       </div>
     </div>
   )

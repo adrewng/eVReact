@@ -48,6 +48,13 @@ export default function PackageCard({ pkg }: { pkg: PackageByMe }) {
           <span className='text-gray-600'>End Date</span>
           <span className='font-medium text-gray-900'>{new Date(pkg.expires_at).toLocaleDateString('vi-VN')}</span>
         </div>
+        {/* Hiển thị số lần đăng tin còn lại */}
+        <div className='flex items-center justify-between text-sm mb-2'>
+          <span className='text-gray-600'>Số lần đăng tin còn lại</span>
+          <span className='font-medium text-gray-900'>
+            {pkg.remaining_amount} / {pkg.total_amount}
+          </span>
+        </div>
         {pkg.status === 'active' && daysRemaining > 0 && (
           <div className='mt-3 p-3 bg-gray-50 rounded-lg'>
             <div className='flex items-center justify-center gap-2 text-sm'>

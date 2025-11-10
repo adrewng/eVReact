@@ -10,7 +10,7 @@ interface Props {
 const RANGE = 2
 export default function PaginationAdmin(props: Props) {
   const { queryConfig, pageSize } = props
-  const page = Number(queryConfig.page)
+  const page = Number(queryConfig.page) || 1
 
   const renderPagination = () => {
     let dotAfter = false

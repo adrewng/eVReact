@@ -1,4 +1,4 @@
-import { ArrowLeftRight, BadgeCheck, CalendarDays, Mail, MapPin, Phone, ShieldX, Star } from 'lucide-react'
+import { ArrowLeftRight, CalendarDays, Mail, MapPin, Phone, Star } from 'lucide-react'
 import type { User } from '~/types/user.type'
 import { getJoinDuration } from '~/utils/util'
 
@@ -78,7 +78,7 @@ export default function ProfileInfo({ seller }: Prop) {
       </section>
 
       {/* Verification Status */}
-      <section className='rounded-2xl border border-neutral-200 bg-neutral-50 p-6 lg:col-span-2'>
+      {/* <section className='rounded-2xl border border-neutral-200 bg-neutral-50 p-6 lg:col-span-2'>
         <h3 className='mb-6 text-lg font-semibold text-neutral-900'>Trạng thái xác minh</h3>
 
         <div className='grid gap-4 sm:grid-cols-3'>
@@ -94,7 +94,7 @@ export default function ProfileInfo({ seller }: Prop) {
             subText={seller.isVerify && seller.phone ? 'Đã xác minh' : 'Chưa xác minh'}
           />
         </div>
-      </section>
+      </section> */}
     </div>
   )
 }
@@ -111,18 +111,18 @@ function Row({ icon, label, value }: { icon: React.ReactNode; label: string; val
   )
 }
 
-function VerifyCard({ title, verified, subText }: { title: string; verified: boolean; subText: string }) {
-  return (
-    <div className='flex items-center gap-3 rounded-xl border border-neutral-200 bg-white p-4'>
-      {verified ? (
-        <BadgeCheck className='h-5 w-5 text-neutral-900' />
-      ) : (
-        <ShieldX className='h-5 w-5 text-neutral-500' />
-      )}
-      <div>
-        <p className='text-sm font-medium text-neutral-900'>{title}</p>
-        <p className={`text-xs ${verified ? 'text-neutral-600' : 'text-neutral-500'}`}>{subText}</p>
-      </div>
-    </div>
-  )
-}
+// function VerifyCard({ title, verified, subText }: { title: string; verified: boolean; subText: string }) {
+//   return (
+//     <div className='flex items-center gap-3 rounded-xl border border-neutral-200 bg-white p-4'>
+//       {verified ? (
+//         <BadgeCheck className='h-5 w-5 text-neutral-900' />
+//       ) : (
+//         <ShieldX className='h-5 w-5 text-neutral-500' />
+//       )}
+//       <div>
+//         <p className='text-sm font-medium text-neutral-900'>{title}</p>
+//         <p className={`text-xs ${verified ? 'text-neutral-600' : 'text-neutral-500'}`}>{subText}</p>
+//       </div>
+//     </div>
+//   )
+// }

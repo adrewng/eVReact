@@ -1,12 +1,7 @@
-import React from 'react'
 import { Outlet } from 'react-router-dom'
 import Sidebar from '~/components/Sidebar/Sidebar'
 
-interface Props {
-  children?: React.ReactNode
-}
-
-export default function Dashboard({ children }: Props) {
+export default function Dashboard() {
   return (
     <div className='flex flex-1 bg-gray-100'>
       <div className='w-64 flex-shrink-0'>
@@ -15,7 +10,6 @@ export default function Dashboard({ children }: Props) {
         </div>
       </div>
 
-      {children}
       <Outlet />
     </div>
   )
