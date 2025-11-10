@@ -27,7 +27,19 @@ export default function VehicleFilter({ queryConfig, categorySlug }: VehicleFilt
     navigate({
       pathname: path.vehicle,
       search: createSearchParams(
-        omit(queryConfig, ['price_min', 'price_max', 'waranty', 'color', 'year_min', 'year_max', 'title'])
+        omit(queryConfig, [
+          'price_min',
+          'price_max',
+          'warranty',
+          'color',
+          'year_min',
+          'year_max',
+          'title',
+          'power',
+          'mileage',
+          'seat',
+          'category_id'
+        ])
       ).toString()
     })
   }

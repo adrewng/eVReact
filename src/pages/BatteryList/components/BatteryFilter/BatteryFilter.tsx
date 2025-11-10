@@ -33,7 +33,19 @@ export default function BatterFilter({ queryConfig, categorySlug }: BatterFilter
     navigate({
       pathname: path.battery,
       search: createSearchParams(
-        omit(queryConfig, ['price_min', 'price_max', 'waranty', 'color', 'year_min', 'year_max', 'title'])
+        omit(queryConfig, [
+          'price_min',
+          'price_max',
+          'warranty',
+          'color',
+          'year_min',
+          'year_max',
+          'title',
+          'health',
+          'voltage',
+          'capacity',
+          'category_id'
+        ])
       ).toString()
     })
   }
