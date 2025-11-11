@@ -90,12 +90,11 @@ export interface UserListGetByAdmin {
 }
 
 export interface BodyUpdateProfile {
-  email: string
-  avatar: string
   full_name: string
+  gender?: '' | 'Nam' | 'Nữ' | 'Khác'
   phone: string
-  gender: string
-  dateOfBirth: string
-  address: string
-  description: string
+  email: string
+  address?: string
+  avatar?: string
+  description?: string
 }
