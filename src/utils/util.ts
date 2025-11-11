@@ -126,3 +126,17 @@ export function paginate<T>(arr: T[], page = 1, limit = 10) {
   const items = arr.slice(start, start + safeLimit)
   return { items, meta: { page: p, limit: safeLimit, page_size } }
 }
+
+export function formatUTCDateString(isoString: string): string {
+  if (!isoString) return ''
+
+  try {
+    // Tạo đối tượng Date từ chuỗi ISO
+    const date = new Date(isoString)
+
+    // Trả về chuỗi ISO (UTC) rồi cắt gọn phần 'T' và 'Z'
+    return date.toISOString().replace('T', ' ').replace('Z', '')
+  } catch {
+    return isoString // fallback nếu chuỗi bị lỗi
+  }
+}

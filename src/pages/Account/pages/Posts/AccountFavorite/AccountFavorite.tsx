@@ -8,7 +8,7 @@ import { path } from '~/constants/path'
 import { statusTone } from '~/constants/post'
 import useQueryConfig from '~/hooks/useQueryConfig'
 import type { ProductListConfig } from '~/types/post.type'
-import { formatCurrencyVND, generateNameId, getTimeAgo, isVehicle } from '~/utils/util'
+import { formatCurrencyVND, formatUTCDateString, generateNameId, getTimeAgo, isVehicle } from '~/utils/util'
 import Pagination from '../../AccountOrders/components/Pagination'
 
 export default function AccountFavorite() {
@@ -137,7 +137,9 @@ export default function AccountFavorite() {
                   </div>
 
                   {p.favorite_at && (
-                    <div className='mt-2 text-xs text-gray-400'>Đã lưu {getTimeAgo(p.favorite_at)}</div>
+                    <div className='mt-2 text-xs text-gray-400'>
+                      Đã lưu {getTimeAgo(formatUTCDateString(p.favorite_at))}
+                    </div>
                   )}
 
                   {/* Người bán (nếu có) */}
