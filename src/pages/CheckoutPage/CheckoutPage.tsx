@@ -59,7 +59,7 @@ export default function CheckoutPage() {
 
     payPackage.mutate(payload, {
       onSuccess: () => {
-        navigate(path.home)
+        navigate(path.accountTransaction)
       },
       onError: (error) => {
         if (isAxiosPaymentRequiredError<{ data: { checkoutUrl: string } }>(error)) {

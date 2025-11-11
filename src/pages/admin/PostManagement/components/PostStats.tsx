@@ -1,15 +1,34 @@
 import { useQuery } from '@tanstack/react-query'
 import postApi from '~/apis/post.api'
 import { Card, CardHeader, CardTitle, CardContent } from '~/components/ui/card'
-import { Car, BatteryCharging, FileText, Clock } from 'lucide-react'
+import { Car, BatteryCharging, FileText, Clock, AlertCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function PostStats() {
-  const { data: postData } = useQuery({
+  const {
+    data: postData,
+    isLoading,
+    isError
+  } = useQuery({
     queryKey: ['post-stats'],
     queryFn: postApi.getNumberOfPost
   })
   const postStats = postData?.data?.data
+
+  if (isLoading) {
+    // Hiển thị một Spinner nhỏ
+    return <div className='text-center p-8 text-gray-500'>Đang tải số liệu thống kê...</div>
+  }
+
+  if (isError) {
+    // Hiển thị lỗi nếu không tải được dữ liệu
+    return (
+      <div className='p-8 text-center text-red-500 bg-red-50 rounded-xl'>
+        <AlertCircle className='h-5 w-5 mx-auto mb-2' />
+        <p className='text-sm'>Lỗi tải dữ liệu thống kê.</p>
+      </div>
+    )
+  }
 
   const stats = [
     {

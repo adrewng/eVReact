@@ -1,5 +1,3 @@
-'use client'
-
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 // import { Badge } from '~/components/ui/badge'
@@ -11,6 +9,7 @@ import { ChevronDown } from 'lucide-react'
 import type { QueryConfig } from '~/pages/admin/PostManagement/PostManagement'
 import { createSearchParams, Link, useNavigate } from 'react-router-dom'
 import { path } from '~/constants/path'
+import { omit } from 'lodash'
 
 const filters = [
   { label: 'All', link: '' },
@@ -51,7 +50,8 @@ export default function PostFilters(props: Props) {
       pathname: path.adminPosts,
       search: createSearchParams({
         ...queryConfig,
-        search: search
+        search: search,
+        page: '1'
       }).toString()
     })
     setSearch('')
@@ -62,6 +62,7 @@ export default function PostFilters(props: Props) {
       pathname: path.adminPosts,
       search: createSearchParams({
         ...queryConfig,
+        page: '1',
         year: sortByYear.toString()
       }).toString()
     })
@@ -77,14 +78,25 @@ export default function PostFilters(props: Props) {
       <div className='w-fit max-w-[60%] bg-white p-1 rounded-xl shadow flex flex-wrap items-center gap-2'>
         {filters.map((f) => {
           const isActive = isActiveStatus(f.label)
+          let searchParams
+          if (f.label === 'All') {
+            searchParams = createSearchParams({
+              ...omit(queryConfig, ['status', 'search', 'year']),
+              page: '1'
+            }).toString()
+          } else {
+            searchParams = createSearchParams({
+              ...omit(queryConfig, ['search', 'year']),
+              status: f.link.toLowerCase(),
+              page: '1'
+            }).toString()
+          }
           return (
             <Link
+              key={f.label}
               to={{
                 pathname: path.adminPosts,
-                search: createSearchParams({
-                  ...queryConfig,
-                  status: f.link.toLocaleLowerCase()
-                }).toString()
+                search: searchParams
               }}
             >
               <button

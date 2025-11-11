@@ -7,6 +7,8 @@ import TopupModal from './components/TopupModal'
 import packageApi from '~/apis/package.api'
 import type { PackageByMe } from '~/types/package.type'
 import PackageCard from './components/PackageCard'
+import { Link } from 'react-router-dom'
+import { path } from '~/constants/path'
 
 // Main Component
 export default function AccountTransaction() {
@@ -128,84 +130,15 @@ export default function AccountTransaction() {
         {/* Content Section */}
         {activeTab === 'history' && <TransactionHistory transactions={transactions} />}
 
-        {/* {activeTab === 'wallet' && (
-          <div className='space-y-6'>
-            <div className='bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 text-white'>
-              <div className='flex items-center justify-between mb-8'>
-                <div>
-                  <div className='text-sm text-white/60 mb-2'>Available Balance</div>
-                  <div className='text-5xl font-bold'>{mockWalletData.balance.toLocaleString('vi-VN')} VND</div>
-                </div>
-                <div className='w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center'>
-                  <Wallet className='w-8 h-8' />
-                </div>
-              </div>
-              <div className='flex items-center gap-4'>
-                <button className='flex-1 px-6 py-3 bg-white text-gray-900 rounded-xl font-medium hover:bg-white/90 transition-all'>
-                  Top Up Now
-                </button>
-                <button className='flex-1 px-6 py-3 bg-white/10 text-white rounded-xl font-medium hover:bg-white/20 transition-all'>
-                  View History
-                </button>
-              </div>
-            </div>
-
-            <div className='grid grid-cols-2 gap-6'>
-              <div className='bg-white border border-gray-200 rounded-2xl p-6'>
-                <h3 className='text-lg font-semibold text-gray-900 mb-4'>Wallet Statistics</h3>
-                <div className='space-y-4'>
-                  <div className='flex items-center justify-between py-3 border-b border-gray-100'>
-                    <span className='text-gray-600'>Total Top-up</span>
-                    <span className='font-semibold text-gray-900'>
-                      {mockWalletData.totalTopup.toLocaleString('vi-VN')} VND
-                    </span>
-                  </div>
-                  <div className='flex items-center justify-between py-3 border-b border-gray-100'>
-                    <span className='text-gray-600'>Total Spent</span>
-                    <span className='font-semibold text-gray-900'>
-                      {mockWalletData.totalSpent.toLocaleString('vi-VN')} VND
-                    </span>
-                  </div>
-                  <div className='flex items-center justify-between py-3'>
-                    <span className='text-gray-600'>Pending Transactions</span>
-                    <span className='font-semibold text-amber-600'>
-                      {mockWalletData.pendingAmount.toLocaleString('vi-VN')} VND
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className='bg-white border border-gray-200 rounded-2xl p-6'>
-                <h3 className='text-lg font-semibold text-gray-900 mb-4'>Quick Top-up</h3>
-                <div className='grid grid-cols-2 gap-3'>
-                  {[100000, 500000, 1000000, 2000000].map((amount) => (
-                    <button
-                      key={amount}
-                      className='px-4 py-3 bg-gray-50 hover:bg-gray-900 hover:text-white text-gray-900 rounded-xl font-medium transition-all text-center'
-                    >
-                      {amount.toLocaleString('vi-VN')} VND
-                    </button>
-                  ))}
-                </div>
-                <div className='mt-4'>
-                  <input
-                    type='text'
-                    placeholder='Enter custom amount'
-                    className='w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 transition-all'
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )} */}
-
         {activeTab === 'packages' && (
           <div className='space-y-6'>
             <div className='flex items-center justify-between'>
-              <h2 className='text-2xl font-bold text-gray-900'>Your Packages</h2>
-              <button className='flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-xl text-sm font-medium transition-all'>
-                <Plus className='w-4 h-4' /> Browse Packages
-              </button>
+              <h2 className='text-2xl font-bold text-gray-900'>Gói tin của bạn</h2>
+              <Link to={path.pricing}>
+                <button className='flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-xl text-sm font-medium transition-all'>
+                  <Plus className='w-4 h-4' /> Mua gói
+                </button>
+              </Link>
             </div>
             <div className='grid grid-cols-2 gap-6'>
               {packageByMe?.map((pkg: PackageByMe) => (

@@ -20,38 +20,6 @@ import { useQuery } from '@tanstack/react-query'
 import dashboardApi from '~/apis/home.api'
 import { path } from '~/constants/path'
 
-// Mock data
-// const dashboardData = {
-//   totalRevenue: 2847500,
-//   revenueChange: 12.5,
-//   activeUsers: 3421,
-//   usersChange: 8.2,
-//   totalTransactions: 1847,
-//   transactionsChange: -3.1,
-//   totalPost: 98,
-//   postChange: 2.1
-// }
-
-// const revenueByMonth = [
-//   { month: 'Jan', revenue: 180000, transactions: 120 },
-//   { month: 'Feb', revenue: 220000, transactions: 145 },
-//   { month: 'Mar', revenue: 195000, transactions: 130 },
-//   { month: 'Apr', revenue: 280000, transactions: 185 },
-//   { month: 'May', revenue: 320000, transactions: 210 },
-//   { month: 'Jun', revenue: 380000, transactions: 245 }
-// ]
-
-// 📢 Phân bố bài đăng theo danh mục
-
-// const userGrowth = [
-//   { month: 'Jan', buyers: 280, sellers: 120 },
-//   { month: 'Feb', buyers: 320, sellers: 145 },
-//   { month: 'Mar', buyers: 380, sellers: 160 },
-//   { month: 'Apr', buyers: 450, sellers: 185 },
-//   { month: 'May', buyers: 520, sellers: 210 },
-//   { month: 'Jun', buyers: 620, sellers: 245 }
-// ]
-
 const StatCard = ({
   title,
   value,
@@ -76,7 +44,7 @@ const StatCard = ({
         <div className='text-2xl font-bold'>{value}</div>
         <p className={`text-xs flex items-center gap-1 ${change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
           {change >= 0 ? <ArrowUpRight className='h-3 w-3' /> : <ArrowDownRight className='h-3 w-3' />}
-          {typeof change === 'number' ? Math.abs(change) : change} from last month
+          {typeof change === 'number' ? Math.abs(change).toFixed(2) : change} so với tháng trước
         </p>
       </CardContent>
     </Card>
@@ -140,28 +108,28 @@ export default function Home() {
         {/* KPI Cards */}
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8'>
           <StatCard
-            title='Total Revenue'
+            title='Tổng doanh thu'
             value={`${((dashboard?.summary.totalRevenue as number) / 1000000).toFixed(2)}M`}
             change={Number(((dashboard?.summary.revenueChange as number) / 1000000).toFixed(2))}
             icon={DollarSign}
             href={path.adminTransactions}
           />
           <StatCard
-            title='Active Users'
+            title='Tổng người dùng'
             value={dashboard?.summary.activeUsers.toLocaleString() as string | number}
             change={dashboard?.summary.usersChange as number}
             icon={Users}
             href={path.adminUsers}
           />
           <StatCard
-            title='Transactions'
+            title='Tổng giao dịch'
             value={dashboard?.summary.totalTransactions.toLocaleString() as string | number}
             change={dashboard?.summary.transactionsChange as number}
             icon={Zap}
             href={path.adminTransactions}
           />
           <StatCard
-            title='Total posts'
+            title='Tổng bài đăng'
             value={`${dashboard?.summary.totalPost}`}
             change={dashboard?.summary.postChange as number}
             icon={AlertCircle}
@@ -174,15 +142,27 @@ export default function Home() {
           {/* Revenue Trend */}
           <Card className='lg:col-span-2'>
             <CardHeader>
-              <CardTitle>Revenue Trend</CardTitle>
-              <CardDescription>Monthly revenue and transaction count</CardDescription>
+              <CardTitle>Xu hướng doanh thu</CardTitle>
+              <CardDescription>Doanh thu và số lượng giao dịch hàng tháng</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width='100%' height={300}>
                 <LineChart data={dashboard?.revenueByMonth}>
                   <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
                   <XAxis dataKey='month' stroke='#6b7280' />
-                  <YAxis stroke='#6b7280' />
+                  {/* <YAxis stroke='#6b7280' /> */}
+                  //... (Bỏ qua dòng // Trong Card Revenue Trend)
+                  <YAxis
+                    stroke='#6b7280'
+                    tickFormatter={(value) => `${(value / 1000000).toFixed(0)}M`}
+                    label={{
+                      value: 'Doanh thu (Triệu VND)',
+                      angle: -90,
+                      position: 'insideLeft',
+                      fill: '#6b7280',
+                      fontSize: 12
+                    }}
+                  />
                   <Tooltip
                     contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px', color: '#fff' }}
                   />
@@ -196,29 +176,36 @@ export default function Home() {
           {/* Category Distribution */}
           <Card>
             <CardHeader>
-              <CardTitle>Posts by Category</CardTitle>
-              <CardDescription>Distribution of posts</CardDescription>
+              <CardTitle>Bài đăng theo Danh mục</CardTitle>
+              <CardDescription>Phân phối bài đăng theo tỷ lệ phần trăm</CardDescription>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width='100%' height={300}>
-                <PieChart>
-                  <Pie
-                    data={categoryPercentData}
-                    cx='50%'
-                    cy='50%'
-                    labelLine={false}
-                    label={({ name, value }) => `${name}: ${value}%`}
-                    outerRadius={90}
-                    fill='#8884d8'
-                    dataKey='value'
-                  >
-                    {categoryPercentData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => `${value}%`} labelFormatter={(label) => `${label}`} />
-                </PieChart>
-              </ResponsiveContainer>
+              {categoryPercentData.length > 0 ? (
+                <ResponsiveContainer width='100%' height={300}>
+                  <PieChart>
+                    <Pie data={categoryPercentData} cx='50%' cy='50%' outerRadius={90} fill='#8884d8' dataKey='value'>
+                      {categoryPercentData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      formatter={(value) => [`${value}%`, 'Tỷ lệ']}
+                      labelFormatter={(label, payload) => {
+                        // Lấy posts count từ payload nếu cần
+                        const posts = payload?.[0]?.payload?.posts
+                        return `${label} (${posts} bài)`
+                      }}
+                    />
+                    {/* Thêm Legend để hiển thị tên danh mục */}
+                    <Legend layout='horizontal' verticalAlign='bottom' align='center' />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className='flex flex-col items-center justify-center h-full min-h-[300px] text-gray-500'>
+                  <AlertCircle className='h-6 w-6 mb-2' />
+                  <p className='text-sm'>Không có dữ liệu danh mục để hiển thị.</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

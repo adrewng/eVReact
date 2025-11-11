@@ -1,4 +1,4 @@
-'use client'
+''
 
 import { Gavel, Users } from 'lucide-react'
 

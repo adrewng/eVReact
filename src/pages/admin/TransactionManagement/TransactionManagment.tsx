@@ -57,7 +57,7 @@ export default function TransactionManagement() {
   console.log('transactionData -', transactionData)
   const transaction = transactionData?.data.data
 
-  const { data: revenueByTypeData } = useQuery({
+  const { data: revenueByTypeData, isError: isRevenueError } = useQuery({
     queryKey: ['revenue-type'],
     queryFn: transactionApi.getRevenueByType
   })
@@ -69,7 +69,9 @@ export default function TransactionManagement() {
     { name: 'Mua gói', value: revenueByType?.revenue_packages, color: '#f59e0b' }, // Package
     { name: 'Đấu giá', value: revenueByType?.revenue_auctions, color: '#10b981' }
   ]
-  if (isLoading)
+  const isAnyLoading = isLoading || revenueByTypeData === undefined
+
+  if (isAnyLoading)
     return (
       <div className='flex h-screen w-full items-center justify-center'>
         <div className='flex space-x-2'>
@@ -79,7 +81,8 @@ export default function TransactionManagement() {
         </div>
       </div>
     )
-  if (isError) return <div className='p-6 text-center text-red-500'>Lỗi tải dữ liệu.</div>
+  if (isError || isRevenueError)
+    return <div className='p-6 text-center text-red-500'>Lỗi tải dữ liệu. Vui lòng thử lại.</div>
 
   return (
     <div className='min-h-screen flex-1 bg-background'>
@@ -87,7 +90,7 @@ export default function TransactionManagement() {
         <>
           <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
             {/* KPI Cards */}
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-8'>
+            <div className='grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 mb-8'>
               <StatCard
                 title='Total Revenue'
                 value={`${(transaction?.totalRevenue / 1000000).toFixed(2)}M`}
@@ -96,7 +99,7 @@ export default function TransactionManagement() {
               />
               <StatCard
                 title='Total Transactions'
-                value={transaction?.total.toLocaleString()}
+                value={transaction?.total.toLocaleString('vi-VN')}
                 icon={TrendingUp}
                 color='bg-green-500'
               />
@@ -121,7 +124,17 @@ export default function TransactionManagement() {
                       </defs>
                       <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
                       <XAxis dataKey='date' stroke='#6b7280' />
-                      <YAxis stroke='#6b7280' />
+                      <YAxis
+                        stroke='#6b7280'
+                        tickFormatter={(value) => `${(value / 1000000).toFixed(0)}M`}
+                        label={{
+                          value: 'Doanh thu (Triệu VND)',
+                          angle: -90,
+                          position: 'insideLeft',
+                          fill: '#6b7280',
+                          fontSize: 12
+                        }}
+                      />{' '}
                       <Tooltip
                         contentStyle={{
                           backgroundColor: '#1f2937',

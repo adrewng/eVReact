@@ -1,4 +1,4 @@
-'use client'
+''
 
 import { Dialog } from '@headlessui/react' // hoặc dùng modal lib khác tùy bạn
 import { useMutation, useQueryClient } from '@tanstack/react-query'

@@ -45,8 +45,8 @@ export default function TransactionTable({ transaction }: { transaction: Transac
     <div>
       <Card>
         <CardHeader>
-          <CardTitle>Recent Transactions</CardTitle>
-          <CardDescription>Latest transactions on the platform</CardDescription>
+          <CardTitle>Giao dịch gần đây</CardTitle>
+          <CardDescription>Các giao dịch mới nhất trên hệ thống</CardDescription>
         </CardHeader>
         <CardContent>
           <div className='overflow-x-auto'>
@@ -70,34 +70,36 @@ export default function TransactionTable({ transaction }: { transaction: Transac
                     <tr key={txn.id} className='border-b border-gray-200 hover:bg-gray-50'>
                       {/* Mã giao dịch */}
                       <td className='py-3 px-4 font-mono text-xs text-gray-700'>{txn.code}</td>
-
                       {/* Loại giao dịch */}
                       <td className='py-3 px-4 capitalize text-gray-800'>
                         {txn.type === 'auction' ? 'Đấu giá' : txn.type}
                       </td>
-
                       {/* Giá trị */}
-                      <td className='py-3 px-4 font-semibold text-gray-900'>${Number(txn.price).toLocaleString()}</td>
-
+                      <td className='py-3 px-4 font-semibold text-gray-900'>
+                        {/* Format: 1.234.567đ */}
+                        {Number(txn.price).toLocaleString('vi-VN')}₫
+                      </td>
                       {/* Phương thức thanh toán */}
                       <td className='py-3 px-4 text-gray-700'>{txn.payment_method}</td>
-
                       {/* Trạng thái */}
                       {/* Status badge */}
                       <td>
                         <StatusBadge type='status' value={txn.status} />
                       </td>
-
                       <td>
                         <StatusBadge type='tracking' value={txn.tracking} />
                       </td>
-
                       {/* Buyer ID */}
                       <td className='py-3 px-4 text-gray-600'>{txn.buyer_id}</td>
-
                       {/* Ngày tạo */}
-                      <td className='py-3 px-4 text-gray-500 text-sm'>
-                        {new Date(txn.created_at).toLocaleString('vi-VN')}
+                      <td className='py-3 px-4 text-gray-500 text-sm whitespace-nowrap'>
+                        {new Date(txn.created_at).toLocaleString('vi-VN', {
+                          year: 'numeric',
+                          month: 'numeric',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
                       </td>
                     </tr>
                   ))

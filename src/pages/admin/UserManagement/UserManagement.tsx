@@ -1,5 +1,3 @@
-'use client'
-
 import { useEffect, useState } from 'react'
 // import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
@@ -56,15 +54,15 @@ export default function UserManagement() {
         {/* Recent Users Table */}
         <Card>
           <CardHeader>
-            <CardTitle>Recent Users</CardTitle>
-            <CardDescription>Latest user registrations and activity</CardDescription>
+            <CardTitle>Danh sách người dùng</CardTitle>
+            <CardDescription>Thông tin đăng kí </CardDescription>
             {/* Hiển thị tổng số người dùng */}
             <div className='flex items-center justify-between gap-4'>
               {/* Search Bar - Left */}
               <div className='relative flex-1 max-w-md'>
                 <Search className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground' />
                 <Input
-                  placeholder='Search users...'
+                  placeholder='Tìm kiếm theo tên...'
                   value={searchTerm}
                   onChange={(e) => {
                     const value = e.target.value
@@ -90,7 +88,7 @@ export default function UserManagement() {
                   <UserRound className='h-4 w-4 text-primary' />
                 </div>
                 <div className='flex flex-col'>
-                  <span className='text-xs text-muted-foreground font-medium'>Total Users</span>
+                  <span className='text-xs text-muted-foreground font-medium'>Tổng người dùng</span>
                   <span className='text-lg font-bold text-primary'>{totalUsers ?? 0}</span>
                 </div>
               </div>
@@ -101,11 +99,11 @@ export default function UserManagement() {
               <table className='w-full text-sm'>
                 <thead>
                   <tr className='border-b border-border'>
-                    <th className='text-left py-3 px-4 font-semibold'>Name</th>
+                    <th className='text-left py-3 px-4 font-semibold'>Tên</th>
                     <th className='text-left py-3 px-4 font-semibold'>Email</th>
-                    <th className='text-left py-3 px-4 font-semibold'>Phone</th>
-                    <th className='text-left py-3 px-4 font-semibold'>Status</th>
-                    <th className='text-left py-3 px-4 font-semibold'>Join Date</th>
+                    <th className='text-left py-3 px-4 font-semibold'>SĐT</th>
+                    <th className='text-left py-3 px-4 font-semibold'>Trạng thái</th>
+                    <th className='text-left py-3 px-4 font-semibold'>Ngày tham gia</th>
                   </tr>
                 </thead>
                 <tbody>
