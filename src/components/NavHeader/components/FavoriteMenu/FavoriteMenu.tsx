@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { path } from '~/constants/path'
 import { statusTone } from '~/constants/post'
 import type { FavNavData } from '~/types/post.type'
-import { formatCurrencyVND, generateNameId, getTimeAgo, isVehicle } from '~/utils/util'
+import { formatCurrencyVND, formatUTCDateString, generateNameId, getTimeAgo, isVehicle } from '~/utils/util'
 
 export default function FavoriteMenu({ data }: { data: FavNavData }) {
   const navigate = useNavigate()
@@ -88,7 +88,9 @@ export default function FavoriteMenu({ data }: { data: FavNavData }) {
                       <div className='mt-1 flex items-center gap-2'>
                         <span className={`text-[11px] px-1.5 py-0.5 rounded-full ring ${st.cls}`}>{st.text}</span>
                         {p.favorite_at && (
-                          <span className='text-[11px] text-gray-400'>Đã thêm {getTimeAgo(p.favorite_at)}</span>
+                          <span className='text-[11px] text-gray-400'>
+                            Đã thêm {getTimeAgo(formatUTCDateString(p.favorite_at))}
+                          </span>
                         )}
                       </div>
                     </div>

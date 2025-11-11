@@ -6,7 +6,7 @@ import notificationApi from '~/apis/notification.api'
 import { type ToneNotification, notificationConfig } from '~/constants/notification'
 import { path } from '~/constants/path'
 import type { NavNotificationsData } from '~/types/notification.type'
-import { getTimeAgo } from '~/utils/util'
+import { formatUTCDateString, getTimeAgo } from '~/utils/util'
 
 const toneTwMenu: Record<ToneNotification, string> = {
   success: 'text-emerald-600',
@@ -98,7 +98,9 @@ export default function NotificationMenu({ notificationsData }: Props) {
                       {n.postTitle && (
                         <p className='text-[11px] text-gray-500 italic mt-0.5 line-clamp-1'>Bài đăng: {n.postTitle}</p>
                       )}
-                      <div className='text-[11px] text-gray-400 mt-1'>{getTimeAgo(n.createdAt)}</div>
+                      <div className='text-[11px] text-gray-400 mt-1'>
+                        {getTimeAgo(formatUTCDateString(n.createdAt))}
+                      </div>
                     </div>
                   </button>
                 </li>

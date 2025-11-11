@@ -7,7 +7,7 @@ import notificationApi from '~/apis/notification.api'
 import { notificationConfig, type ToneNotification } from '~/constants/notification'
 import useNotificationQueryConfig from '~/hooks/useNotificationQueryConfig'
 import type { NotificationListConfig } from '~/types/notification.type'
-import { getTimeAgo } from '~/utils/util'
+import { formatUTCDateString, getTimeAgo } from '~/utils/util'
 import Pagination from '../AccountOrders/components/Pagination'
 
 const toneTw: Record<ToneNotification, { border: string; bgUnread: string; icon: string }> = {
@@ -184,7 +184,7 @@ export default function AccountNotification() {
                   <p className='text-sm text-gray-600 mt-1 leading-snug'>{item.message}</p>
                   {item.postTitle && <p className='text-xs text-gray-500 mt-1 italic'>Bài đăng: {item.postTitle}</p>}
                   <div className='flex items-center gap-1 text-xs text-gray-400 mt-2'>
-                    <Clock size={12} /> {getTimeAgo(item.createdAt)}
+                    <Clock size={12} /> {getTimeAgo(formatUTCDateString(item.createdAt))}
                   </div>
                 </div>
               </div>
