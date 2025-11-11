@@ -1,57 +1,57 @@
 // import Link from 'next/link'
 
-import { Card, CardDescription, CardHeader, CardTitle, CardFooter } from '~/components/ui/card'
 import { IconTrendingDown, IconTrendingUp } from '@tabler/icons-react'
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '~/components/ui/card'
 
 export default function UserStatCards() {
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8'>
       <Card className='@container/card'>
         <CardHeader>
-          <CardDescription>Total User</CardDescription>
-          <CardTitle className='text-2xl font-semibold tabular-nums text-3xl'>3412</CardTitle>
+          <CardDescription>Tổng người dùng</CardDescription>
+          <CardTitle className='font-semibold tabular-nums text-3xl'>3412</CardTitle>
         </CardHeader>
         <CardFooter className='flex-col items-start gap-1.5 text-sm'>
           <div className='line-clamp-1 flex gap-2 font-medium'>
-            Trending up this month <IconTrendingUp className='size-4' />
+            Tăng trưởng trong tháng này <IconTrendingUp className='size-4' />
           </div>
-          <div className='text-muted-foreground'>Visitors for the last 6 months</div>
+          <div className='text-muted-foreground'>Lượt truy cập trong 6 tháng gần đây</div>
         </CardFooter>
       </Card>
       <Card className='@container/card'>
         <CardHeader>
-          <CardDescription>New This Month</CardDescription>
+          <CardDescription>Người dùng mới tháng này</CardDescription>
           <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>1,234</CardTitle>
         </CardHeader>
         <CardFooter className='flex-col items-start gap-1.5 text-sm'>
           <div className='line-clamp-1 flex gap-2 font-medium'>
-            Down 20% this period <IconTrendingDown className='size-4' />
+            Giảm 20% so với kỳ trước <IconTrendingDown className='size-4' />
           </div>
-          <div className='text-muted-foreground'>Acquisition needs attention</div>
+          <div className='text-muted-foreground'>Kênh thu hút cần được chú ý</div>
         </CardFooter>
       </Card>
       <Card className='@container/card'>
         <CardHeader>
-          <CardDescription>Active Accounts</CardDescription>
+          <CardDescription>Tài khoản hoạt động</CardDescription>
           <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>45,678</CardTitle>
         </CardHeader>
         <CardFooter className='flex-col items-start gap-1.5 text-sm'>
           <div className='line-clamp-1 flex gap-2 font-medium'>
-            Strong user retention <IconTrendingUp className='size-4' />
+            Giữ chân người dùng tốt <IconTrendingUp className='size-4' />
           </div>
-          <div className='text-muted-foreground'>Engagement exceed targets</div>
+          <div className='text-muted-foreground'>Mức độ tương tác vượt mục tiêu</div>
         </CardFooter>
       </Card>
       <Card className='@container/card'>
         <CardHeader>
-          <CardDescription>Verify Users</CardDescription>
+          <CardDescription>Người dùng đã xác minh</CardDescription>
           <CardTitle className='text-2xl font-semibold tabular-nums @[250px]/card:text-3xl'>4.5%</CardTitle>
         </CardHeader>
         <CardFooter className='flex-col items-start gap-1.5 text-sm'>
           <div className='line-clamp-1 flex gap-2 font-medium'>
-            Steady performance increase <IconTrendingUp className='size-4' />
+            Hiệu suất tăng đều <IconTrendingUp className='size-4' />
           </div>
-          <div className='text-muted-foreground'>Meets growth projections</div>
+          <div className='text-muted-foreground'>Đúng với dự báo tăng trưởng</div>
         </CardFooter>
       </Card>
     </div>

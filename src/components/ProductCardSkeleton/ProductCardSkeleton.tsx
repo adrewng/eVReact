@@ -6,7 +6,7 @@ export default function ProductCardSkeletonLight({ className = '', imgAspect = '
   return (
     <article
       role='status'
-      aria-label='Loading product card'
+      aria-label='Đang tải thẻ sản phẩm'
       className={`w-full max-w-sm bg-white rounded-2xl shadow-sm overflow-hidden animate-pulse ${className}`}
     >
       {/* Image placeholder (top) */}
@@ -44,7 +44,7 @@ export default function ProductCardSkeletonLight({ className = '', imgAspect = '
         </div>
       </div>
 
-      <span className='sr-only'>Loading...</span>
+      <span className='sr-only'>Đang tải...</span>
     </article>
   )
 }

@@ -151,14 +151,14 @@ export default function NavHeader() {
             </button>
 
             <label htmlFor='exact-search-desktop' className='sr-only'>
-              Search
+              Tìm kiếm
             </label>
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && onSearch()}
               id='exact-search-desktop'
-              placeholder='Eligible for tax credit'
+              placeholder='Nhập từ khoá tìm kiếm'
               className='flex-1 bg-transparent text-lg placeholder-zinc-400 outline-none ml-2'
             />
           </div>
@@ -346,14 +346,14 @@ export default function NavHeader() {
           </svg>
           s
           <label htmlFor='exact-search-mobile' className='sr-only'>
-            Search
+            Tìm kiếm
           </label>
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && onSearch()}
             id='exact-search-mobile'
-            placeholder='Eligible for tax credit'
+            placeholder='Nhập từ khoá tìm kiếm'
             className='flex-1 bg-transparent text-lg placeholder-zinc-400 outline-none'
           />
         </div>

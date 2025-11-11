@@ -8,7 +8,7 @@ const PageNotFound = () => {
   return (
     <div className='relative flex items-center justify-center min-h-screen text-white'>
       {/* Ảnh nền */}
-      <img src={page_not_found} alt='Electric Vehicle' className='absolute inset-0 w-full h-full object-cover' />
+      <img src={page_not_found} alt='Xe điện' className='absolute inset-0 w-full h-full object-cover' />
 
       {/* Lớp phủ mờ */}
       <div className='absolute inset-0 bg-black/50' />
@@ -23,9 +23,9 @@ const PageNotFound = () => {
         <h1 className='text-7xl md:text-8xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400'>
           404
         </h1>
-        <h2 className='text-2xl md:text-3xl font-light tracking-widest uppercase mb-4'>PAGE NOT FOUND</h2>
+        <h2 className='text-2xl md:text-3xl font-light tracking-widest uppercase mb-4'>KHÔNG TÌM THẤY TRANG</h2>
         <p className='text-gray-300 mb-8 max-w-md mx-auto font-light italic'>
-          Looks like this page doesn’t exist or isn’t available anymore...
+          Có vẻ trang này không tồn tại hoặc đã bị di chuyển...
         </p>
 
         <button
@@ -33,7 +33,7 @@ const PageNotFound = () => {
           className='inline-flex items-center bg-white/90 text-gray-900 px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 shadow-xl 
                        hover:bg-white hover:shadow-2xl hover:scale-105'
         >
-          Go back to Home page
+          Về trang chủ
         </button>
       </motion.div>
     </div>

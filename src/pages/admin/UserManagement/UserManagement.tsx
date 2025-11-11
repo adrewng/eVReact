@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 // import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { Search, UserRound } from 'lucide-react'
+import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom'
 import userApi from '~/apis/user.api'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
-import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom'
 
 export default function UserManagement() {
   const navigate = useNavigate()

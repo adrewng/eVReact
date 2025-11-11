@@ -10,12 +10,12 @@ import logoUrl from '~/shared/logo.svg'
 import { clearReactQueryCache } from '~/utils/auth'
 
 const menuItems = [
-  { label: 'Dashboard', icon: Home, path: path.adminDashboard },
-  { label: 'Transaction', icon: CreditCard, path: path.adminTransactions },
-  { label: 'Posts', icon: FileText, path: path.adminPosts },
-  { label: 'User', icon: Users, path: path.adminUsers },
-  { label: 'Auction', icon: Gavel, path: path.adminAuctions },
-  { label: 'Package', icon: Package, path: path.adminPackages }
+  { label: 'Bảng điều khiển', icon: Home, path: path.adminDashboard },
+  { label: 'Giao dịch', icon: CreditCard, path: path.adminTransactions },
+  { label: 'Tin đăng', icon: FileText, path: path.adminPosts },
+  { label: 'Người dùng', icon: Users, path: path.adminUsers },
+  { label: 'Đấu giá', icon: Gavel, path: path.adminAuctions },
+  { label: 'Gói tin', icon: Package, path: path.adminPackages }
 ]
 
 // const generalItems = [

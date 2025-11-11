@@ -14,9 +14,9 @@ import {
 } from 'recharts'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
 
+import { useQuery } from '@tanstack/react-query'
 import { AlertCircle, ArrowDownRight, ArrowUpRight, DollarSign, Users, Zap, type LucideIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
 import dashboardApi from '~/apis/home.api'
 import { path } from '~/constants/path'
 
@@ -96,8 +96,8 @@ export default function Home() {
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6'>
           <div className='flex items-center justify-between'>
             <div>
-              <h1 className='text-3xl font-bold text-foreground'>Dashboard</h1>
-              <p className='text-muted-foreground mt-1'>Welcome back! Here's your platform overview.</p>
+              <h1 className='text-3xl font-bold text-foreground'>Bảng điều khiển</h1>
+              <p className='text-muted-foreground mt-1'>Chào mừng trở lại! Đây là tổng quan nền tảng của bạn.</p>
             </div>
           </div>
         </div>

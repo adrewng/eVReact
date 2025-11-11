@@ -32,8 +32,8 @@ export default function Chip({ text, onRemove, title, className, onClick }: Prop
             onRemove()
           }}
           className='inline-flex size-4 items-center justify-center rounded-full bg-zinc-200 group-hover:bg-zinc-300 text-zinc-600'
-          aria-label='Remove filter'
-          title='Remove filter'
+          aria-label='Xoá bộ lọc'
+          title='Xoá bộ lọc'
         >
           ×
         </button>

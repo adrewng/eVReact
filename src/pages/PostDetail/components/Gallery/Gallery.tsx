@@ -49,13 +49,13 @@ export function Gallery({ images }: { images?: string[] }) {
         ref={wrapperRef}
         tabIndex={0}
         className='relative overflow-hidden rounded-3xl bg-gradient-to-b from-zinc-100 to-white outline-none focus:ring-2 focus:ring-zinc-300'
-        aria-label='Gallery'
+        aria-label='Bộ sưu tập ảnh'
       >
         <AnimatePresence mode='wait'>
           <motion.img
             key={list[active]}
             src={list[active]}
-            alt='Product image'
+            alt='Ảnh sản phẩm'
             className='aspect-[16/10] w-full object-cover'
             initial={{ opacity: 0.25, scale: 1.02 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -131,7 +131,7 @@ export function Gallery({ images }: { images?: string[] }) {
                 i === active ? 'border-zinc-900 ring-2 ring-zinc-900/10' : 'border-zinc-200 hover:border-zinc-400'
               }`}
             >
-              <img src={src} alt='Thumbnail' className='h-full w-full object-cover' loading='lazy' />
+              <img src={src} alt='Ảnh thu nhỏ' className='h-full w-full object-cover' loading='lazy' />
             </button>
           ))}
         </div>

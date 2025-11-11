@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query'
 import { DollarSign, TrendingUp, type LucideIcon } from 'lucide-react'
 import {
   Area,
@@ -11,10 +12,9 @@ import {
   XAxis,
   YAxis
 } from 'recharts'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
-import { useQuery } from '@tanstack/react-query'
 import transactionApi from '~/apis/transaction.api'
 import PaginationAdmin from '~/components/Pagination/PaginationAdmin'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
 import useQueryParam from '~/hooks/useQueryParam'
 import TransactionTable from './components/TransactionTable'
 
@@ -92,13 +92,13 @@ export default function TransactionManagement() {
             {/* KPI Cards */}
             <div className='grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 mb-8'>
               <StatCard
-                title='Total Revenue'
+                title='Tổng doanh thu'
                 value={`${(transaction?.totalRevenue / 1000000).toFixed(2)}M`}
                 icon={DollarSign}
                 color='bg-blue-500'
               />
               <StatCard
-                title='Total Transactions'
+                title='Tổng giao dịch'
                 value={transaction?.total.toLocaleString('vi-VN')}
                 icon={TrendingUp}
                 color='bg-green-500'
@@ -110,8 +110,8 @@ export default function TransactionManagement() {
               {/* Daily Revenue */}
               <Card className='col-span-1 lg:col-span-2 rounded-xl border border-slate-200 bg-white p-6 shadow-sm'>
                 <CardHeader>
-                  <CardTitle>Daily Revenue</CardTitle>
-                  <CardDescription>Revenue trend over the last 7 days</CardDescription>
+                  <CardTitle>Doanh thu theo ngày</CardTitle>
+                  <CardDescription>Xu hướng doanh thu trong 7 ngày qua</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width='100%' height={300}>

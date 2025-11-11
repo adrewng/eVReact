@@ -6,7 +6,7 @@ export default function HeroSection() {
     <section className='relative min-h-screen w-full overflow-hidden bg-black text-white font-inter'>
       {/* Background image */}
       <div className='absolute inset-0'>
-        <img src={heroBg} alt='Electric Vehicle' className='w-full h-full object-cover ' />
+        <img src={heroBg} alt='Xe điện' className='w-full h-full object-cover ' />
         {/* Optional overlay gradient */}
         <div className='absolute inset-0 bg-gradient-to-b from-black/0 via-black/40 to-black/80' />
       </div>

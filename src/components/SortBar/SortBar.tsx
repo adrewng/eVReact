@@ -145,8 +145,8 @@ export default function SortBar({ queryConfig, onToggleFilter, isFilterOpen, pat
             'flex items-center justify-center w-10 h-10 rounded-xl border text-sm font-medium flex-shrink-0',
             isFilterOpen ? 'bg-zinc-900 text-white border-zinc-900' : 'bg-zinc-100 border-zinc-200 text-zinc-700'
           )}
-          aria-label='Toggle filters'
-          title='Filters'
+          aria-label='Bật/tắt bộ lọc'
+          title='Bộ lọc'
         >
           <svg
             xmlns='http://www.w3.org/2000/svg'
@@ -173,7 +173,7 @@ export default function SortBar({ queryConfig, onToggleFilter, isFilterOpen, pat
               onClick={clearAll}
               className='text-sm font-medium text-zinc-500 hover:text-zinc-700 underline underline-offset-4'
             >
-              Clear all
+              Xoá tất cả
             </button>
           )}
         </div>
@@ -181,7 +181,7 @@ export default function SortBar({ queryConfig, onToggleFilter, isFilterOpen, pat
 
       {/* Right: Sort Popover */}
       <div className='flex items-center gap-2 flex-shrink-0'>
-        <label className='text-sm text-zinc-600 font-medium'>Sort</label>
+        <label className='text-sm text-zinc-600 font-medium'>Sắp xếp</label>
 
         <Popover className='relative'>
           <PopoverButton className='px-3 py-2 rounded-full border border-zinc-200 bg-zinc-100 text-sm text-zinc-700 hover:bg-zinc-200 transition-colors min-w-[200px] text-left focus:outline-none data-focus:outline data-focus:outline-zinc-400'>

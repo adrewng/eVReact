@@ -19,9 +19,9 @@ export default function AuthHeader() {
 
       {/* Navigation giữa màn hình */}
       <div className='hidden md:flex justify-center gap-6 text-sm md:text-base font-medium'>
-        <NavPillLink to={path.home}>Home</NavPillLink>
-        <NavPillLink to={path.vehicle}>Vehicles</NavPillLink>
-        <NavPillLink to={path.battery}>Battery</NavPillLink>
+        <NavPillLink to={path.home}>Trang chủ</NavPillLink>
+        <NavPillLink to={path.vehicle}>Xe</NavPillLink>
+        <NavPillLink to={path.battery}>Pin</NavPillLink>
       </div>
 
       {/* Actions bên phải */}
