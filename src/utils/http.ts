@@ -28,7 +28,7 @@ class Http {
       // baseURL: 'https://electriccarmanagement-swp.up.railway.app/',
       // baseURL: 'http://localhost:3000/',
       baseURL: import.meta.env.VITE_API_URL,
-      timeout: 10 * 1000,
+      timeout: 20 * 1000,
       headers: { 'Content-Type': 'application/json' }
     })
     this.instance.interceptors.request.use(
