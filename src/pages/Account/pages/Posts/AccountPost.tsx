@@ -28,10 +28,11 @@ export default function AccountPost() {
   const accountPostData = postData?.data.data
   // Mutation để đánh dấu bài đăng là "đã bán"
   const markAsSoldMutation = useMutation({
-    mutationFn: (postId: string | number) => postApi.updatePostByAdmin(postId, 'sold'),
+    mutationFn: (postId: string | number) => postApi.soldPost(postId),
     onSuccess: () => {
-      // Invalidate query để refetch danh sách bài đăng
-      queryClient.invalidateQueries({ queryKey: ['post-me'] })
+      // Invalidate và refetch tất cả queries có prefix 'post-me'
+      queryClient.invalidateQueries({ queryKey: ['post-me'], exact: false })
+      queryClient.refetchQueries({ queryKey: ['posts'], exact: false })
     }
   })
 

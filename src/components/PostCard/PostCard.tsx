@@ -54,13 +54,29 @@ export default function PostCard({ post }: PropType) {
     <article className='group flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-100 bg-white shadow-sm'>
       {/* Chỉ bọc khu vực xem chi tiết bằng Link */}
       <Link to={to} className='block'>
-        <div className='aspect-[4/3] w-full overflow-hidden bg-zinc-100'>
+        <div className='aspect-[4/3] w-full overflow-hidden bg-zinc-100 relative'>
           <img
             src={post.product.image || undefined}
             alt={post.product.model}
             className='size-full object-cover transition-transform duration-300 group-hover:scale-105'
             loading='lazy'
           />
+          {/* Badge loại sản phẩm - góc dưới bên phải */}
+          <div className='absolute bottom-3 right-3'>
+            <div className='inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-gray-900/80 backdrop-blur-sm px-2.5 py-1 text-xs font-medium text-white shadow-lg shrink-0'>
+              {post.product.category.typeSlug === CategoryType.vehicle ? (
+                <>
+                  <Car className='h-3.5 w-3.5' />
+                  Xe
+                </>
+              ) : (
+                <>
+                  <Battery className='h-3.5 w-3.5' />
+                  Pin
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </Link>
 
@@ -94,26 +110,13 @@ export default function PostCard({ post }: PropType) {
           to={to}
           className='mt-auto flex items-center justify-between gap-3 p-4 hover:bg-zinc-50 transition rounded-b-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-300'
         >
-          <div className='min-w-0 flex items-center gap-3 text-sm text-zinc-700'>
-            <div className='inline-flex shrink-0 items-center gap-1'>
-              <FaUsers /> {post.product.year}
+          <div className='flex items-center gap-3 text-sm text-zinc-700 min-w-0'>
+            <div className='inline-flex items-center gap-1 whitespace-nowrap shrink-0'>
+              <FaUsers className='w-4 h-4' /> <span>{post.product.year}</span>
             </div>
-            <span className='inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs font-medium capitalize'>
-              {post.product.category.typeSlug === CategoryType.vehicle ? (
-                <>
-                  <Car className='h-3.5 w-3.5' />
-                  Xe
-                </>
-              ) : (
-                <>
-                  <Battery className='h-3.5 w-3.5' />
-                  Pin
-                </>
-              )}
-            </span>
           </div>
 
-          <div className='shrink-0 whitespace-nowrap text-right text-sm font-semibold sm:text-base'>
+          <div className='whitespace-nowrap text-right text-sm font-semibold sm:text-base shrink-0 ml-auto'>
             {formatCurrencyVND(post.product.price)}
           </div>
         </Link>
