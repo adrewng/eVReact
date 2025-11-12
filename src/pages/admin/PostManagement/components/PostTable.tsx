@@ -3,13 +3,13 @@ import { Badge } from '~/components/ui/badge'
 import type { QueryConfig } from '~/pages/admin/PostManagement/PostManagement'
 // import Button from '../Button'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { AlertCircle } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import PaginationAdmin from '~/components/Pagination/PaginationAdmin'
 import { Button } from '~/components/ui/button'
 import type { PostStatus } from '~/types/post.type'
 import RejectReasonModal from './RejectReasonModal/RejectReasomModal'
-import { AlertCircle } from 'lucide-react'
 
 type GetPostsResponse = Awaited<ReturnType<typeof postApi.getPostsByAdmin>>
 
@@ -35,8 +35,7 @@ export default function PostTable(props: Props) {
       queryClient.invalidateQueries({ queryKey: ['posts', queryConfig] })
       setRejectingPost(null)
     },
-    onError: (err: unknown) => {
-      console.error(err)
+    onError: () => {
       toast.error('Cập nhật trạng thái thất bại!')
     }
   })

@@ -3,6 +3,7 @@ import Slider from '@mui/material/Slider'
 import * as React from 'react'
 import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import type { path } from '~/constants/path'
+import { formatTrieuOrTy } from '~/utils/formater'
 
 type QueryConfig = Record<string, string | number | undefined | null>
 
@@ -10,23 +11,6 @@ const MIN = 0.5 // 500k
 const MAX = 1500 // 1 tỷ 500 triệu
 const STEP = 0.5
 const MIN_DISTANCE = 20 // 5 triệu
-
-const formatTrieuOrTy = (v: number) => {
-  // v đang là đơn vị "triệu"
-  if (Math.abs(v) >= 1000) {
-    const ty = v / 1000 // đổi sang "tỷ"
-    const opts: Intl.NumberFormatOptions = Number.isInteger(ty)
-      ? {} // nguyên: không hiện phần thập phân
-      : { minimumFractionDigits: 2, maximumFractionDigits: 2 } // lẻ: 2 số thập phân
-    return `${ty.toLocaleString('vi-VN', opts)} tỷ`
-  }
-
-  // < 1000 triệu: giữ đơn vị "triệu"
-  const opts: Intl.NumberFormatOptions = Number.isInteger(v)
-    ? {}
-    : { minimumFractionDigits: 1, maximumFractionDigits: 1 }
-  return `${v.toLocaleString('vi-VN', opts)} triệu`
-}
 const formatVND = (vTrieu: number) =>
   (vTrieu * 1_000_000).toLocaleString('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 })
 
@@ -122,7 +106,8 @@ export default function PriceRangeSlider({
             fontSize: 12,
             padding: '4px 8px',
             backgroundColor: 'rgba(0,0,0,0.9)',
-            color: '#fff'
+            color: '#fff',
+            whiteSpace: 'nowrap' // Giữ text trên cùng 1 dòng
           },
           '& .MuiSlider-track, & .MuiSlider-rail': { borderRadius: 999 }
         }}

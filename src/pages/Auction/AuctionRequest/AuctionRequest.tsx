@@ -77,8 +77,6 @@ export default function AuctionRequest() {
           const url = error.response?.data?.data?.checkoutUrl
           if (typeof url === 'string' && /^https?:\/\//.test(url)) {
             window.location.assign(url)
-          } else {
-            console.error('Invalid checkoutUrl:', url)
           }
         }
         toast.error('Gữi yêu cầu không thành công')

@@ -16,7 +16,6 @@ export default function PackageManagment() {
     queryKey: ['package-admin'],
     queryFn: packageApi.getPackageByAdmin
   })
-  console.log('package -', packageData)
   const packages = packageData?.data.data
 
   const handleEditPackage = (pkg: Package) => {

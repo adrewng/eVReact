@@ -67,13 +67,13 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li className='mb-6'>
-                  <Link to={path.post} className='text-zinc-400 hover:text-white transition'>
+                  <Link to={path.pricing} className='text-zinc-400 hover:text-white transition'>
                     Mua gói
                   </Link>
                 </li>
                 <li>
-                  <Link to={path.post} className='text-zinc-400 hover:text-white transition'>
-                    Kiểm tra dành cho người bán
+                  <Link to={path.auction} className='text-zinc-400 hover:text-white transition'>
+                    Đấu giá sản phẩm
                   </Link>
                 </li>
               </ul>

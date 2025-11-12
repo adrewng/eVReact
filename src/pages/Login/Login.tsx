@@ -113,14 +113,14 @@ const LoginPage = () => {
               </form>
 
               {/* Divider */}
-              <div className='relative my-6'>
+              {/* <div className='relative my-6'>
                 <div className='h-px bg-zinc-200' />
                 <span className='absolute inset-x-0 -top-3 mx-auto w-max bg-white px-3 text-xs text-zinc-500'>
                   Hoặc
                 </span>
-              </div>
+              </div> */}
               {/* Social login (mock UI) */}
-              <div className='grid grid-cols-2 gap-3'>
+              {/* <div className='grid grid-cols-2 gap-3'>
                 <button
                   type='button'
                   className='inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-200 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-zinc-50'
@@ -135,7 +135,7 @@ const LoginPage = () => {
                   <img src='https://www.svgrepo.com/show/452210/apple.svg' alt='' className='h-4 w-4' />
                   Apple
                 </button>
-              </div>
+              </div> */}
 
               {/* Links */}
               <div className='mt-6 space-y-3 text-center text-sm'>

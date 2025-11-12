@@ -28,7 +28,6 @@ export default function UserManagement() {
   })
 
   const userList = userData?.data.data.users
-  console.log('user list -', userList)
 
   const totalUsers = userData?.data.data.totalUsers
 
@@ -42,6 +41,7 @@ export default function UserManagement() {
         </div>
       </div>
     )
+
   return (
     <div className='min-h-screen flex-1 bg-background'>
       {/* Main Content */}

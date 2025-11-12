@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import {
   Armchair,
   Battery,
@@ -69,7 +69,7 @@ export default function PostDetail() {
     gcTime: 30 * 60 * 1000,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    placeholderData: keepPreviousData,
+    // placeholderData: keepPreviousData,
     retry: 1
   })
 
@@ -80,6 +80,17 @@ export default function PostDetail() {
     queryKey: ['auction-info', id],
     queryFn: () => auctionApi.getAuctionByProduct(Number(id)),
     enabled: !!id
+  })
+
+  const relatedQ = useQuery({
+    queryKey: ['related-posts', id],
+    queryFn: () => postApi.getRelatedPost(id),
+    select: (r) => r.data.data.related_posts,
+    enabled: !!id,
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false
+    // placeholderData: keepPreviousData
   })
 
   // Build specs (memo)
@@ -156,17 +167,6 @@ export default function PostDetail() {
     return base.filter((s) => nonEmpty(s.value) || s.value === 0)
   }, [product, post])
 
-  const relatedQ = useQuery({
-    queryKey: ['related-posts', id],
-    queryFn: () => postApi.getRelatedPost(id),
-    select: (r) => r.data.data.related_posts,
-    enabled: !!id,
-    staleTime: 60_000,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    placeholderData: keepPreviousData
-  })
-
   if (!postQ.data && postQ.isLoading) {
     return <PageSkeleton />
   }
@@ -190,7 +190,7 @@ export default function PostDetail() {
                       <span>•</span>
                       <span className='inline-flex items-center gap-1'>
                         <ShieldCheck className='h-4 w-4' />
-                        {product.warranty}
+                        {labelFromOptions(WARRANTY_OPTIONS, product.warranty)}
                       </span>
                     </>
                   )}

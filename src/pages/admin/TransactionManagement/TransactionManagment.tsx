@@ -44,7 +44,6 @@ const StatCard = ({
 
 export default function TransactionManagement() {
   const queryParams = useQueryParam()
-  console.log('qr-param', queryParams)
 
   const {
     data: transactionData,
@@ -54,14 +53,12 @@ export default function TransactionManagement() {
     queryKey: ['transaction-admin', queryParams],
     queryFn: () => transactionApi.getTransactionByAdmin(queryParams)
   })
-  console.log('transactionData -', transactionData)
   const transaction = transactionData?.data.data
 
   const { data: revenueByTypeData, isError: isRevenueError } = useQuery({
     queryKey: ['revenue-type'],
     queryFn: transactionApi.getRevenueByType
   })
-  console.log('revenue-', revenueByTypeData)
 
   const revenueByType = revenueByTypeData?.data.data
   const statusData = [
@@ -81,6 +78,7 @@ export default function TransactionManagement() {
         </div>
       </div>
     )
+
   if (isError || isRevenueError)
     return <div className='p-6 text-center text-red-500'>Lỗi tải dữ liệu. Vui lòng thử lại.</div>
 

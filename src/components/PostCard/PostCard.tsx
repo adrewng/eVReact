@@ -32,6 +32,7 @@ export default function PostCard({ post }: PropType) {
     mutationFn: (id: number | string) => postApi.deleteFavoritePost(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['favorite-posts'] })
+      qc.invalidateQueries({ queryKey: ['posts'] })
     }
   })
   const handleClick = (id: number | string) => {

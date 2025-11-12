@@ -171,7 +171,6 @@ const PostPage = () => {
       onSuccess: async () => {
         await clear()
         toast.success('Đăng tin thành công')
-        // console.log('data', data)
         navigate(path.home)
       },
       onError: (error) => {
@@ -179,7 +178,6 @@ const PostPage = () => {
           const url = error.response?.data?.checkoutUrl
           if (typeof url === 'string' && /^https?:\/\//.test(url)) {
             // window.location.replace(url) // nếu muốn chặn nút Back
-            // console.log(url)
             window.location.assign(url)
           } else {
             // TODO: fallback/log

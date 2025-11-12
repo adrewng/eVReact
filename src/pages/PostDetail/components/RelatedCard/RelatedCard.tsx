@@ -6,7 +6,7 @@ import postApi from '~/apis/post.api'
 import { path } from '~/constants/path'
 import { CategoryType } from '~/types/category.type'
 import type { RelatedPost } from '~/types/post.type'
-import { formatCurrencyVND, generateNameId, getTimeAgo } from '~/utils/util'
+import { formatCurrencyVND, formatUTCDateString, generateNameId, getTimeAgo } from '~/utils/util'
 
 export default function RelatedCard({ item }: { item: RelatedPost }) {
   const to = `${path.post}/${generateNameId({ name: item.title, id: item.id })}`
@@ -77,7 +77,7 @@ export default function RelatedCard({ item }: { item: RelatedPost }) {
                 </div>
               </div>
 
-              <div className='text-[11px] text-zinc-400'>{getTimeAgo(item.created_at)}</div>
+              <div className='text-[11px] text-zinc-400'>{getTimeAgo(formatUTCDateString(item.created_at))}</div>
             </div>
           </div>
         </article>

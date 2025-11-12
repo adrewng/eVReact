@@ -48,3 +48,4 @@ export default function ProductCardSkeletonLight({ className = '', imgAspect = '
     </article>
   )
 }
+

@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { AxiosResponse } from 'axios'
 import { Clock, Gavel, Minus, Plus, Zap } from 'lucide-react'
 import { useContext, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { io, Socket } from 'socket.io-client'
-import { AppContext } from '~/contexts/app.context'
-import { JoinABidButton } from './JoinABidButton'
-import type { AxiosResponse } from 'axios'
-import type { SuccessResponse } from '~/types/util.type'
-import type { Auction } from '~/types/auction.type'
 import auctionApi from '~/apis/auction.api'
+import { AppContext } from '~/contexts/app.context'
+import type { Auction } from '~/types/auction.type'
+import type { SuccessResponse } from '~/types/util.type'
+import { JoinABidButton } from './JoinABidButton'
 
 const SERVER_URL = import.meta.env.VITE_API_URL
 
@@ -72,11 +72,8 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
 
   useEffect(() => {
     if (!auctionId || !token) {
-      console.log('⚠️ Missing auctionId or token', { auctionId, hasToken: !!token })
       return
     }
-
-    console.log('🔌 Connecting to auction socket...' + SERVER_URL)
     const socketInstance: Socket = io(`${SERVER_URL}/auction`, {
       auth: { token },
       transports: ['websocket', 'polling'],
@@ -87,22 +84,19 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
 
     // Khi connect thành công
     const onConnect = () => {
-      console.log('✅ Connected to auction socket:', socketInstance.id)
       setIsConnected(true)
       // Join auction room (server sẽ trả need_deposit nếu chưa đặt cọc)
       socketInstance.emit('auction:join', { auctionId })
     }
 
     // Khi connect lỗi
-    const onConnectError = (error: any) => {
-      console.error('❌ Connection error:', error?.message || error)
+    const onConnectError = () => {
       setIsConnected(false)
       toast.error('Không thể kết nối đến server đấu giá')
     }
 
     // Nhận thông tin khi join thành công
     const onJoined = (data: any) => {
-      console.log('📥 Joined auction successfully:', data)
       setHasJoined(true)
       setCurrentPrice(Number(data.auction?.winning_price || startingPrice))
       setWinnerId(data.auction?.winner_id || null)
@@ -117,7 +111,6 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
 
     // Cập nhật giá mới khi có người đặt giá
     const onBidUpdate = (data: any) => {
-      console.log('💰 Bid update:', data)
       setCurrentPrice(Number(data.winningPrice))
       setWinnerId(data.winnerId)
       if (data.winnerId === profile?.id) {
@@ -129,13 +122,11 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
 
     // Cập nhật thời gian còn lại
     const onTimeUpdate = (data: any) => {
-      console.log('time update from backend: ', data.remainingTime, 'second')
       setTimeLeft(data.remainingTime)
     }
 
     // Auction đóng
     const onClosed = (data: any) => {
-      console.log('🎉 Auction closed:', data)
       setIsEnded(true)
       setWinnerId(data.winnerId)
       setTimeLeft(0)
@@ -151,13 +142,11 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
 
     // Lỗi từ server
     const onAuctionError = (data: any) => {
-      console.error('❌ Auction error:', data?.message)
       toast.error(data?.message || 'Có lỗi xảy ra')
     }
 
     // Disconnect
-    const onDisconnect = (reason: string) => {
-      console.log('❌ Disconnected:', reason)
+    const onDisconnect = () => {
       setIsConnected(false)
       setHasJoined(false)
     }
@@ -175,7 +164,6 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
     setSocket(socketInstance)
 
     return () => {
-      console.log('🔌 Cleaning up socket connection')
       socketInstance.off('connect', onConnect)
       socketInstance.off('connect_error', onConnectError)
       socketInstance.off('auction:joined', onJoined)
@@ -230,7 +218,6 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
       return
     }
 
-    console.log(`📤 Placing bid: ${bidAmount}`)
     socket.emit('auction:bid', { auctionId, bidAmount })
   }
 
@@ -262,7 +249,6 @@ export default function AuctionBox({ auctionData }: AuctionBoxProps) {
     } catch (error: any) {
       const errorMsg = error?.response?.data?.message || 'Không thể mua ngay'
       toast.error(errorMsg)
-      console.error('Buy now error:', error)
     }
   }
 

@@ -5,7 +5,7 @@ import Rating from '~/components/Rating'
 import type { OverviewQueryConfig } from '~/hooks/useOverviewQueryConfig'
 import type { Feedback } from '~/types/feedback.type'
 import type { User } from '~/types/user.type'
-import { getTimeAgo } from '~/utils/util'
+import { formatUTCDateString, getTimeAgo } from '~/utils/util'
 
 interface Prop {
   feedbacks: Feedback[]
@@ -89,7 +89,9 @@ export default function Feedback({ feedbacks, seller, pagination, queryConfig }:
                         <p className='font-semibold text-neutral-900'>{feedback.user.full_name}</p>
                         <Rating rating={feedback.start} />
                       </div>
-                      <span className='text-xs text-neutral-500'>{getTimeAgo(feedback.createdAt)}</span>
+                      <span className='text-xs text-neutral-500'>
+                        {getTimeAgo(formatUTCDateString(feedback.createdAt))}
+                      </span>
                     </div>
                     {/* <h4 className='mt-3 font-medium text-neutral-900'>{feedback.title}</h4> */}
                     <p className='mt-2 text-sm leading-relaxed text-neutral-600'>{feedback.text}</p>

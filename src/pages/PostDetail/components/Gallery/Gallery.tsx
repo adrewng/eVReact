@@ -57,10 +57,13 @@ export function Gallery({ images }: { images?: string[] }) {
             src={list[active]}
             alt='Ảnh sản phẩm'
             className='aspect-[16/10] w-full object-cover'
-            initial={{ opacity: 0.25, scale: 1.02 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.22, 0.61, 0.36, 1] }}
+            transition={{
+              duration: 0.5,
+              ease: 'easeInOut'
+            }}
             onClick={() => setOpen(true)}
             loading='eager'
           />

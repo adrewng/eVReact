@@ -38,13 +38,11 @@ export default function PostFilters(props: Props) {
   }
 
   const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value)
     setSearch(event.target.value)
   }
 
   const handleSubmitSearch = (event: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault()
-    console.log('vao handleSubmitSearch')
 
     navigate({
       pathname: path.adminPosts,

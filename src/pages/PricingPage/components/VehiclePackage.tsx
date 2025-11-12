@@ -10,7 +10,6 @@ export default function VehiclePackage() {
   })
 
   const vehiclePackage = vehiclePackageData?.data.data
-  console.log('vepck-', vehiclePackage)
 
   return (
     <section className='grid md:grid-cols-2 gap-8 mb-20'>

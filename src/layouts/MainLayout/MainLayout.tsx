@@ -5,6 +5,7 @@ import categoryApi from '~/apis/categories.api'
 import ChatDock from '~/components/ChatDock'
 import Footer from '~/components/Footer'
 import NavHeader from '~/components/NavHeader'
+import ScrollToTop from '~/components/ScrollToTop/ScrollToTop'
 
 interface Props {
   children?: React.ReactNode
@@ -17,6 +18,7 @@ function MainLayoutInner({ children }: Props) {
   })
   return (
     <div>
+      <ScrollToTop />
       <NavHeader />
       {children}
       <Outlet />

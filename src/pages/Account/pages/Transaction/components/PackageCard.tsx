@@ -3,8 +3,8 @@ import type { PackageByMe } from '~/types/package.type'
 
 export default function PackageCard({ pkg }: { pkg: PackageByMe }) {
   const statusConfig = {
-    active: { label: 'Active', color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
-    expired: { label: 'Expired', color: 'text-gray-600 bg-gray-50 border-gray-200' }
+    active: { label: 'Đang hoạt động', color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
+    expired: { label: 'Hết hạn', color: 'text-gray-600 bg-gray-50 border-gray-200' }
   }
 
   const daysRemaining = Math.ceil((new Date(pkg.expires_at).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
@@ -41,11 +41,11 @@ export default function PackageCard({ pkg }: { pkg: PackageByMe }) {
 
       <div className='pt-4 border-t border-gray-200'>
         <div className='flex items-center justify-between text-sm mb-2'>
-          <span className='text-gray-600'>Start Date</span>
+          <span className='text-gray-600'>Ngày bắt đầu</span>
           <span className='font-medium text-gray-900'>{new Date(pkg.created_at).toLocaleDateString('vi-VN')}</span>
         </div>
         <div className='flex items-center justify-between text-sm'>
-          <span className='text-gray-600'>End Date</span>
+          <span className='text-gray-600'>Ngày kết thúc</span>
           <span className='font-medium text-gray-900'>{new Date(pkg.expires_at).toLocaleDateString('vi-VN')}</span>
         </div>
         {/* Hiển thị số lần đăng tin còn lại */}
@@ -59,7 +59,7 @@ export default function PackageCard({ pkg }: { pkg: PackageByMe }) {
           <div className='mt-3 p-3 bg-gray-50 rounded-lg'>
             <div className='flex items-center justify-center gap-2 text-sm'>
               <Clock className='w-4 h-4 text-gray-600' />
-              <span className='font-medium text-gray-900'>{daysRemaining} days remaining</span>
+              <span className='font-medium text-gray-900'>Còn lại {daysRemaining} ngày</span>
             </div>
           </div>
         )}

@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import auctionApi from '~/apis/auction.api'
 import Pagination from '~/components/Pagination'
+import { TableSkeleton } from '~/components/skeleton'
 import useQueryConfig from '~/hooks/useQueryConfig'
 import type { AuctionType, Participation } from '~/types/auction.type'
 import ParticipationsTable from './components/ParticipationsTable'
@@ -67,16 +68,12 @@ export default function AccountAuction() {
         <div className='mt-4'>
           {tab === 'own' ? (
             loadingOwn ? (
-              <div className='rounded-2xl border border-gray-200 bg-white p-8 text-center text-sm text-gray-500'>
-                Đang tải phiên của bạn...
-              </div>
+              <TableSkeleton rows={6} cols={5} />
             ) : (
               <SessionsTable rows={mySessions?.auctions as AuctionType[]} emptyText='Chưa có phiên nào.' />
             )
           ) : loadingJoined ? (
-            <div className='rounded-2xl border border-gray-200 bg-white p-8 text-center text-sm text-gray-500'>
-              Đang tải danh sách tham gia...
-            </div>
+            <TableSkeleton rows={6} cols={5} />
           ) : (
             <ParticipationsTable
               rows={participates?.auctions as Participation[]}

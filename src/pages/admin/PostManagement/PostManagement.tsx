@@ -30,7 +30,7 @@ export default function PostManagement() {
     queryKey: ['posts', queryConfig],
     queryFn: () => postApi.getPostsByAdmin(queryConfig as PostListTypeConfig)
   })
-  console.log('post -', data)
+
   if (isLoading)
     return (
       <div className='flex h-screen w-full items-center justify-center'>

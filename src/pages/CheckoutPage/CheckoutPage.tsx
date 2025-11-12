@@ -20,7 +20,6 @@ export default function CheckoutPage() {
   const navigate = useNavigate()
 
   const { profile } = useContext(AppContext)
-  console.log('profile -', profile)
 
   const packageConfig: PackageConfig = {
     id: packageQueryParams.id,
@@ -31,10 +30,8 @@ export default function CheckoutPage() {
     queryKey: ['checkout-package', packageConfig],
     queryFn: () => packageApi.getCheckoutPackage(packageConfig)
   })
-  console.log('checkout-pck-data:', checkoutPackageData)
 
   const checkoutPackage = checkoutPackageData?.data.data.packages[0]
-  console.log('checkout-pck: ', checkoutPackage)
 
   useEffect(() => {
     if (checkoutPackage) {
@@ -55,7 +52,6 @@ export default function CheckoutPage() {
       return
     }
     const payload = { user_id: userId, service_id: serviceId }
-    console.log('Payload gửi sang API:', payload)
 
     payPackage.mutate(payload, {
       onSuccess: () => {

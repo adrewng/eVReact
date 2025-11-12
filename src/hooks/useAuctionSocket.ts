@@ -1,5 +1,5 @@
 // hooks/useAuctionSocket.ts
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { io, Socket } from 'socket.io-client'
 
 interface UseAuctionSocketOptions {
@@ -25,24 +25,20 @@ export const useAuctionSocket = ({ auctionId, token }: UseAuctionSocketOptions) 
     socketRef.current = socket
 
     socket.on('connect', () => {
-      console.log('✅ Connected to auction socket')
       setConnected(true)
       socket.emit('join_auction', { auctionId })
     })
 
     socket.on('disconnect', () => {
-      console.log('❌ Disconnected from auction socket')
       setConnected(false)
     })
 
     socket.on('auction_started', (data) => {
-      console.log('🚀 Auction started:', data)
       setCurrentPrice(data.startingPrice)
       setRemainingTime(data.duration)
     })
 
     socket.on('bid_update', (data) => {
-      console.log('💰 Bid update:', data)
       setCurrentPrice(data.newPrice)
     })
 
@@ -51,7 +47,6 @@ export const useAuctionSocket = ({ auctionId, token }: UseAuctionSocketOptions) 
     })
 
     socket.on('auction_closed', () => {
-      console.log('🔔 Auction closed')
       setIsEnded(true)
     })
 

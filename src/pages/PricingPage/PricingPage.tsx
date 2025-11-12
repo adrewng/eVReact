@@ -1,8 +1,8 @@
 import { Disclosure, Transition } from '@headlessui/react'
 import { ChevronUpIcon } from '@heroicons/react/20/solid'
 import { useState } from 'react'
-import VehiclePackage from './components/VehiclePackage'
 import BatteryPackage from './components/BatteryPackage'
+import VehiclePackage from './components/VehiclePackage'
 
 interface Question {
   question: string
@@ -38,7 +38,6 @@ export default function PricingPage() {
   //   queryKey: ['package'],
   //   queryFn: packageApi.getPackage
   // })
-  // console.log('package data -', packageData)
 
   return (
     <div className='min-h-screen bg-white text-neutral-900 font-inter'>

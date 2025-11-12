@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { CreditCard, DollarSign, Package, Plus, TrendingUp, Wallet, Zap } from 'lucide-react'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import packageApi from '~/apis/package.api'
 import transactionApi from '~/apis/transaction.api'
+import { TransactionSkeleton } from '~/components/skeleton'
+import { path } from '~/constants/path'
 import type { PackageByMe } from '~/types/package.type'
 import PackageCard from './components/PackageCard'
-import { Link } from 'react-router-dom'
-import { path } from '~/constants/path'
 import TopupModal from './components/TopupModal'
 import TransactionHistory from './components/TransactionHistory'
 
@@ -16,24 +17,28 @@ export default function AccountTransaction() {
   const [showTopUp, setShowTopUp] = useState(false)
 
   const tabs = [
-    { id: 'history', label: 'Payment History', icon: CreditCard },
-    // { id: 'wallet', label: 'Wallet Balance', icon: Wallet },
-    { id: 'packages', label: 'Active Packages', icon: Package }
+    { id: 'history', label: 'Lịch sử thanh toán', icon: CreditCard },
+    // { id: 'wallet', label: 'Số dư ví', icon: Wallet },
+    { id: 'packages', label: 'Gói đang hoạt động', icon: Package }
   ]
 
-  const { data: transactionsData } = useQuery({
+  const { data: transactionsData, isLoading: isLoadingTransactions } = useQuery({
     queryKey: ['transaction-me'],
     queryFn: transactionApi.getUserTransaction
   })
   const transactions = transactionsData?.data.data.data
-  console.log('transaction -', transactionsData)
 
-  const { data: packageByMeData } = useQuery({
+  const { data: packageByMeData, isLoading: isLoadingPackages } = useQuery({
     queryKey: ['package-me'],
     queryFn: packageApi.getPackageByMe
   })
-  console.log('package -', packageByMeData)
   const packageByMe = packageByMeData?.data.data
+
+  const isLoading = isLoadingTransactions || isLoadingPackages
+
+  if (isLoading) {
+    return <TransactionSkeleton />
+  }
 
   return (
     <div className='flex-1 bg-white min-h-screen'>
@@ -41,14 +46,14 @@ export default function AccountTransaction() {
         {/* Header */}
         <div className='flex items-start justify-between'>
           <div>
-            <h1 className='text-4xl font-bold text-gray-900 mb-2'>Payment & Billing</h1>
-            <p className='text-gray-600'>Manage your transactions, wallet balance and subscriptions</p>
+            <h1 className='text-4xl font-bold text-gray-900 mb-2'>Thanh toán & Hóa đơn</h1>
+            <p className='text-gray-600'>Quản lý giao dịch, số dư ví và gói đăng ký của bạn</p>
           </div>
           <button
             onClick={() => setShowTopUp(true)}
             className='flex items-center gap-2 px-5 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-medium shadow-lg transition-all'
           >
-            <Plus className='w-5 h-5' /> Top Up Wallet
+            <Plus className='w-5 h-5' /> Nạp tiền vào ví
           </button>
         </div>
         {showTopUp && <TopupModal setShowTopup={() => setShowTopUp(false)} />}

@@ -1,9 +1,9 @@
 // import { useState } from 'react'
 // import AuctionCharts from './components/AuctionCharts'
+import { useQuery } from '@tanstack/react-query'
 import auctionApi from '~/apis/auction.api'
 import AuctionsTable from './components/AuctionsTable'
 // import FilterBar from './components/FilterBar'
-import { useQuery } from '@tanstack/react-query'
 import StatsOverview from './components/StatsOverview'
 
 export default function AuctionManagement() {
@@ -18,7 +18,6 @@ export default function AuctionManagement() {
     queryFn: auctionApi.getAllAuction
   })
   const auctions = allAuctionData?.data?.data.auctions
-  console.log('auctions-', allAuctionData)
   const totalAuctions = allAuctionData?.data.data.totalAuctions
   const totalMembers = allAuctionData?.data.data.totalMembers
 

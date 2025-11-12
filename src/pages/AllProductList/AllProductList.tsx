@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import Pagination from '~/components/Pagination'
 import PostCard from '~/components/PostCard'
-import ProductCardSkeletonLight from '~/components/ProductCardSkeleton/ProductCardSkeleton'
+import { ProductCardSkeleton } from '~/components/skeleton'
 import SortBar from '~/components/SortBar'
 import { path } from '~/constants/path'
 import { useListQueries } from '~/hooks/useListQueries'
@@ -71,7 +71,7 @@ export default function AllProductList() {
                       className='group'
                     >
                       <div className='flex flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white'>
-                        <ProductCardSkeletonLight />
+                        <ProductCardSkeleton />
                       </div>
                     </motion.div>
                   ))
@@ -118,7 +118,7 @@ export default function AllProductList() {
                         className='group'
                       >
                         <div className='flex flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white'>
-                          <ProductCardSkeletonLight />
+                          <ProductCardSkeleton />
                         </div>
                       </motion.div>
                     ))

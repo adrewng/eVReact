@@ -4,6 +4,7 @@ import { Filter, Search } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { createSearchParams, useNavigate } from 'react-router-dom'
 import orderApi from '~/apis/order.api'
+import { OrderCardSkeleton } from '~/components/skeleton'
 import { ORDER_TYPE_LABEL, type OrderType } from '~/constants/order'
 import useOrderQueryConfig from '~/hooks/useOrderQueryConfig'
 import type { Order, OrderListConfig } from '~/types/order.type'
@@ -67,7 +68,7 @@ export default function AccountOrders() {
           </div>
           <div className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm'>
             <div className='text-sm text-gray-500'>Đã thanh toán</div>
-            <div className='mt-1 text-2xl font-semibold'>{data?.static.total_paid}</div>
+            <div className='mt-1 text-2xl font-semibold'>{data?.static.total_paid ?? 0}</div>
           </div>
           <div className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm'>
             <div className='text-sm text-gray-500'>Tổng chi tiêu (ước tính)</div>
@@ -150,18 +151,18 @@ export default function AccountOrders() {
         </div>
 
         <div className='mt-6 grid grid-cols-1 gap-4'>
-          {!isLoading && (data?.orders ?? []).map((o: Order) => <OrderCard key={o.id} o={o} onOpen={openDrawer} />)}
-
-          {!isLoading && (data?.orders?.length ?? 0) === 0 && (
+          {isLoading ? (
+            <>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <OrderCardSkeleton key={i} />
+              ))}
+            </>
+          ) : (data?.orders?.length ?? 0) === 0 ? (
             <div className='rounded-2xl border border-dashed border-gray-300 p-10 text-center text-sm text-gray-500'>
               Không có đơn phù hợp.
             </div>
-          )}
-
-          {isLoading && (
-            <div className='rounded-2xl border border-gray-200 p-10 text-center text-sm text-gray-500'>
-              Đang tải đơn hàng...
-            </div>
+          ) : (
+            (data?.orders ?? []).map((o: Order) => <OrderCard key={o.id} o={o} onOpen={openDrawer} />)
           )}
         </div>
 

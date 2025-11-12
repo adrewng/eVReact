@@ -1,7 +1,9 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { omit } from 'lodash'
-import { useContext, useEffect, useState } from 'react'
+import { Bell, CreditCard, FileText, Heart, LogOut, Package, User, Wallet } from 'lucide-react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { createSearchParams, Link, useLocation, useNavigate } from 'react-router-dom'
+import accountApi from '~/apis/account.api'
 import { authApi } from '~/apis/auth.api'
 import notificationApi from '~/apis/notification.api'
 import postApi from '~/apis/post.api'
@@ -32,7 +34,8 @@ export default function NavHeader() {
       setTitle('')
     }
   }, [queryConfig.title])
-  function onSearch() {
+
+  const onSearch = useCallback(() => {
     navigate({
       pathname: normalizedPathname,
       search: createSearchParams(
@@ -47,7 +50,7 @@ export default function NavHeader() {
         )
       ).toString()
     })
-  }
+  }, [navigate, normalizedPathname, queryConfig, title])
   const queryClient = useQueryClient()
   const logoutMutation = useMutation({
     mutationFn: authApi.logout,
@@ -66,17 +69,23 @@ export default function NavHeader() {
   })
   const handleLogout = () => logoutMutation.mutate()
 
+  // Track xem đã refetch trong lần mở menu này chưa (tránh gọi 2 lần)
+  const notificationRefetchRef = useRef(false)
+  const favoriteRefetchRef = useRef(false)
+  const profileRefetchRef = useRef(false)
+
   // Notification
   const notificationQueryConfig = useNotificationQueryConfig()
   const {
     data: notificationData,
     isLoading: notificationLoading,
-    isFetching: notificationFetching
+    isFetching: notificationFetching,
+    refetch: refetchNotifications
   } = useQuery({
     queryKey: ['notifications', notificationQueryConfig],
     queryFn: () => notificationApi.getNotificationByUser(notificationQueryConfig as NotificationListConfig),
     placeholderData: keepPreviousData,
-    staleTime: 5 * 60 * 1000, // cache 5 phút
+    staleTime: 30 * 1000, // cache 30 giây - khi mở menu sẽ refetch nếu đã stale
     gcTime: 15 * 60 * 1000, // giữ cache 15 phút
     refetchOnWindowFocus: false,
     enabled: isAuthenticated
@@ -97,12 +106,13 @@ export default function NavHeader() {
   const {
     data: myPosts,
     isLoading: favLoading,
-    isFetching: favFetching
+    isFetching: favFetching,
+    refetch: refetchFavorites
   } = useQuery({
     queryKey: ['favorite-posts', { page: 1, limit: 5 }],
     queryFn: () => postApi.getFavoritePostByUser({ page: 1, limit: 5 }),
     placeholderData: keepPreviousData,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 1000, // cache 30 giây - khi mở menu sẽ refetch nếu đã stale
     gcTime: 15 * 60 * 1000,
     refetchOnWindowFocus: false,
     enabled: isAuthenticated
@@ -113,6 +123,23 @@ export default function NavHeader() {
     isFetching: favFetching,
     total: myPosts?.data.data.count?.all ?? 0
   }
+
+  // Lấy profile để có totalCredit (nhẹ hơn getUserTransaction)
+  const {
+    data: profileData,
+    isFetching: profileFetching,
+    refetch: refetchProfile
+  } = useQuery({
+    queryKey: ['profile'],
+    queryFn: accountApi.getProfile,
+    enabled: isAuthenticated,
+    staleTime: 30 * 1000, // Cache 30 giây - khi mở menu sẽ refetch nếu đã stale
+    gcTime: 15 * 60 * 1000, // giữ cache 15 phút
+    refetchOnWindowFocus: false
+  })
+  // Ưu tiên dùng profileData, fallback về profile từ context
+  const currentProfile = profileData?.data.data.user || profile
+  const walletBalance = currentProfile?.totalCredit ?? '0'
 
   return (
     <div className='w-full px-5 py-2 border-b border-zinc-200'>
@@ -170,6 +197,21 @@ export default function NavHeader() {
             <Popover
               className='flex items-center py-1 cursor-pointer'
               renderProp={<NotificationMenu notificationsData={navNotifData} />}
+              onOpenChange={(open) => {
+                // Khi mở menu (hover vào), refetch dữ liệu mới
+                if (open && isAuthenticated && !notificationFetching && !notificationRefetchRef.current) {
+                  notificationRefetchRef.current = true
+                  refetchNotifications().finally(() => {
+                    // Reset sau khi fetch xong để lần mở tiếp theo vẫn refetch được
+                    setTimeout(() => {
+                      notificationRefetchRef.current = false
+                    }, 100)
+                  })
+                } else if (!open) {
+                  // Reset khi đóng menu
+                  notificationRefetchRef.current = false
+                }
+              }}
             >
               <div
                 className='relative'
@@ -210,7 +252,25 @@ export default function NavHeader() {
           </div>
           {/* Favorite Posts */}
           <div>
-            <Popover className='flex items-center py-1 cursor-pointer' renderProp={<FavoriteMenu data={favNavData} />}>
+            <Popover
+              className='flex items-center py-1 cursor-pointer'
+              renderProp={<FavoriteMenu data={favNavData} />}
+              onOpenChange={(open) => {
+                // Khi mở menu (hover vào), refetch dữ liệu mới
+                if (open && isAuthenticated && !favFetching && !favoriteRefetchRef.current) {
+                  favoriteRefetchRef.current = true
+                  refetchFavorites().finally(() => {
+                    // Reset sau khi fetch xong để lần mở tiếp theo vẫn refetch được
+                    setTimeout(() => {
+                      favoriteRefetchRef.current = false
+                    }, 100)
+                  })
+                } else if (!open) {
+                  // Reset khi đóng menu
+                  favoriteRefetchRef.current = false
+                }
+              }}
+            >
               <div
                 className='relative'
                 aria-label={
@@ -291,20 +351,118 @@ export default function NavHeader() {
           {isAuthenticated ? (
             <Popover
               className='flex items-center py-1 cursor-pointer'
+              onOpenChange={(open) => {
+                // Khi mở menu (hover vào), refetch dữ liệu mới
+                if (open && isAuthenticated && !profileFetching && !profileRefetchRef.current) {
+                  profileRefetchRef.current = true
+                  refetchProfile().finally(() => {
+                    // Reset sau khi fetch xong để lần mở tiếp theo vẫn refetch được
+                    setTimeout(() => {
+                      profileRefetchRef.current = false
+                    }, 100)
+                  })
+                } else if (!open) {
+                  // Reset khi đóng menu
+                  profileRefetchRef.current = false
+                }
+              }}
               renderProp={
-                <div className='relative rounded-sm border border-gray-200 border-t-0 bg-white shadow-md'>
-                  <Link
-                    to={path.accountProfile}
-                    className='block w-full bg-white py-3 px-4 text-left hover:bg-slate-50'
-                  >
-                    Tài khoản của tôi
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className='block w-full bg-white py-3 px-4 text-left hover:bg-slate-50'
-                  >
-                    Đăng xuất
-                  </button>
+                <div className='w-72 rounded-xl border border-gray-200 bg-white shadow-xl overflow-hidden'>
+                  {/* Header với thông tin user */}
+                  <div className='bg-gradient-to-br from-gray-50 to-white px-4 py-4 border-b border-gray-100'>
+                    <div className='flex items-center gap-3 mb-3'>
+                      <div className='size-12 rounded-full overflow-hidden ring-2 ring-gray-200 flex-shrink-0'>
+                        <img
+                          src={currentProfile?.avatar || 'https://picsum.photos/32'}
+                          alt={currentProfile?.full_name || 'User'}
+                          className='size-full object-cover'
+                        />
+                      </div>
+                      <div className='flex-1 min-w-0'>
+                        <div className='font-semibold text-gray-900 truncate'>
+                          {currentProfile?.full_name || 'Người dùng'}
+                        </div>
+                        <div className='text-sm text-gray-500 truncate'>{currentProfile?.email || ''}</div>
+                      </div>
+                    </div>
+                    {/* Số dư ví */}
+                    <Link
+                      to={path.accountTransaction}
+                      className='flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-gray-900 to-gray-800 rounded-lg text-white hover:from-gray-800 hover:to-gray-700 transition-all group'
+                    >
+                      <Wallet className='w-4 h-4 text-white/80 group-hover:text-white' />
+                      <div className='flex-1 min-w-0'>
+                        <div className='text-xs text-white/70 mb-0.5'>Số dư ví</div>
+                        <div className='text-base font-bold truncate'>
+                          {profileFetching ? (
+                            <span className='text-white/60'>Đang tải...</span>
+                          ) : (
+                            <>{Number(walletBalance || 0).toLocaleString('vi-VN')} ₫</>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+
+                  {/* Menu items */}
+                  <div className='py-2'>
+                    <Link
+                      to={path.accountProfile}
+                      className='flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors group'
+                    >
+                      <User className='w-5 h-5 text-gray-400 group-hover:text-gray-600' />
+                      <span className='text-sm font-medium'>Tài khoản của tôi</span>
+                    </Link>
+                    <Link
+                      to={path.accountPosts}
+                      className='flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors group'
+                    >
+                      <FileText className='w-5 h-5 text-gray-400 group-hover:text-gray-600' />
+                      <span className='text-sm font-medium'>Bài đăng của tôi</span>
+                    </Link>
+                    <Link
+                      to={path.accountOrders}
+                      className='flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors group'
+                    >
+                      <Package className='w-5 h-5 text-gray-400 group-hover:text-gray-600' />
+                      <span className='text-sm font-medium'>Đơn hàng</span>
+                    </Link>
+                    <Link
+                      to={path.accountTransaction}
+                      className='flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors group'
+                    >
+                      <CreditCard className='w-5 h-5 text-gray-400 group-hover:text-gray-600' />
+                      <span className='text-sm font-medium'>Giao dịch</span>
+                    </Link>
+                    <Link
+                      to={path.accountFavorite}
+                      className='flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors group'
+                    >
+                      <Heart className='w-5 h-5 text-gray-400 group-hover:text-gray-600' />
+                      <span className='text-sm font-medium'>Yêu thích</span>
+                    </Link>
+                    <Link
+                      to={path.accountNotification}
+                      className='flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors group'
+                    >
+                      <Bell className='w-5 h-5 text-gray-400 group-hover:text-gray-600' />
+                      <span className='text-sm font-medium'>Thông báo</span>
+                    </Link>
+                  </div>
+
+                  {/* Divider */}
+                  <div className='border-t border-gray-100'></div>
+
+                  {/* Logout */}
+                  <div className='py-2'>
+                    <button
+                      onClick={handleLogout}
+                      className='flex items-center gap-3 px-4 py-2.5 w-full text-left text-red-600 hover:bg-red-50 transition-colors group'
+                    >
+                      <LogOut className='w-5 h-5 text-red-500 group-hover:text-red-600' />
+                      <span className='text-sm font-medium'>Đăng xuất</span>
+                    </button>
+                  </div>
                 </div>
               }
             >

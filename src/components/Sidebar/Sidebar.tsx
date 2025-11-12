@@ -28,8 +28,6 @@ export default function Sidebar() {
 
   const location = useLocation()
   const currentPath = location.pathname
-  console.log('location -', location)
-  console.log('currentPath -', currentPath)
 
   const { reset, profile } = useContext(AppContext)
   const navigate = useNavigate()

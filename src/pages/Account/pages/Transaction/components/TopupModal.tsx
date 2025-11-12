@@ -12,7 +12,6 @@ export default function TopupModal(props: TopupModalProps) {
   const { setShowTopup } = props
   const [amount, setAmount] = useState(0)
   const { profile } = useContext(AppContext)
-  console.log('profile -', profile)
 
   const topup = useMutation({
     mutationFn: (formData: { user_id: number; amount: number; description: string }) =>

@@ -140,7 +140,6 @@ class Http {
 
         // Nếu là lỗi 401 thì xử lý tại đây
         if (isAxiosUnauthorizedError<ErrorResponse<{ name: string; message: string }>>(error)) {
-          console.log(error)
           const config = error.response?.config || { headers: {}, url: '' }
           const { url } = config
           //Xữ lý những lỗi liên quan đến token hết hạn

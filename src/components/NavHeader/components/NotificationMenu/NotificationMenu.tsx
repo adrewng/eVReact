@@ -59,21 +59,22 @@ export default function NotificationMenu({ notificationsData }: Props) {
         </button>
       </div>
 
-      {/* Trạng thái tải */}
-      {notificationsData.isLoading ? (
-        <div className='px-4 py-6 text-center text-sm text-gray-600'>Đang tải dữ liệu…</div>
-      ) : list.length === 0 ? (
-        <div className='px-4 py-10 text-center'>
-          <div className='text-sm text-gray-600 font-medium mb-1'>Không có thông báo</div>
-          <div className='text-xs text-gray-400'>Bạn đã cập nhật đầy đủ mọi thứ.</div>
-        </div>
-      ) : (
-        <>
-          {/* Dòng báo refetch nền, không nháy UI */}
-          {notificationsData.isFetching && (
-            <div className='px-4 pt-2 text-[11px] text-gray-400 text-right'>Đang tải lại…</div>
-          )}
+      {/* Body */}
+      <div className='relative' aria-live='polite'>
+        {!notificationsData.isLoading && notificationsData.isFetching && (
+          <div className='absolute inset-x-0 top-0 h-0.5 overflow-hidden'>
+            <div className='h-full w-1/3 animate-[loading_1.2s_linear_infinite] bg-gray-300' />
+          </div>
+        )}
 
+        {notificationsData.isLoading ? (
+          <div className='px-4 py-6 text-center text-sm text-gray-600'>Đang tải dữ liệu…</div>
+        ) : list.length === 0 ? (
+          <div className='px-4 py-10 text-center'>
+            <div className='text-sm text-gray-600 font-medium mb-1'>Không có thông báo</div>
+            <div className='text-xs text-gray-400'>Bạn đã cập nhật đầy đủ mọi thứ.</div>
+          </div>
+        ) : (
           <ul className='max-h-[360px] overflow-auto py-1'>
             {list.map((n) => {
               const { icon: Icon, tone } = notificationConfig[n.type]
@@ -107,8 +108,8 @@ export default function NotificationMenu({ notificationsData }: Props) {
               )
             })}
           </ul>
-        </>
-      )}
+        )}
+      </div>
 
       {/* Footer */}
       <div className='px-4 py-2 border-t border-gray-200 bg-white flex items-center justify-between'>
@@ -119,6 +120,11 @@ export default function NotificationMenu({ notificationsData }: Props) {
           Hiển thị {list.length}/{allCount}
         </span>
       </div>
+
+      <style>{`
+        @keyframes loading { 0% { transform: translateX(-120%); } 100% { transform: translateX(320%); } }
+        .animate-[loading_1.2s_linear_infinite] { animation: loading 1.2s linear infinite; }
+      `}</style>
     </div>
   )
 }

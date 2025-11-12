@@ -10,7 +10,6 @@ export default function AllAuctionList() {
     queryFn: auctionApi.getAllAuction
   })
 
-  console.log('all-auction', allAuctionData)
   const allAuction = allAuctionData?.data.data.auctions
   // const pageLoading = false
   // const pageData = { auctions: allAuction }

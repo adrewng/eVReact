@@ -110,7 +110,6 @@ export default function AuctionsTable(props: PropsType) {
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
-      console.error('❌ Lỗi khi tạo hợp đồng:', error)
       toast.error(error?.response?.data?.message || 'Tạo hợp đồng thất bại!')
     }
   })
@@ -305,7 +304,7 @@ export default function AuctionsTable(props: PropsType) {
             <div className='space-y-4'>
               {/* Thời lượng */}
               <div>
-                <label className='block text-sm font-medium text-slate-700'>Thời lượng (giây))</label>
+                <label className='block text-sm font-medium text-slate-700'>Thời lượng (giây)</label>
                 <input
                   type='number'
                   value={duration}

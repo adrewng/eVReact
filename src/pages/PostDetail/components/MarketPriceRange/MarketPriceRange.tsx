@@ -68,7 +68,7 @@ export default function MarketPriceRange({
           style={{ left: `calc(${markerLeft}% - 14px)` }}
           aria-label={`Giá đăng: ${formatVNDMillions(listing)}`}
         >
-          <div className='rounded-md bg-blue-600 px-2 py-0.5 text-xs font-semibold text-white shadow'>
+          <div className='rounded-md bg-blue-600 px-2 py-0.5 text-xs font-semibold text-white shadow whitespace-nowrap'>
             {formatVNDMillions(listing)}
           </div>
           <div className='mx-auto h-0 w-0 border-x-8 border-t-8 border-x-transparent border-t-blue-600' />
@@ -78,12 +78,12 @@ export default function MarketPriceRange({
       {/* labels bám theo vị trí min/max quanh listing */}
       <div className='relative mt-3 h-5 text-sm text-zinc-900'>
         {/* min label (trái của listing) */}
-        <span className='absolute -translate-x-1/2' style={{ left: `${pct(min)}%` }}>
+        <span className='absolute -translate-x-1/2 whitespace-nowrap' style={{ left: `${pct(min)}%` }}>
           {formatVNDMillions(min)}
         </span>
 
         {/* max label (phải của listing) */}
-        <span className='absolute -translate-x-1/2' style={{ left: `${pct(max)}%` }}>
+        <span className='absolute -translate-x-1/2 whitespace-nowrap' style={{ left: `${pct(max)}%` }}>
           {formatVNDMillions(max)}
         </span>
       </div>

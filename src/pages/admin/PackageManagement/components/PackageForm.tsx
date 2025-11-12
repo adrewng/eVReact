@@ -2,13 +2,13 @@
 
 import type React from 'react'
 
-import { useState, useEffect } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import packageApi from '~/apis/package.api'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Textarea } from '~/components/ui/textarea'
-import { X } from 'lucide-react'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import packageApi from '~/apis/package.api'
 import type { FormCreatePackage, FormUpdatePackage, Package } from '~/types/package.type'
 
 interface PackageFormProps {
@@ -42,7 +42,6 @@ export function PackageForm({ editingPackage: editingPackage, onClose }: Package
       })
     }
   }, [editingPackage])
-  console.log('formdata - ', formData)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target

@@ -9,7 +9,6 @@ export default function BatteryPackage() {
     queryFn: packageApi.getBatteryPackage
   })
   const batteryPackage = batteryPackageData?.data.data
-  console.log('bapck-', batteryPackage)
 
   return (
     <section className='grid md:grid-cols-2 gap-8 mb-20'>

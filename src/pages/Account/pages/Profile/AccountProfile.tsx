@@ -2,6 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { Check, Edit2, Mail, MapPin, Shield } from 'lucide-react'
 import { useContext, useMemo, useRef, useState } from 'react'
 import accountApi from '~/apis/account.api'
+import { ProfileSkeleton } from '~/components/skeleton'
 import { AppContext } from '~/contexts/app.context'
 import { setProfileToLS } from '~/utils/auth'
 import ProfileOverview from './components/ProfileOverview'
@@ -21,7 +22,11 @@ export default function AccountProfile() {
   }, [file])
 
   // Lấy hồ sơ người dùng
-  const { data: profileData, refetch } = useQuery({
+  const {
+    data: profileData,
+    refetch,
+    isLoading
+  } = useQuery({
     queryKey: ['profile'],
     queryFn: () => accountApi.getProfile(),
     refetchOnMount: 'always', // mount lại là refetch
@@ -49,7 +54,6 @@ export default function AccountProfile() {
     mutationFn: (data: FormData) => accountApi.updateAvatar(data),
     onSuccess: async (data) => {
       const user = data.data.data.user
-      console.log('✅ Avatar uploaded successfully:', user.avatar)
 
       // Cập nhật context trước
       setProfile(user)
@@ -61,11 +65,8 @@ export default function AccountProfile() {
 
       // Refetch để đảm bảo đồng bộ
       await refetch()
-
-      console.log('✅ Profile updated in context:', user)
     },
-    onError: (error) => {
-      console.log('❌ Cập nhật ảnh đại diện thất bại!', error)
+    onError: () => {
       setIsEditAvatar(false)
     }
   })
@@ -80,8 +81,11 @@ export default function AccountProfile() {
     formData.append('phone', profile.phone as string)
     formData.append('address', profile.address as string)
     formData.append('description', profile.description as string)
-    const uploadRes = uploadAvatarMutation.mutate(formData)
-    console.log(uploadRes)
+    uploadAvatarMutation.mutate(formData)
+  }
+
+  if (isLoading) {
+    return <ProfileSkeleton />
   }
 
   return (

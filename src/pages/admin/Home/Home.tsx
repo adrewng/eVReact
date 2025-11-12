@@ -57,9 +57,7 @@ export default function Home() {
     queryFn: dashboardApi.getDashboardInfo
   })
 
-  console.log('dashboard-', dashboardData)
   const dashboard = dashboardData?.data.data
-  console.log('dashboard- summary', dashboard)
 
   const categoryDistribution = dashboard?.categoryDistribution ?? []
   const totalPosts = dashboard?.summary?.totalPost ?? 1 // tránh chia cho 0
