@@ -1,9 +1,10 @@
 import { RadioGroup } from '@headlessui/react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
-import { Banknote, CheckCircle2, Plus, Wallet } from 'lucide-react'
+import { ArrowLeft, Banknote, CheckCircle2, Plus, Wallet } from 'lucide-react'
 import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import packageApi from '~/apis/package.api'
 import { path } from '~/constants/path'
 import { AppContext } from '~/contexts/app.context'
@@ -55,6 +56,7 @@ export default function CheckoutPage() {
 
     payPackage.mutate(payload, {
       onSuccess: () => {
+        toast.success('Mua gói thành công')
         navigate(path.accountTransaction)
       },
       onError: (error) => {
@@ -75,7 +77,15 @@ export default function CheckoutPage() {
     <div className='min-h-screen bg-neutral-50 text-neutral-900 font-inter py-16 px-4 sm:px-6 lg:px-8'>
       <div className='max-w-4xl mx-auto bg-white rounded-2xl shadow-sm p-8'>
         {/* HEADER */}
-        <h1 className='text-3xl font-semibold text-center mb-10'>Xác nhận thanh toán</h1>
+        <button
+          onClick={() => navigate(-1)}
+          className='mb-6 inline-flex items-center gap-2 text-sm text-neutral-600 hover:text-black transition-colors'
+          type='button'
+        >
+          <ArrowLeft className='w-4 h-4' />
+          Quay lại
+        </button>
+        <h1 className='text-3xl font-semibold text-center mb-6 sm:mb-10'>Xác nhận thanh toán</h1>
 
         {/* SUMMARY */}
         <div className='border rounded-xl p-6 mb-10 bg-neutral-50'>
