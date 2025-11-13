@@ -143,7 +143,7 @@ export function PackageForm({ editingPackage: editingPackage, onClose }: Package
               />
             </div>
 
-            <div>
+            {/* <div>
               <label className='block text-sm font-medium text-foreground mb-2'>Số Lần Đẩy Tin *</label>
               <Input
                 type='number'
@@ -153,7 +153,7 @@ export function PackageForm({ editingPackage: editingPackage, onClose }: Package
                 placeholder='3'
                 required
               />
-            </div>
+            </div> */}
           </div>
 
           <div>

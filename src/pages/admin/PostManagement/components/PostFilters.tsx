@@ -1,8 +1,7 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
-// import { Badge } from '~/components/ui/badge'
 import { omit } from 'lodash'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Settings } from 'lucide-react'
 import { createSearchParams, Link, useNavigate } from 'react-router-dom'
 import { Button } from '~/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '~/components/ui/dropdown-menu'
@@ -10,6 +9,9 @@ import { Input } from '~/components/ui/input'
 import { path } from '~/constants/path'
 import { cn } from '~/lib/utils'
 import type { QueryConfig } from '~/pages/admin/PostManagement/PostManagement'
+import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogFooter } from '~/components/ui/dialog'
+
+import { Label } from '~/components/ui/label'
 
 const filters = [
   { label: 'All', link: '' },
@@ -26,6 +28,10 @@ interface Props {
 
 export default function PostFilters(props: Props) {
   const [search, setSearch] = useState('')
+  const [openSetting, setOpenSetting] = useState(false)
+  const [price, setPrice] = useState(50000)
+  const [year, setYear] = useState(years[0])
+
   const { queryConfig } = props
   const { status } = queryConfig
   const navigate = useNavigate()
@@ -68,7 +74,12 @@ export default function PostFilters(props: Props) {
   }
 
   // const [active, setActive] = useState('All')
-  const [year, setYear] = useState(years[0])
+
+  const handleSavePrice = () => {
+    // TODO: Gọi API để lưu giá mới
+    console.log('💰 Giá mới mỗi lần đăng tin:', price)
+    setOpenSetting(false)
+  }
 
   return (
     <div className='flex justify-between items-center'>
@@ -160,6 +171,36 @@ export default function PostFilters(props: Props) {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <Dialog open={openSetting} onOpenChange={setOpenSetting}>
+          <DialogTrigger asChild>
+            <Button variant='outline' size='icon'>
+              <Settings className='w-5 h-5' />
+            </Button>
+          </DialogTrigger>
+
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Chỉnh số tiền mỗi lần đăng tin</DialogTitle>
+            </DialogHeader>
+            <div className='py-4 space-y-2'>
+              <Label htmlFor='price'>Số tiền (VNĐ)</Label>
+              <Input
+                id='price'
+                type='number'
+                min={0}
+                // value={price}
+                onChange={(e) => setPrice(Number(e.target.value))}
+              />
+            </div>
+            <DialogFooter>
+              <Button variant='outline' onClick={() => setOpenSetting(false)}>
+                Hủy
+              </Button>
+              <Button onClick={handleSavePrice}>Lưu</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   )
