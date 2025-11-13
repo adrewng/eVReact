@@ -8,7 +8,6 @@ import serviceApi from '~/apis/service.api'
 import Button from '~/components/Button'
 import Input from '~/components/Input'
 import Popover from '~/components/Popover'
-import { useFormPersist } from '~/hooks/useFormPersist'
 import useQueryParam from '~/hooks/useQueryParam'
 import { getPostSchema, type PostFormValues } from '~/schemas/post.schema'
 import { CategoryType, type CategoryChild } from '~/types/category.type'
@@ -55,10 +54,6 @@ const PostPage = () => {
     setValue,
     formState: { errors }
   } = methods
-  const { saveNow, clear, isRestored } = useFormPersist(methods, {
-    storageKeyBase: 'draft:post',
-    partitionKey: selectedCategory?.typeSlug
-  })
 
   const { data: categoriesData, isLoading } = useQuery({
     queryKey: ['categoriesDetail'],
@@ -77,33 +72,8 @@ const PostPage = () => {
   })
 
   const services = useMemo(() => serviceData?.data.data.services ?? [], [serviceData])
-  const allCategories = useMemo(() => categoriesData?.data.data || [], [categoriesData])
-  const watchedCategoryId = watch('category_id')
-  const watchedServiceId = watch('service_id')
   const addressValue = watch('address') ?? ''
   const uploadedImages = watch('images', [] as File[])
-  // Restore selectedCategory khi category_id thay đổi
-  useEffect(() => {
-    if (isRestored && allCategories.length > 0 && watchedCategoryId && !selectedCategory) {
-      const categoryParent = allCategories.find((item) =>
-        item.childrens?.find((child) => child.id === watchedCategoryId)
-      )
-      const category = categoryParent?.childrens?.find((child) => child.id === watchedCategoryId)
-      if (category) {
-        setSelectedCategory(category)
-        setShowCategoryModal(false)
-      }
-    }
-  }, [isRestored, allCategories, watchedCategoryId, selectedCategory])
-  // Restore selectedService khi service_id thay đổi
-  useEffect(() => {
-    if (isRestored && services.length > 0 && watchedServiceId && !selectedService) {
-      const service = services.find((s) => s.id === watchedServiceId)
-      if (service) {
-        setSelectedService(service)
-      }
-    }
-  }, [isRestored, services, watchedServiceId, selectedService])
 
   useEffect(() => {
     if (selectedCategory) {
@@ -114,7 +84,6 @@ const PostPage = () => {
 
   const handleCategorySelect = (category: CategoryChild) => {
     if (selectedCategory && selectedCategory.id !== category.id) {
-      clear()
       methods.reset()
       setSelectedService(null)
     }
@@ -133,10 +102,9 @@ const PostPage = () => {
       return true
     })
     const next = merged.slice(0, 6)
-
-    setValue('images', next, { shouldValidate: true, shouldDirty: true })
-    setValue('image', next[0], { shouldValidate: true, shouldDirty: true })
-    e.currentTarget.value = '' // để lần sau chọn lại cùng file vẫn onChange
+    setValue('images', next, { shouldValidate: true })
+    setValue('image', next[0], { shouldValidate: true })
+    e.currentTarget.value = ''
   }
 
   const makeCover = (idx: number) => {
@@ -148,28 +116,25 @@ const PostPage = () => {
     if (sameFile(arr[0], item)) return
 
     const next = [item, ...arr.slice(0, idx), ...arr.slice(idx + 1)].slice(0, 6)
-    setValue('images', next, { shouldValidate: true, shouldDirty: true })
-    setValue('image', next[0], { shouldValidate: true, shouldDirty: true })
+    setValue('images', next, { shouldValidate: true })
+    setValue('image', next[0], { shouldValidate: true })
   }
 
   const removeImage = (i: number) => {
     const curr = getValues('images') ?? []
     const next = curr.filter((_, idx) => idx !== i)
-    setValue('images', next, { shouldValidate: true, shouldDirty: true })
-    setValue('image', next[0], { shouldValidate: true, shouldDirty: true })
+    setValue('images', next, { shouldValidate: true })
+    setValue('image', next[0], { shouldValidate: true })
   }
 
   // Handle address
   const handleAddressConfirm = (address: string) => {
-    setValue('address', address, { shouldValidate: true, shouldDirty: true })
+    setValue('address', address, { shouldValidate: true })
   }
 
   const onSubmit = handleSubmit((data) => {
-    saveNow()
-
     addPostMutation.mutate(data, {
-      onSuccess: async () => {
-        await clear()
+      onSuccess: () => {
         toast.success('Đăng tin thành công')
         navigate(path.home)
       },
@@ -177,17 +142,13 @@ const PostPage = () => {
         if (isAxiosPaymentRequiredError<{ checkoutUrl: string }>(error)) {
           const url = error.response?.data?.checkoutUrl
           if (typeof url === 'string' && /^https?:\/\//.test(url)) {
-            // window.location.replace(url) // nếu muốn chặn nút Back
-            window.location.assign(url)
-          } else {
-            // TODO: fallback/log
+            window.location.replace(url)
           }
         }
       }
     })
   })
 
-  if (!isRestored) return null
   return (
     <>
       {showCategoryModal && (
@@ -352,7 +313,7 @@ const PostPage = () => {
                       <Input
                         label='Địa chỉ *'
                         name='address'
-                        value={addressValue} // ⬅️ lấy từ form, hỗ trợ khôi phục
+                        value={addressValue}
                         readOnly
                         placeholder='Chọn địa chỉ'
                         errorMsg={errors.address?.message as string}
@@ -425,7 +386,7 @@ const PostPage = () => {
                                   }`}
                                   onClick={() => {
                                     setSelectedService(service)
-                                    setValue('service_id', service.id, { shouldValidate: true, shouldDirty: true })
+                                    setValue('service_id', service.id, { shouldValidate: true })
                                   }}
                                 >
                                   <div className='flex items-center justify-between mb-2'>
