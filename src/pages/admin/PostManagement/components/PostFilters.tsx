@@ -12,6 +12,9 @@ import type { QueryConfig } from '~/pages/admin/PostManagement/PostManagement'
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogFooter } from '~/components/ui/dialog'
 
 import { Label } from '~/components/ui/label'
+import { useMutation } from '@tanstack/react-query'
+import serviceApi from '~/apis/service.api'
+import { toast } from 'react-toastify'
 
 const filters = [
   { label: 'All', link: '' },
@@ -31,6 +34,7 @@ export default function PostFilters(props: Props) {
   const [openSetting, setOpenSetting] = useState(false)
   const [price, setPrice] = useState(50000)
   const [year, setYear] = useState(years[0])
+  const [selectedType, setSelectedType] = useState<'vehicle' | 'battery'>('vehicle')
 
   const { queryConfig } = props
   const { status } = queryConfig
@@ -74,9 +78,21 @@ export default function PostFilters(props: Props) {
   }
 
   // const [active, setActive] = useState('All')
+  const changeCost = useMutation({
+    mutationFn: ({ serviceId, cost }: { serviceId: number; cost: number }) => serviceApi.changeCost(serviceId, cost),
+    onSuccess: () => {
+      toast.success('Cập nhật giá thành công!')
+      setOpenSetting(false)
+    },
+    onError: () => {
+      toast.error('Lỗi khi cập nhật giá, vui lòng thử lại!')
+    }
+  })
 
   const handleSavePrice = () => {
-    // TODO: Gọi API để lưu giá mới
+    const serviceId = selectedType === 'vehicle' ? 1 : 2
+
+    changeCost.mutate({ serviceId, cost: price })
     console.log('💰 Giá mới mỗi lần đăng tin:', price)
     setOpenSetting(false)
   }
@@ -184,12 +200,22 @@ export default function PostFilters(props: Props) {
               <DialogTitle>Chỉnh số tiền mỗi lần đăng tin</DialogTitle>
             </DialogHeader>
             <div className='py-4 space-y-2'>
+              <Label htmlFor='type'>Loại bài đăng</Label>
+              <select
+                id='type'
+                className='w-full border border-gray-300 rounded-md p-2 bg-white focus:outline-none focus:ring-2 focus:ring-black'
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value as 'vehicle' | 'battery')}
+              >
+                <option value='vehicle'>Xe</option>
+                <option value='battery'>Pin</option>
+              </select>
               <Label htmlFor='price'>Số tiền (VNĐ)</Label>
               <Input
                 id='price'
                 type='number'
                 min={0}
-                // value={price}
+                value={price}
                 onChange={(e) => setPrice(Number(e.target.value))}
               />
             </div>
