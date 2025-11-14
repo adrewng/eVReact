@@ -20,6 +20,11 @@ export type Transactions = {
   total_spend: number
   total_topup: number
   total_credit: number
+  pagination: {
+    page: number
+    limit: number
+    page_size: number
+  }
 }
 
 export interface TransactionAdmin {
@@ -54,4 +59,9 @@ export interface RevenueByType {
   revenue_packages: number
   revenue_post: number
   daily_revenue: { date: string; revenue: number }[]
+}
+
+export interface TransactionConfig {
+  page?: number | string
+  limit?: number | string
 }

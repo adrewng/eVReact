@@ -1,9 +1,13 @@
 import classNames from 'classnames'
 import { Link, createSearchParams, useLocation } from 'react-router-dom'
+import type { NotificationQueryConfig } from '~/hooks/useNotificationQueryConfig'
+import type { OrderQueryConfig } from '~/hooks/useOrderQueryConfig'
+import type { OverviewQueryConfig } from '~/hooks/useOverviewQueryConfig'
 import type { QueryConfig } from '~/hooks/useQueryConfig'
+import type { TransactionQueryConfig } from '~/hooks/useTransactionQueryConfig'
 
 interface Props {
-  queryConfig: QueryConfig
+  queryConfig: OrderQueryConfig | TransactionQueryConfig | OverviewQueryConfig | NotificationQueryConfig | QueryConfig
   pageSize: number
   pathName?: string // tùy chọn
 }

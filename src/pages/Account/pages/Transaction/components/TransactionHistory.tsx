@@ -1,11 +1,16 @@
 import { ArrowUpRight, CheckCircle, Clock, CreditCard, Gavel, Package, TrendingUp, XCircle } from 'lucide-react'
+import type { TransactionQueryConfig } from '~/hooks/useTransactionQueryConfig'
 import type { Transaction } from '~/types/transaction.type'
+import { formatUTCDateString } from '~/utils/util'
+import Pagination from '../../AccountOrders/components/Pagination/Pagination'
 type PropsType = {
   transactions: Transaction[] | undefined
+  transactionConfig: TransactionQueryConfig
+  pageSize: number
 }
 
 export default function TransactionHistory(props: PropsType) {
-  const { transactions } = props
+  const { transactions, transactionConfig, pageSize } = props
   return (
     <div className='space-y-6'>
       <div className='flex items-center justify-between'>
@@ -15,6 +20,7 @@ export default function TransactionHistory(props: PropsType) {
         {transactions?.map((transaction: Transaction) => (
           <TransactionItem key={transaction.created_at} transaction={transaction} />
         ))}
+        <Pagination pageSize={pageSize ?? 1} queryConfig={transactionConfig} />
       </div>
     </div>
   )
@@ -104,9 +110,7 @@ const TransactionItem = ({ transaction }: { transaction: Transaction }) => {
                 <StatusIcon className='w-3 h-3' />
                 {statusStyle.label}
               </span>
-              <span className='text-xs text-gray-500'>
-                {new Date(transaction.created_at).toISOString().replace('T', ' ').replace('Z', '')}
-              </span>
+              <span className='text-xs text-gray-500'>{formatUTCDateString(transaction.created_at)}</span>
             </div>
           </div>
         </div>
