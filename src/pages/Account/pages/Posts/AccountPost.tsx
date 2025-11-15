@@ -162,7 +162,9 @@ export default function AccountPost() {
                                       ? 'Đã cấm'
                                       : post.status === 'expired'
                                         ? 'Đã hết hạn'
-                                        : 'Không rõ'}
+                                        : post.status === 'draft'
+                                          ? 'Nháp'
+                                          : 'Không rõ'}
                       </span>
                     </div>
 
