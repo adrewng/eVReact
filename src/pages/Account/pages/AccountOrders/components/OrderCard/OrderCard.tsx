@@ -1,9 +1,11 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import clsx from 'clsx'
-import { ClipboardList, CreditCard, MessageSquare, Receipt, RefreshCcw, Star, Undo2, X } from 'lucide-react'
+import { ClipboardList, CreditCard, MessageSquare, Receipt, RefreshCcw, Star, Undo2 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import feedbackApi from '~/apis/feedback.api'
+import paymentApi from '~/apis/payment.api'
+import Button from '~/components/Button'
 import { getOrderStatusLabel, ORDER_TYPE_LABEL, ORDERSTATUS } from '~/constants/order'
 import { CategoryType } from '~/types/category.type'
 import type { FeedbackType } from '~/types/feedback.type'
@@ -30,8 +32,7 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
   const createFeedback = useMutation({
     mutationFn: (formData: FeedbackType) => feedbackApi.createFeedback(formData),
     onSuccess: () => {
-      toast.success('Đánh giá thành công! 🎉') // ✅ hiện thông báo
-
+      toast.success('Đánh giá thành công! 🎉')
       setShowRating(false)
       setRating(0)
       setComment('')
@@ -48,8 +49,19 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
     }
     createFeedback.mutate(payload)
   }
+  const queryClient = useQueryClient()
 
-  // Đảm bảo có default để tránh crash khi dữ liệu xấu
+  const repayPostMutation = useMutation({
+    mutationFn: (orderId: number | string) => paymentApi.repayPost(orderId)
+  })
+  const handleRepayPost = (orderId: number | string) => {
+    repayPostMutation.mutate(orderId, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['order'] })
+        toast.success('Thanh toán thành công!')
+      }
+    })
+  }
   const tracking: TrackingKey = (o.tracking ?? 'PENDING') as TrackingKey
 
   return (
@@ -183,12 +195,18 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
         {/* Điều kiện nút dựa trên tracking */}
         {tracking === 'PENDING' && (
           <>
-            <button className='rounded-xl border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50'>
-              <X className='mr-2 inline h-4 w-4' /> Hủy
-            </button>
-            <button className='rounded-xl bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-black'>
-              <CreditCard className='mr-2 inline h-4 w-4' /> Thanh toán
-            </button>
+            {o.type === 'post' && (
+              <Button
+                onClick={() => {
+                  handleRepayPost(o.id)
+                }}
+                disabled={repayPostMutation.isPending}
+                isLoading={repayPostMutation.isPending}
+                className='rounded-xl bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-black'
+              >
+                <CreditCard className='mr-2 inline h-4 w-4' /> Thanh toán
+              </Button>
+            )}
           </>
         )}
 

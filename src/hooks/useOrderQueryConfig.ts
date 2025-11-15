@@ -3,12 +3,12 @@ import { isUndefined, omitBy } from 'lodash'
 import type { OrderListConfig } from '~/types/order.type'
 import useQueryParam from './useQueryParam'
 
-export type QueryConfig = {
+export type OrderQueryConfig = {
   [key in keyof OrderListConfig]: string
 }
 export default function useOrderQueryConfig() {
-  const queryParam: QueryConfig = useQueryParam()
-  const queryConfig: QueryConfig = omitBy(
+  const queryParam: OrderQueryConfig = useQueryParam()
+  const queryConfig: OrderQueryConfig = omitBy(
     {
       page: queryParam.page || '1',
       limit: queryParam.limit || '10',

@@ -5,6 +5,7 @@ import {
   Bell,
   CheckCircle,
   CircleDollarSign,
+  Clock,
   Gavel,
   MessageSquare,
   PackageCheck,
@@ -36,6 +37,7 @@ export const NOTIFICATION_TYPES = [
   'deposit_fail',
   'dealing_success',
   'dealing_fail',
+  'payment_expired',
   'message',
   'system'
 ] as const
@@ -69,6 +71,7 @@ export const notificationConfig = {
 
   dealing_fail: { icon: XCircle, tone: 'danger' },
   dealing_success: { icon: CheckCircle, tone: 'success' },
+  payment_expired: { icon: Clock, tone: 'warning' },
   message: { icon: MessageSquare, tone: 'info' },
   system: { icon: Bell, tone: 'info' }
 } satisfies Record<NotificationType, { icon: LucideIcon; tone: ToneNotification }>

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { CreditCard, DollarSign, Package, Plus, TrendingUp, Wallet, Zap } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -6,7 +6,9 @@ import packageApi from '~/apis/package.api'
 import transactionApi from '~/apis/transaction.api'
 import { TransactionSkeleton } from '~/components/skeleton'
 import { path } from '~/constants/path'
+import useTransactionQueryConfig from '~/hooks/useTransactionQueryConfig'
 import type { PackageByMe } from '~/types/package.type'
+import type { TransactionConfig } from '~/types/transaction.type'
 import PackageCard from './components/PackageCard'
 import TopupModal from './components/TopupModal'
 import TransactionHistory from './components/TransactionHistory'
@@ -18,20 +20,23 @@ export default function AccountTransaction() {
 
   const tabs = [
     { id: 'history', label: 'Lịch sử thanh toán', icon: CreditCard },
-    // { id: 'wallet', label: 'Số dư ví', icon: Wallet },
     { id: 'packages', label: 'Gói đang hoạt động', icon: Package }
   ]
+  const transactionConfig = useTransactionQueryConfig()
 
   const { data: transactionsData, isLoading: isLoadingTransactions } = useQuery({
-    queryKey: ['transaction-me'],
-    queryFn: transactionApi.getUserTransaction
+    queryKey: ['transaction-me', transactionConfig],
+    queryFn: () => transactionApi.getUserTransaction(transactionConfig as TransactionConfig),
+    placeholderData: keepPreviousData
   })
   const transactions = transactionsData?.data.data.data
 
   const { data: packageByMeData, isLoading: isLoadingPackages } = useQuery({
     queryKey: ['package-me'],
-    queryFn: packageApi.getPackageByMe
+    queryFn: packageApi.getPackageByMe,
+    placeholderData: keepPreviousData
   })
+
   const packageByMe = packageByMeData?.data.data
 
   const isLoading = isLoadingTransactions || isLoadingPackages
@@ -96,18 +101,6 @@ export default function AccountTransaction() {
             </div>
             <div className='text-sm text-gray-600'>Tổng chi (VND)</div>
           </div>
-
-          {/* <div className='bg-white border border-gray-200 rounded-2xl p-6'>
-            <div className='flex items-start justify-between mb-4'>
-              <div className='w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center'>
-                <Clock className='w-6 h-6 text-amber-600' />
-              </div>
-            </div>
-            <div className='text-3xl font-bold text-gray-900 mb-1'>
-              {mockWalletData.pendingAmount.toLocaleString('vi-VN')}
-            </div>
-            <div className='text-sm text-gray-600'>Pending Amount (VND)</div>
-          </div> */}
         </div>
 
         {/* Navigation Tabs */}
@@ -133,7 +126,13 @@ export default function AccountTransaction() {
         </div>
 
         {/* Content Section */}
-        {activeTab === 'history' && <TransactionHistory transactions={transactions} />}
+        {activeTab === 'history' && (
+          <TransactionHistory
+            transactions={transactions}
+            transactionConfig={transactionConfig}
+            pageSize={transactionsData?.data.data.pagination.page_size ?? 1}
+          />
+        )}
 
         {activeTab === 'packages' && (
           <div className='space-y-6'>
