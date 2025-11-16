@@ -24,6 +24,12 @@ export function isAxiosAccountBlockedError(error: unknown): error is AxiosError<
     typeof axiosError.response?.data?.data?.reason === 'string'
   )
 }
+export function getAccountBlockedReason(error: unknown): string | undefined {
+  if (isAxiosAccountBlockedError(error)) {
+    return error.response?.data?.data?.reason
+  }
+  return undefined
+}
 
 export function isAxiosExpiredTokenError<UnauthorizedError>(error: unknown): error is AxiosError<UnauthorizedError> {
   return (
