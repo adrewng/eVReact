@@ -222,13 +222,32 @@ export default function AuctionsTable(props: PropsType) {
 
                           {!auction.has_report && (
                             <>
-                              {auction.contract_status !== 'pending' && (
+                              {auction.winner_id === null ? (
+                                // Nút hiển thị khi không ai cọc
                                 <button
-                                  onClick={() => handleCreateContract(auction)}
-                                  className='rounded-lg bg-green-500 px-3 py-2 text-xs font-medium text-white hover:bg-green-600 transition-colors'
+                                  disabled
+                                  className='rounded-lg bg-gray-400 px-3 py-2 text-xs font-medium text-white cursor-not-allowed'
                                 >
-                                  Tạo hợp đồng
+                                  Không có ai cọc phiên đấu giá
                                 </button>
+                              ) : (
+                                <>
+                                  {auction.contract_status !== 'pending' && (
+                                    <button
+                                      onClick={() => handleCreateContract(auction)}
+                                      className='rounded-lg bg-green-500 px-3 py-2 text-xs font-medium text-white hover:bg-green-600 transition-colors'
+                                    >
+                                      Tạo hợp đồng
+                                    </button>
+                                  )}
+
+                                  <button
+                                    onClick={() => setOpenModal(true)}
+                                    className='rounded-lg bg-red-500 px-3 py-2 text-xs font-medium text-white hover:bg-red-600 transition-colors'
+                                  >
+                                    Báo cáo
+                                  </button>
+                                </>
                               )}
                               <button
                                 onClick={() => setOpenModal(true)}
