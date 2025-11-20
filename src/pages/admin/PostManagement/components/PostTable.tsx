@@ -103,6 +103,9 @@ export default function PostTable(props: Props) {
                         {p.status === 'rejected' && <Badge className='bg-red-100 text-red-700'>Đã từ chối</Badge>}
                         {p.status === 'banned' && <Badge className='bg-gray-200 text-gray-800'>Bị cấm</Badge>}
                         {p.status === 'sold' && <Badge className='bg-blue-100 text-blue-700'>Đã bán</Badge>}
+                        {p.status === 'auctioned' && (
+                          <Badge className='bg-purple-100 text-purple-700'>Đã đấu giá</Badge>
+                        )}
                       </td>
                     </td>
 
