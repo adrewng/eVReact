@@ -315,14 +315,14 @@ export default function PostDetail() {
                   <div className='my-3 text-sm text-zinc-500'>
                     Cập nhật: {new Date(post.updated_at).toLocaleDateString('vi-VN')}
                   </div>
-                  {/* <div className='mb-4'>
+                  <div className='mb-4'>
                     <MarketPriceRange
                       min={toNumber(post.ai?.min_price)}
                       max={toNumber(post.ai?.max_price)}
                       listing={toNumber(product.price)}
                       windowText='Theo dữ liệu trong 3 tháng gần nhất'
                     />
-                  </div> */}
+                  </div>
                 </div>
               )}
 
