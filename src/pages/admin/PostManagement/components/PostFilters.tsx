@@ -165,7 +165,7 @@ export default function PostFilters(props: Props) {
       <div className='flex items-center gap-3'>
         <div className='w-48'>
           <form onSubmit={handleSubmitSearch}>
-            <Input placeholder='Search posts...' className='bg-white' onChange={handleChangeSearch} value={search} />
+            <Input placeholder='Tìm tin...' className='bg-white' onChange={handleChangeSearch} value={search} />
           </form>
         </div>
         <DropdownMenu>
