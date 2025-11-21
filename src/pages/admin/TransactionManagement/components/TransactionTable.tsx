@@ -35,18 +35,31 @@ export default function TransactionTable({ transaction }: { transaction: Transac
   }
 
   // 🔹 Config màu cho TRACKING
+  // const TRACKING_STYLES: Record<string, { bg: string; text: string; label: string }> = {
+  //   PENDING: { bg: 'bg-yellow-50', text: 'text-yellow-700', label: 'Pending' },
+  //   PROCESSING: { bg: 'bg-blue-50', text: 'text-blue-700', label: 'Processing' },
+  //   SUCCESS: { bg: 'bg-green-50', text: 'text-green-700', label: 'Success' },
+  //   FAILED: { bg: 'bg-red-50', text: 'text-red-700', label: 'Failed' },
+  //   DEALING: { bg: 'bg-orange-50', text: 'text-orange-700', label: 'Dealing' },
+  //   DEALING_SUCCESS: { bg: 'bg-green-100', text: 'text-green-800', label: 'Dealing Success' },
+  //   DEALING_FAIL: { bg: 'bg-red-100', text: 'text-red-800', label: 'Dealing Fail' },
+  //   CANCELLED: { bg: 'bg-gray-100', text: 'text-gray-700', label: 'Cancelled' },
+  //   REFUND: { bg: 'bg-purple-50', text: 'text-purple-700', label: 'Refund' },
+  //   AUCTION_SUCCESS: { bg: 'bg-emerald-50', text: 'text-emerald-700', label: 'Auction Success' }
+  // }
   const TRACKING_STYLES: Record<string, { bg: string; text: string; label: string }> = {
-    PENDING: { bg: 'bg-yellow-50', text: 'text-yellow-700', label: 'Pending' },
-    PROCESSING: { bg: 'bg-blue-50', text: 'text-blue-700', label: 'Processing' },
-    SUCCESS: { bg: 'bg-green-50', text: 'text-green-700', label: 'Success' },
-    FAILED: { bg: 'bg-red-50', text: 'text-red-700', label: 'Failed' },
-    DEALING: { bg: 'bg-orange-50', text: 'text-orange-700', label: 'Dealing' },
-    DEALING_SUCCESS: { bg: 'bg-green-100', text: 'text-green-800', label: 'Dealing Success' },
-    DEALING_FAIL: { bg: 'bg-red-100', text: 'text-red-800', label: 'Dealing Fail' },
-    CANCELLED: { bg: 'bg-gray-100', text: 'text-gray-700', label: 'Cancelled' },
-    REFUND: { bg: 'bg-purple-50', text: 'text-purple-700', label: 'Refund' },
-    AUCTION_SUCCESS: { bg: 'bg-emerald-50', text: 'text-emerald-700', label: 'Auction Success' }
+    PENDING: { bg: 'bg-yellow-50', text: 'text-yellow-700', label: 'Chờ xử lý' },
+    PROCESSING: { bg: 'bg-blue-50', text: 'text-blue-700', label: 'Đang xử lý' },
+    SUCCESS: { bg: 'bg-green-50', text: 'text-green-700', label: 'Thành công' },
+    FAILED: { bg: 'bg-red-50', text: 'text-red-700', label: 'Thất bại' },
+    DEALING: { bg: 'bg-orange-50', text: 'text-orange-700', label: 'Đang giao dịch' },
+    DEALING_SUCCESS: { bg: 'bg-green-100', text: 'text-green-800', label: 'Giao dịch thành công' },
+    DEALING_FAIL: { bg: 'bg-red-100', text: 'text-red-800', label: 'Giao dịch thất bại' },
+    CANCELLED: { bg: 'bg-gray-100', text: 'text-gray-700', label: 'Đã hủy' },
+    REFUND: { bg: 'bg-purple-50', text: 'text-purple-700', label: 'Hoàn tiền' },
+    AUCTION_SUCCESS: { bg: 'bg-emerald-50', text: 'text-emerald-700', label: 'Đấu giá thành công' }
   }
+
   const TYPE_LABELS: Record<string, string> = {
     deposit: 'Đặt cọc',
     post: 'Bài đăng',

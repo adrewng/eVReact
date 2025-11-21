@@ -15,41 +15,10 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
 
 import { useQuery } from '@tanstack/react-query'
-import { AlertCircle, ArrowDownRight, ArrowUpRight, DollarSign, Users, Zap, type LucideIcon } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { AlertCircle, DollarSign, Users, Zap } from 'lucide-react'
 import dashboardApi from '~/apis/home.api'
 import { path } from '~/constants/path'
-
-const StatCard = ({
-  title,
-  value,
-  change,
-  icon: Icon,
-  href
-}: {
-  title: string
-  value: string | number
-  change: number
-  icon: LucideIcon
-  color?: string
-  href: string
-}) => (
-  <Link to={href}>
-    <Card className='cursor-pointer hover:shadow-lg transition-shadow'>
-      <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-        <CardTitle className='text-sm font-medium'>{title}</CardTitle>
-        <Icon className='h-4 w-4 text-muted-foreground' />
-      </CardHeader>
-      <CardContent>
-        <div className='text-2xl font-bold'>{value}</div>
-        <p className={`text-xs flex items-center gap-1 ${change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-          {change >= 0 ? <ArrowUpRight className='h-3 w-3' /> : <ArrowDownRight className='h-3 w-3' />}
-          {typeof change === 'number' ? Math.abs(change).toFixed(2) : change} so với tháng trước
-        </p>
-      </CardContent>
-    </Card>
-  </Link>
-)
+import StatCard from './components/StatCard'
 
 export default function Home() {
   const { data: dashboardData, isLoading } = useQuery({
@@ -151,7 +120,7 @@ export default function Home() {
 
                   <YAxis
                     stroke='#6b7280'
-                    tickFormatter={(value) => `${(value / 1000000).toFixed(0)}M`}
+                    tickFormatter={(value) => `${(value / 1000000).toFixed(1)}M`}
                     label={{
                       value: 'Doanh thu (Triệu VND)',
                       angle: -90,

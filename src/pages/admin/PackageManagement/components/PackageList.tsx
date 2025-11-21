@@ -115,7 +115,7 @@ export default function PackageList({ packages, loading = false, onEdit }: Packa
 
                     <td className='px-4 py-4'>
                       <Badge variant='outline' className='font-normal text-xs'>
-                        {pkg.product_type}
+                        {pkg.product_type === 'vehicle' ? 'Xe' : 'Pin'}
                       </Badge>
                     </td>
 

@@ -44,11 +44,13 @@ export default function PostTable(props: Props) {
     }
   })
 
-  const handleApprove = (id: string | number) => {
+  const handleApprove = (id: string | number, event: React.MouseEvent) => {
+    event.stopPropagation()
     updateMutation.mutate({ id, status: 'approved' })
   }
 
-  const handleOpenReject = (id: string | number, title?: string) => {
+  const handleOpenReject = (id: string | number, event: React.MouseEvent, title?: string) => {
+    event.stopPropagation()
     setRejectingPost({ id, title })
   }
 
@@ -86,7 +88,7 @@ export default function PostTable(props: Props) {
                     <td className='py-3 px-4 whitespace-nowrap'>{p.product.model}</td>
 
                     {/* Định dạng giá tiền tệ VND và căn phải */}
-                    <td className='py-3 px-4 whitespace-nowrap font-semibold text-gray-900 text-center'>
+                    <td className='py-3 px-4 whitespace-nowrap font-semibold text-gray-900 '>
                       {Number(p.product.price || 0).toLocaleString('vi-VN')}₫
                     </td>
 
@@ -121,7 +123,7 @@ export default function PostTable(props: Props) {
                           <Button
                             variant='outline'
                             className='text-green-600 border-green-600 hover:bg-green-50 h-8 px-3 text-sm'
-                            onClick={() => handleApprove(p.id)}
+                            onClick={(e) => handleApprove(p.id, e)}
                             disabled={updateMutation.isPending}
                           >
                             Duyệt
@@ -129,7 +131,7 @@ export default function PostTable(props: Props) {
                           <Button
                             variant='outline'
                             className='text-red-600 border-red-600 hover:bg-red-50 h-8 px-3 text-sm'
-                            onClick={() => handleOpenReject(p.id, p.title)}
+                            onClick={(e) => handleOpenReject(p.id, e, p.title)}
                             disabled={updateMutation.isPending}
                           >
                             Từ chối

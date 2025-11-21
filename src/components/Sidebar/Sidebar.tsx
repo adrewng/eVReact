@@ -88,17 +88,6 @@ export default function Sidebar() {
                   <Icon size={20} />
                   <span>{item.label}</span>
                 </div>
-
-                {/* {item.badge && (
-                  <span
-                    className={cn(
-                      'text-xs font-semibold px-2 py-0.5 rounded-full',
-                      isActive ? 'bg-green-700 text-white' : 'bg-green-100 text-green-700'
-                    )}
-                  >
-                    {item.badge}
-                  </span>
-                )} */}
               </button>
             </Link>
           )
@@ -108,7 +97,6 @@ export default function Sidebar() {
       <div className='mt-auto px-4 py-3 border-t border-gray-200'>
         <button
           onClick={() => {
-            // TODO: thêm logic logout
             logoutMutation.mutate()
           }}
           className='flex items-center w-full px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition duration-200 font-medium'

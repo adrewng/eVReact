@@ -315,14 +315,14 @@ export default function PostDetail() {
                   <div className='my-3 text-sm text-zinc-500'>
                     Cập nhật: {new Date(post.updated_at).toLocaleDateString('vi-VN')}
                   </div>
-                  <div className='mb-4'>
+                  {/* <div className='mb-4'>
                     <MarketPriceRange
                       min={toNumber(post.ai?.min_price)}
                       max={toNumber(post.ai?.max_price)}
                       listing={toNumber(product.price)}
                       windowText='Theo dữ liệu trong 3 tháng gần nhất'
                     />
-                  </div>
+                  </div> */}
                 </div>
               )}
 
@@ -337,11 +337,11 @@ export default function PostDetail() {
                   <div className='min-w-0 flex-1'>
                     <p className='truncate font-semibold'>
                       {post.seller.full_name || 'Người bán'}{' '}
-                      {post.seller.phone && (
+                      {/* {post.seller.phone && (
                         <span className='ml-1 rounded bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700'>
                           Đã xác minh
                         </span>
-                      )}
+                      )} */}
                     </p>
                     {post.seller.phone && <p className='text-sm text-zinc-500'>{post.seller.phone}</p>}
                   </div>

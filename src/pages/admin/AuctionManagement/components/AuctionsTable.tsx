@@ -42,6 +42,19 @@ export default function AuctionsTable(props: PropsType) {
   })
   const qc = useQueryClient()
 
+  const formLabelMap: Record<keyof FormContract, string> = {
+    seller_id: 'ID Người bán',
+    seller_name: 'Tên Người bán',
+    buyer_id: 'ID Người mua',
+    buyer_name: 'Tên Người mua',
+    product_id: 'ID Sản phẩm',
+    product_name: 'Tên Sản phẩm',
+    deposit_amount: 'Số tiền Cọc',
+    vehicle_price: 'Giá Xe',
+    dispute_city: 'Thành phố Tranh chấp',
+    status: 'Trạng thái'
+  }
+
   // const { data: contractData } = useQuery({
   //   queryKey: ['contract'],
   //   queryFn: contractApi.getAllContract
@@ -394,11 +407,12 @@ export default function AuctionsTable(props: PropsType) {
                 {Object.entries(form).map(([key, value]) => {
                   const isMoneyField = key === 'deposit_amount' || key === 'vehicle_price'
                   const displayValue = isMoneyField ? formatMoney(Number(value)) : String(value ?? '')
-
+                  const vietnamLabel = formLabelMap[key as keyof FormContract] || key.replace('_', ' ')
                   return (
                     <div key={key}>
                       <label className='block text-sm font-medium text-slate-700 capitalize'>
-                        {key.replace('_', ' ')}
+                        {/* {key.replace('_', ' ')} */}
+                        {vietnamLabel}
                       </label>
                       <input
                         type={isMoneyField ? 'text' : typeof value === 'number' ? 'number' : 'text'}
