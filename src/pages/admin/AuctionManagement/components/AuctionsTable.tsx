@@ -244,12 +244,12 @@ export default function AuctionsTable(props: PropsType) {
                                     </button>
                                   )}
 
-                                  <button
+                                  {/* <button
                                     onClick={() => setOpenModal(true)}
                                     className='rounded-lg bg-red-500 px-3 py-2 text-xs font-medium text-white hover:bg-red-600 transition-colors'
                                   >
                                     Báo cáo
-                                  </button>
+                                  </button> */}
                                 </>
                               )}
                               <button
@@ -300,7 +300,7 @@ export default function AuctionsTable(props: PropsType) {
                       </div>
                       <div>
                         <p className='text-xs font-semibold uppercase text-slate-600'>Người Bán</p>
-                        <p className='mt-1 text-sm text-slate-900'>ID {auction.seller_name}</p>
+                        <p className='mt-1 text-sm text-slate-900'>{auction.seller_name}</p>
                       </div>
                       {auction.winning_price && (
                         <div>

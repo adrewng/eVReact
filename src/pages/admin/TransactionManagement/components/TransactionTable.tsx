@@ -20,17 +20,17 @@ export default function TransactionTable({ transaction }: { transaction: Transac
     PENDING: {
       bg: 'bg-yellow-100',
       text: 'text-yellow-800',
-      label: 'Pending'
+      label: 'Đã thanh toán'
     },
     PAID: {
       bg: 'bg-green-100',
       text: 'text-green-800',
-      label: 'Paid'
+      label: 'Đã thanh toán'
     },
     CANCELLED: {
       bg: 'bg-gray-200',
       text: 'text-gray-700',
-      label: 'Cancelled'
+      label: 'Hủy'
     }
   }
 
@@ -46,6 +46,13 @@ export default function TransactionTable({ transaction }: { transaction: Transac
     CANCELLED: { bg: 'bg-gray-100', text: 'text-gray-700', label: 'Cancelled' },
     REFUND: { bg: 'bg-purple-50', text: 'text-purple-700', label: 'Refund' },
     AUCTION_SUCCESS: { bg: 'bg-emerald-50', text: 'text-emerald-700', label: 'Auction Success' }
+  }
+  const TYPE_LABELS: Record<string, string> = {
+    deposit: 'Đặt cọc',
+    post: 'Bài đăng',
+    package: 'Gói dịch vụ',
+    auction: 'Đấu giá',
+    topup: 'Nạp tiền'
   }
 
   // Helper: nếu status không có trong object, dùng default
@@ -77,7 +84,7 @@ export default function TransactionTable({ transaction }: { transaction: Transac
                   <th className='text-left py-3 px-4 font-semibold text-gray-700 text-sm'>Phương thức</th>
                   <th className='text-left py-3 px-4 font-semibold text-gray-700 text-sm'>Trạng thái</th>
                   <th className='text-left py-3 px-4 font-semibold text-gray-700 text-sm'>Tracking</th>
-                  <th className='text-left py-3 px-4 font-semibold text-gray-700 text-sm'>Buyer ID</th>
+                  <th className='text-left py-3 px-4 font-semibold text-gray-700 text-sm'>Tên người dùng</th>
                   <th className='text-left py-3 px-4 font-semibold text-gray-700 text-sm'>Ngày tạo</th>
                 </tr>
               </thead>
@@ -90,7 +97,8 @@ export default function TransactionTable({ transaction }: { transaction: Transac
                       <td className='py-3 px-4 font-mono text-xs text-gray-700'>{txn.code}</td>
                       {/* Loại giao dịch */}
                       <td className='py-3 px-4 capitalize text-gray-800'>
-                        {txn.type === 'auction' ? 'Đấu giá' : txn.type}
+                        {/* {txn.type === 'auction' ? 'Đấu giá' : txn.type} */}
+                        {TYPE_LABELS[txn.type] || txn.type}
                       </td>
                       {/* Giá trị */}
                       <td className='py-3 px-4 font-semibold text-gray-900'>

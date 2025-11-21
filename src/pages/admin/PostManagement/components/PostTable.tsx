@@ -86,7 +86,7 @@ export default function PostTable(props: Props) {
                     <td className='py-3 px-4 whitespace-nowrap'>{p.product.model}</td>
 
                     {/* Định dạng giá tiền tệ VND và căn phải */}
-                    <td className='py-3 px-4 whitespace-nowrap font-semibold text-gray-900 text-right'>
+                    <td className='py-3 px-4 whitespace-nowrap font-semibold text-gray-900 text-center'>
                       {Number(p.product.price || 0).toLocaleString('vi-VN')}₫
                     </td>
 
