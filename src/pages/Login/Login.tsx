@@ -1,18 +1,19 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useMutation } from '@tanstack/react-query'
-import { useContext } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useContext, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { authApi } from '~/apis/auth.api'
 import AuthHeader from '~/components/AuthHeader'
 import Button from '~/components/Button'
 import Input from '~/components/Input'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/ui/dialog'
 import { path } from '~/constants/path'
 import { AppContext } from '~/contexts/app.context'
 import bannerLogin from '~/shared/bannerLogin.png'
 import { type ErrorResponse } from '~/types/util.type'
 import { schema, type Schema } from '~/utils/rule'
-import { isUnprocessableEntityError } from '~/utils/util'
+import { getAccountBlockedReason, isAxiosAccountBlockedError, isUnprocessableEntityError } from '~/utils/util'
 
 type FormData = Pick<Schema, 'password' | 'email'>
 const loginSchema = schema.pick(['password', 'email'])
@@ -28,18 +29,22 @@ const LoginPage = () => {
 
   const navigate = useNavigate()
   const { setIsAuthenticated, setProfile } = useContext(AppContext)
+  const [openModal, setOpenModal] = useState(false)
+  const [modalReason, setModalReason] = useState<string>('')
 
   const loginMutation = useMutation({
     mutationFn: (body: FormData) => authApi.loginAccount(body)
   })
 
+  const queryClient = useQueryClient()
   const onSubmit = handleSubmit((body) => {
     loginMutation.mutate(body, {
       onSuccess: (data) => {
+        queryClient.clear()
         reset()
         setIsAuthenticated(true)
         setProfile(data.data.data.user)
-        navigate('/')
+        navigate(path.home)
       },
       onError: (error) => {
         if (isUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
@@ -52,6 +57,11 @@ const LoginPage = () => {
               })
             })
           }
+        } else if (isAxiosAccountBlockedError(error)) {
+          console.log('modal')
+          const reason = getAccountBlockedReason(error)
+          setModalReason(reason ?? 'Tài khoản của bạn đã bị khóa.')
+          setOpenModal(true)
         }
       }
     })
@@ -111,14 +121,14 @@ const LoginPage = () => {
               </form>
 
               {/* Divider */}
-              <div className='relative my-6'>
+              {/* <div className='relative my-6'>
                 <div className='h-px bg-zinc-200' />
                 <span className='absolute inset-x-0 -top-3 mx-auto w-max bg-white px-3 text-xs text-zinc-500'>
                   Hoặc
                 </span>
-              </div>
+              </div> */}
               {/* Social login (mock UI) */}
-              <div className='grid grid-cols-2 gap-3'>
+              {/* <div className='grid grid-cols-2 gap-3'>
                 <button
                   type='button'
                   className='inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-200 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-zinc-50'
@@ -133,7 +143,7 @@ const LoginPage = () => {
                   <img src='https://www.svgrepo.com/show/452210/apple.svg' alt='' className='h-4 w-4' />
                   Apple
                 </button>
-              </div>
+              </div> */}
 
               {/* Links */}
               <div className='mt-6 space-y-3 text-center text-sm'>
@@ -151,6 +161,32 @@ const LoginPage = () => {
           </div>
         </section>
       </main>
+      <Dialog open={openModal} onOpenChange={setOpenModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Thông báo khóa tài khoản</DialogTitle>
+          </DialogHeader>
+
+          <div className='mt-2 space-y-2'>
+            <p>Tài khoản của bạn hiện đã bị khóa bởi quản trị viên. Dưới đây là lý do cụ thể:</p>
+
+            <div className='rounded-md bg-red-50 p-3 text-red-700 border border-red-200'>{modalReason}</div>
+
+            <p className='text-sm text-muted-foreground'>
+              Nếu bạn cho rằng đây là sự nhầm lẫn hoặc cần được hỗ trợ thêm, vui lòng liên hệ bộ phận quản trị.
+            </p>
+          </div>
+
+          <div className='mt-4 text-right'>
+            <button
+              onClick={() => setOpenModal(false)}
+              className='rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700'
+            >
+              Đóng
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
