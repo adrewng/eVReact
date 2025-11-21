@@ -3,10 +3,10 @@ import { Info } from 'lucide-react'
 import { formatVNDMillions } from '~/utils/formater'
 
 type Props = {
-  min: number
-  max: number
-  listing: number
-  windowText?: string // ví dụ: "Theo dữ liệu trong 3 tháng gần nhất"
+  min: number // Giá thấp nhất của thị trường
+  max: number // Giá cao nhất của thị trường
+  listing: number // Giá đăng bán
+  windowText?: string
 }
 
 export default function MarketPriceRange({
@@ -15,80 +15,41 @@ export default function MarketPriceRange({
   listing,
   windowText = 'Theo dữ liệu trong 3 tháng gần nhất'
 }: Props) {
-  // --- Guard dữ liệu ---
   const hasRange = Number.isFinite(min) && Number.isFinite(max) && max >= min && min >= 0
   const hasListing = Number.isFinite(listing) && listing >= 0
   if (!hasRange || !hasListing) return null
 
-  // === Track centered quanh listing ===
-  // khoảng cách từ listing đến hai đầu min/max
   const spreadLeft = Math.max(0, listing - min)
   const spreadRight = Math.max(0, max - listing)
-  // bán kính cơ sở: phía lớn hơn để chắc chắn min/max nằm trong track
   const radius = Math.max(spreadLeft, spreadRight)
-  // nới thêm 15% để marker không dính mép
   const radiusPadded = radius * 1.4 || Math.max(listing * 0.4, (max - min) * 0.4)
 
-  // hai bìa track bám quanh listing
   const domainMin = Math.max(0, listing - radiusPadded)
   const domainMax = listing + radiusPadded
 
-  // util
   const clamp = (v: number) => Math.min(domainMax, Math.max(domainMin, v))
   const pct = (v: number) => ((clamp(v) - domainMin) / (domainMax - domainMin)) * 100
 
-  // Tính vị trí % của min, max và listing
   const left = pct(min)
   const width = Math.max(0, pct(max) - pct(min))
   const markerLeft = pct(listing)
 
-  // Kiểm tra khoảng cách giữa min và max để tránh label chồng nhau
-  const labelDistance = width
-  const MIN_LABEL_DISTANCE = 15 // % tối thiểu để hiển thị 2 label riêng biệt
-  const shouldMergeLabels = labelDistance < MIN_LABEL_DISTANCE
-  const isSameValue = min === max // Trường hợp min = max
+  const shouldMergeLabels = width < 15
+  const isSameValue = min === max
+  const hasNoMarketData = min === 0 && max === 0
 
-  // Mở rộng range fill để marker luôn nằm bên trong (không dính mép)
   let adjustedLeft = left
   let adjustedWidth = width
 
-  // Nếu listing nằm trong range [min, max]
-  if (listing >= min && listing <= max) {
+  if (listing >= min && listing <= max && listing !== min && listing !== max) {
     const distanceToMin = markerLeft - left
     const distanceToMax = left + width - markerLeft
-
-    // Padding nhỏ (3%) để marker không dính mép
     const padding = 3
-
     if (distanceToMax < padding) {
-      // Marker gần mép phải → mở rộng bên phải
       adjustedWidth = width + padding
     } else if (distanceToMin < padding) {
-      // Marker gần mép trái → mở rộng bên trái
       adjustedLeft = Math.max(0, left - padding)
       adjustedWidth = width + padding
-    } else {
-      // Marker ở giữa → mở rộng nhẹ cả hai bên
-      adjustedLeft = Math.max(0, left - 2)
-      adjustedWidth = width + 4
-    }
-  }
-  // Nếu listing nằm ngoài range nhưng gần (trong vòng 10% của range width)
-  else {
-    const rangeWidth = max - min
-    const deviationFromMax = listing > max ? listing - max : 0
-    const deviationFromMin = listing < min ? min - listing : 0
-    const isNearRange = Math.max(deviationFromMax, deviationFromMin) / rangeWidth <= 0.1
-
-    if (isNearRange) {
-      // Mở rộng range fill để bao marker, nhưng không quá nhiều
-      const padding = 3
-      if (listing > max) {
-        adjustedWidth = width + padding
-      } else {
-        adjustedLeft = Math.max(0, left - padding)
-        adjustedWidth = width + padding
-      }
     }
   }
 
@@ -100,19 +61,20 @@ export default function MarketPriceRange({
       </div>
       <p className='mb-6 text-sm text-zinc-500'>{windowText}</p>
 
+      {/* Track, Range Fill và Marker */}
       <div className='relative mb-2 h-6'>
-        {/* track */}
+        {/* Track - đường trắng */}
         <div
           className='absolute left-0 right-0 top-1/2 h-2 -translate-y-1/2 rounded-full bg-white shadow-inner'
           aria-hidden
         />
-        {/* range fill (min → max) */}
+        {/* Range Fill - thanh màu xanh */}
         <div
           className='absolute top-1/2 h-2 -translate-y-1/2 rounded-full bg-blue-600'
           style={{ left: `${adjustedLeft}%`, width: `${adjustedWidth}%` }}
           aria-hidden
         />
-        {/* listing marker */}
+        {/* Marker - bubble hiển thị giá đăng */}
         <div
           className='absolute -top-5'
           style={{ left: `calc(${markerLeft}% - 14px)` }}
@@ -125,31 +87,26 @@ export default function MarketPriceRange({
         </div>
       </div>
 
-      {/* labels - đơn giản: min ở đầu range fill, max ở cuối range fill */}
+      {/* Labels */}
       <div className='relative mt-3 h-5 text-sm text-zinc-900'>
-        {isSameValue ? (
-          // Nếu min = max, chỉ hiển thị một giá trị ở giữa
+        {hasNoMarketData ? (
+          <span className='text-zinc-500 italic'>Không có dữ liệu giá thị trường cho sản phẩm này</span>
+        ) : isSameValue ? (
+          // min = max, chỉ hiển thị 1 giá trị
           <span
             className='absolute whitespace-nowrap'
-            style={{
-              left: `${adjustedLeft + adjustedWidth / 2}%`,
-              transform: 'translateX(calc(-50% + 9px))'
-            }}
+            style={{ left: `${left}%`, transform: 'translateX(calc(-50% + 9px))' }}
           >
             {formatVNDMillions(min)}
           </span>
         ) : shouldMergeLabels ? (
-          // Nếu labels quá gần, hiển thị "min - max" ở giữa
-          <span
-            className='absolute -translate-x-1/2 whitespace-nowrap'
-            style={{ left: `${adjustedLeft + adjustedWidth / 2}%` }}
-          >
+          // Labels quá gần, gộp thành "min max"
+          <span className='absolute -translate-x-1/2 whitespace-nowrap' style={{ left: `${left + width / 2}%` }}>
             {formatVNDMillions(min)} {formatVNDMillions(max)}
           </span>
         ) : (
-          // Nếu đủ xa, hiển thị 2 label: min ở đầu range fill, max ở cuối range fill
+          // Labels đủ xa, hiển thị 2 label riêng biệt
           <>
-            {/* min label - luôn ở đầu range fill */}
             <span
               className='absolute whitespace-nowrap'
               style={{
@@ -159,7 +116,6 @@ export default function MarketPriceRange({
             >
               {formatVNDMillions(min)}
             </span>
-            {/* max label - luôn ở cuối range fill */}
             <span
               className='absolute whitespace-nowrap'
               style={{
