@@ -42,6 +42,12 @@ export default function MarketPriceRange({
   const width = Math.max(0, pct(max) - pct(min))
   const markerLeft = pct(listing)
 
+  // Kiểm tra khoảng cách giữa min và max để tránh label chồng nhau
+  const labelDistance = width
+  const MIN_LABEL_DISTANCE = 15 // % tối thiểu để hiển thị 2 label riêng biệt
+  const shouldMergeLabels = labelDistance < MIN_LABEL_DISTANCE
+  const isSameValue = min === max // Trường hợp min = max
+
   // Mở rộng range fill để marker luôn nằm bên trong (không dính mép)
   let adjustedLeft = left
   let adjustedWidth = width
@@ -92,7 +98,7 @@ export default function MarketPriceRange({
         <span className='text-base font-semibold'>Khoảng giá thị trường</span>
         <Info className='h-4 w-4 text-zinc-400' aria-hidden />
       </div>
-      <p className='mb-3 text-sm text-zinc-500'>{windowText}</p>
+      <p className='mb-6 text-sm text-zinc-500'>{windowText}</p>
 
       <div className='relative mb-2 h-6'>
         {/* track */}
@@ -119,17 +125,52 @@ export default function MarketPriceRange({
         </div>
       </div>
 
-      {/* labels bám theo vị trí min/max quanh listing */}
+      {/* labels - đơn giản: min ở đầu range fill, max ở cuối range fill */}
       <div className='relative mt-3 h-5 text-sm text-zinc-900'>
-        {/* min label (trái của listing) */}
-        <span className='absolute -translate-x-1/2 whitespace-nowrap' style={{ left: `${pct(min)}%` }}>
-          {formatVNDMillions(min)}
-        </span>
-
-        {/* max label (phải của listing) */}
-        <span className='absolute -translate-x-1/2 whitespace-nowrap' style={{ left: `${pct(max)}%` }}>
-          {formatVNDMillions(max)}
-        </span>
+        {isSameValue ? (
+          // Nếu min = max, chỉ hiển thị một giá trị ở giữa
+          <span
+            className='absolute whitespace-nowrap'
+            style={{
+              left: `${adjustedLeft + adjustedWidth / 2}%`,
+              transform: 'translateX(calc(-50% + 9px))'
+            }}
+          >
+            {formatVNDMillions(min)}
+          </span>
+        ) : shouldMergeLabels ? (
+          // Nếu labels quá gần, hiển thị "min - max" ở giữa
+          <span
+            className='absolute -translate-x-1/2 whitespace-nowrap'
+            style={{ left: `${adjustedLeft + adjustedWidth / 2}%` }}
+          >
+            {formatVNDMillions(min)} {formatVNDMillions(max)}
+          </span>
+        ) : (
+          // Nếu đủ xa, hiển thị 2 label: min ở đầu range fill, max ở cuối range fill
+          <>
+            {/* min label - luôn ở đầu range fill */}
+            <span
+              className='absolute whitespace-nowrap'
+              style={{
+                left: `${adjustedLeft}%`,
+                transform: adjustedLeft < 5 ? 'translateX(0)' : 'translateX(-50%)'
+              }}
+            >
+              {formatVNDMillions(min)}
+            </span>
+            {/* max label - luôn ở cuối range fill */}
+            <span
+              className='absolute whitespace-nowrap'
+              style={{
+                left: `${adjustedLeft + adjustedWidth}%`,
+                transform: adjustedLeft + adjustedWidth > 95 ? 'translateX(-100%)' : 'translateX(-50%)'
+              }}
+            >
+              {formatVNDMillions(max)}
+            </span>
+          </>
+        )}
       </div>
     </div>
   )
