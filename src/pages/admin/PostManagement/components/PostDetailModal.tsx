@@ -1,6 +1,6 @@
 import { Button } from '~/components/ui/button'
 import { Dialog, DialogContent, DialogTitle, DialogHeader } from '~/components/ui/dialog'
-import type { PostType } from '~/types/post.type'
+import type { BatteryType, PostType, VehicleType } from '~/types/post.type'
 import { formatUTCDateString } from '~/utils/util'
 
 export default function PostDetailModal({
@@ -13,6 +13,14 @@ export default function PostDetailModal({
   post: PostType | null
 }) {
   if (!post) return null
+  const isVehicle = (post.product as VehicleType).seats !== undefined
+
+  // Thu hẹp kiểu
+  const product = post.product
+  const vehicleProduct = product as VehicleType
+  const batteryProduct = product as BatteryType
+
+  const placeholder = '—'
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -44,17 +52,29 @@ export default function PostDetailModal({
           <div className='grid grid-cols-2 gap-4 text-sm'>
             <Info label='ID' value={post.id} />
 
-            <Info label='Hãng xe' value={post.product.brand} />
-            <Info label='Mẫu xe' value={post.product.model} />
-
+            <Info label='Hãng' value={post.product.brand} />
+            <Info label='Mẫu' value={post.product.model} />
+            <Info label='Đời chủ cũ' value={post.product.previousOwners} />
             <Info label='Năm sản xuất' value={post.product.year} />
-            <Info label='Sức chứa' value={post.product.capacity ?? '—'} />
-
-            <Info label='Điện áp' value={post.product.voltage ?? '—'} />
-            <Info label='Chủ cũ' value={post.product.previousOwners} />
-
             <Info label='Tình trạng' value={post.product.health} />
             <Info label='Địa chỉ' value={post.product.address} />
+            {isVehicle ? (
+              // HIỂN THỊ THÔNG TIN XE
+              <>
+                <Info label='Chỗ ngồi' value={vehicleProduct.seats ? vehicleProduct.seats + ' chỗ' : placeholder} />
+                <Info
+                  label='Quãng đường đã đi'
+                  value={vehicleProduct.mileage ? vehicleProduct.mileage + 'km' : placeholder}
+                />
+                <Info label='Công suất' value={vehicleProduct.power ? vehicleProduct.power + 'kW' : placeholder} />
+              </>
+            ) : (
+              // HIỂN THỊ THÔNG TIN PIN
+              <>
+                <Info label='Sức chứa' value={batteryProduct.capacity ? batteryProduct.capacity + 'Ah' : placeholder} />
+                <Info label='Điện áp' value={batteryProduct.voltage ? batteryProduct.voltage : placeholder} />
+              </>
+            )}
 
             <Info
               label='Giá'
