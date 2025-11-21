@@ -27,7 +27,6 @@ export default function FilterSidebar({ queryConfig, categories }: FilterSidebar
     <div className='rounded-[22px] border border-zinc-200 bg-white shadow-sm p-6 pr-3 max-h-full overflow-y-auto [scrollbar-gutter:stable]'>
       {/* Header */}
       <div className='flex items-center justify-between'>
-        {/* Trái: icon + tiêu đề */}
         <div className='flex items-center gap-3 min-w-0'>
           <svg width='1em' height='1.5em' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
             <path
@@ -37,8 +36,6 @@ export default function FilterSidebar({ queryConfig, categories }: FilterSidebar
           </svg>
           <span className='text-xl font-bold'>Bộ lọc tìm kiếm</span>
         </div>
-
-        {/* Phải: nút Xóa tất cả */}
         <button
           type='button'
           onClick={handleRemoveAll}
@@ -59,7 +56,6 @@ export default function FilterSidebar({ queryConfig, categories }: FilterSidebar
 
       {/* Rows */}
       <div className='space-y-6'>
-        {/* Sản phẩm cần là gì */}
         <CollapseItem
           renderProp={categories.map((item) => {
             return (
@@ -69,8 +65,8 @@ export default function FilterSidebar({ queryConfig, categories }: FilterSidebar
                 pathName={item.slug === CategoryType.vehicle ? path.vehicle : path.battery}
                 param='category_type'
                 value={item.slug}
-                label={item.type === CategoryType.vehicle ? 'Xe' : 'Pin'} // chữ hiển thị bên trái
-                rightBadge={item.count ?? 0} // số bên phải (component sẽ tự bọc badge)
+                label={item.type === CategoryType.vehicle ? 'Xe' : 'Pin'}
+                rightBadge={item.count ?? 0}
                 hide={true}
               />
             )

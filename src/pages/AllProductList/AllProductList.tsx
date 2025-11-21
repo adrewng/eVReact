@@ -90,7 +90,6 @@ export default function AllProductList() {
                   ))}
             </div>
 
-            {/* pagination: only render when we have pageData (initial skeleton state hides it) */}
             {pageData && pageData.pagination.page_size > 0 && (
               <motion.div
                 key={pageData.pagination.page}

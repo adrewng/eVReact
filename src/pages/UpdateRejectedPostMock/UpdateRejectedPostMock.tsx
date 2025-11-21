@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* src/pages/UpdateRejectedPostPretty.tsx */
 import classNames from 'classnames'
 import { MapPin, Plus, XCircle } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
@@ -26,113 +25,6 @@ import { dedupeAndTrim, imageKey, isFileLike, sameImage, type ImageLike } from '
 import { getIdFromNameId } from '~/utils/util'
 
 const MAX_IMAGES = 6
-
-// const vehicleMock: PostType = {
-//   id: 202,
-//   title: 'Adrew',
-//   priority: 1,
-//   created_at: '2025-10-19T11:39:41.000Z',
-//   updated_at: '2025-10-20T03:57:04.000Z',
-//   end_date: '2025-11-18T11:39:41.000Z',
-//   status: 'rejected',
-//   product: {
-//     id: 202,
-//     brand: 'VinFast',
-//     model: 'VF 3',
-//     price: '500000.00',
-//     description: 'Adrew',
-//     year: 2024,
-//     warranty: '6',
-//     address: 'Phường Ba Đình, Thành phố Hà Nội',
-//     color: 'black',
-//     seats: 2,
-//     mileage: '5000',
-//     power: '200',
-//     health: 'good',
-//     previousOwners: 1,
-//     category: {
-//       id: 1,
-//       name: 'Electric Car',
-//       typeSlug: 'vehicle'
-//     },
-//     image: 'https://res.cloudinary.com/dn2xh5rxe/image/upload/v1760848779/demo-node-ts/xddw0lvlftusfkd9dqer.jpg',
-//     images: [
-//       'https://res.cloudinary.com/dn2xh5rxe/image/upload/v1760848779/demo-node-ts/xddw0lvlftusfkd9dqer.jpg',
-//       'https://res.cloudinary.com/dn2xh5rxe/image/upload/v1760848778/demo-node-ts/kfbzaw69ftqnht57beus.jpg',
-//       'https://res.cloudinary.com/dn2xh5rxe/image/upload/v1760848779/demo-node-ts/eqjso29a7udmy9xzwbkp.jpg',
-//       'https://res.cloudinary.com/dn2xh5rxe/image/upload/v1760848779/demo-node-ts/i5fpmgrnnr5fmwzqgxjh.jpg'
-//     ]
-//   },
-//   seller: {
-//     id: 12,
-//     full_name: 'Nhật Trường',
-//     email: 'nhatruong5012@gmail.com',
-//     phone: '0911973863'
-//   },
-//   ai: {
-//     min_price: 300000000,
-//     max_price: 330000000
-//   }
-// } // giữ nguyên nếu cần
-
-// const batteryMock: PostType = {
-//   id: 301,
-//   title: 'PIN LFP 48V 50Ah – còn rất mới',
-//   priority: 1,
-//   created_at: '2025-10-10T02:20:12.000Z',
-//   updated_at: '2025-10-19T05:00:00.000Z',
-//   end_date: '2025-11-09T02:20:12.000Z',
-//   product: {
-//     id: 2,
-//     brand: 'CATL',
-//     model: 'LFP-48-50',
-//     capacity: '50',
-//     price: '8500000',
-//     address: 'Quận 7, TP.HCM',
-//     description: 'Pin tháo xe điện, tình trạng tốt, kèm BMS.',
-//     category: { id: 2, name: 'Car Battery', typeSlug: 'battery' },
-//     voltage: '48v',
-//     health: 'good',
-//     year: 2023,
-//     image: 'https://res.cloudinary.com/dn2xh5rxe/image/upload/v1760849470/demo-node-ts/gwbuszse1boyfine03yz.jpg',
-//     images: [
-//       'https://res.cloudinary.com/dn2xh5rxe/image/upload/v1760849470/demo-node-ts/gwbuszse1boyfine03yz.jpg',
-//       'https://res.cloudinary.com/dn2xh5rxe/image/upload/v1760849470/demo-node-ts/dpew2fxaixro1jufvzwo.jpg',
-//       'https://res.cloudinary.com/dn2xh5rxe/image/upload/v1760849470/demo-node-ts/gifnbdoybefcjaea1rai.jpg',
-//       'https://res.cloudinary.com/dn2xh5rxe/image/upload/v1760849471/demo-node-ts/icncczogebbutplexp2r.jpg'
-//     ],
-//     warranty: '6',
-//     color: 'black',
-//     previousOwners: 1,
-//     rejected_reason: 'Thiếu chứng từ nguồn gốc; vui lòng bổ sung trong mô tả.'
-//   },
-//   ai: { min_price: 7500000, max_price: 9000000 }
-// }
-
-// type FormValues = {
-//   type?: CategoryType
-//   category_id?: number
-//   brand?: string
-//   model?: string
-//   title: string
-//   description: string
-//   price: number
-//   address: string
-//   images: ImageLike[]
-//   image?: ImageLike
-//   // vehicle
-//   power?: string
-//   mileage?: string
-//   year?: number
-//   seats?: number
-//   color?: string
-//   warranty?: string
-//   health?: string
-//   previousOwners?: number
-//   // battery
-//   capacity?: string
-//   voltage?: string
-// }
 
 export default function UpdateRejectedPostPretty() {
   const [showAddressModal, setShowAddressModal] = useState(false)
@@ -167,7 +59,6 @@ export default function UpdateRejectedPostPretty() {
 
   const {
     setValue,
-    watch,
     control,
     handleSubmit,
     register,
@@ -205,11 +96,6 @@ export default function UpdateRejectedPostPretty() {
     if (!post) return
     reset(mapPostToForm(post))
   }, [post, reset])
-
-  const aiMin = post?.ai?.min_price ?? 0
-  const aiMax = post?.ai?.max_price ?? 0
-  const price = watch('price')
-  const outOfAiRange = Boolean(aiMin) && Boolean(aiMax) && typeof price === 'number' && (price < aiMin || price > aiMax)
 
   const uploadFiles = async (files: File[]) => {
     if (!files.length) return [] as string[]
@@ -486,11 +372,7 @@ export default function UpdateRejectedPostPretty() {
                   </div>
                   <div>
                     <h3 className='text-lg font-semibold mb-4'>Thông tin chi tiết</h3>
-                    {category === 'vehicle' ? (
-                      <VehicleForm aiMin={aiMin} aiMax={aiMax} outOfAiRange={outOfAiRange} />
-                    ) : (
-                      <BatteryForm />
-                    )}
+                    {category === 'vehicle' ? <VehicleForm /> : <BatteryForm />}
 
                     <div className='space-y-4 mt-4'>
                       <Input

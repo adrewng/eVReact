@@ -19,9 +19,7 @@ export default function CollapseItem({
   durationMs = 260
 }: Props) {
   const [open, setOpen] = useState<boolean>(initialOpen ?? false)
-
   const toggle = () => setOpen((prev) => !prev)
-
   const onKey = (e: KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()

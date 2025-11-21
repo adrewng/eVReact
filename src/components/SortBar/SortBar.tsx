@@ -1,12 +1,21 @@
-// src/components/SortBar.tsx
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
-
 import classNames from 'classnames'
 import { useEffect, useMemo, useState } from 'react'
 import { createSearchParams, useNavigate } from 'react-router-dom'
 import type { path } from '~/constants/path'
 import type { QueryConfig } from '~/hooks/useQueryConfig'
 
+import {
+  BATTERY_HEALTH_OPTIONS,
+  CAPACITY_OPTIONS,
+  COLOR_OPTIONS,
+  MILEAGE_OPTIONS,
+  POWER_OPTIONS,
+  SEATS_OPTIONS,
+  VOLTAGE_OPTIONS,
+  WARRANTY_OPTIONS,
+  type Option
+} from '~/constants/options'
 import {
   ORDER,
   SORT_BY,
@@ -18,6 +27,7 @@ import {
   type SortChoiceKey,
   type SortOption
 } from '~/types/sort.type'
+import { labelFromOptions } from '~/utils/option'
 import Chip from './components/Chip'
 
 type Props = {
@@ -27,7 +37,6 @@ type Props = {
   onToggleFilter: () => void
 }
 
-// Label chip (sửa warranty)
 const DISPLAY_LABEL: Partial<Record<keyof QueryConfig, string>> = {
   price_min: 'Giá từ',
   price_max: 'Giá đến',
@@ -41,7 +50,17 @@ const DISPLAY_LABEL: Partial<Record<keyof QueryConfig, string>> = {
   seat: 'Ghế ngồi'
 }
 
-// Ẩn chip cho các key này
+const OPTIONS_MAP: Partial<Record<keyof QueryConfig, Option<string | number>[]>> = {
+  capacity: CAPACITY_OPTIONS,
+  voltage: VOLTAGE_OPTIONS,
+  color: COLOR_OPTIONS,
+  health: BATTERY_HEALTH_OPTIONS,
+  mileage: MILEAGE_OPTIONS,
+  warranty: WARRANTY_OPTIONS,
+  power: POWER_OPTIONS,
+  seat: SEATS_OPTIONS
+}
+
 const HIDDEN_KEYS: (keyof QueryConfig)[] = [
   'page',
   'limit',
@@ -92,12 +111,17 @@ export default function SortBar({ queryConfig, onToggleFilter, isFilterOpen, pat
         if (typeof v === 'string' && v.trim() === '') return false
         return true
       })
-      .map(([k, v]) => ({
-        key: `${String(k)}:${String(v)}`,
-        queryKey: k,
-        value: String(v),
-        text: `${DISPLAY_LABEL[k] ?? String(k)}: ${String(v)}`
-      }))
+      .map(([k, v]) => {
+        const options = OPTIONS_MAP[k]
+        const valueLabel = options ? labelFromOptions(options, String(v), String(v)) : String(v)
+        const keyLabel = DISPLAY_LABEL[k] ?? String(k)
+        return {
+          key: `${String(k)}:${String(v)}`,
+          queryKey: k,
+          value: String(v),
+          text: `${keyLabel}: ${valueLabel}`
+        }
+      })
   }, [queryConfig])
 
   const goWith = (next: Partial<QueryConfig>) => {
@@ -131,7 +155,8 @@ export default function SortBar({ queryConfig, onToggleFilter, isFilterOpen, pat
   const isActive = (opt: SortOption) => {
     const curSort = queryConfig.sort_by as SortBy | undefined
     const curOrder = queryConfig.order as Order | undefined
-    if (opt.key === SORT_CHOICE_KEY.RECOMMENDED) return curSort === SORT_BY.RECOMMEND
+    if (opt.key === SORT_CHOICE_KEY.RECOMMENDED)
+      return (curSort === undefined && curOrder === undefined) || curSort === SORT_BY.RECOMMEND
     return curSort === opt.sort_by && curOrder === opt.order
   }
 

@@ -335,14 +335,7 @@ export default function PostDetail() {
                     className='h-12 w-12 rounded-full object-cover ring-2 ring-white shadow-sm'
                   />
                   <div className='min-w-0 flex-1'>
-                    <p className='truncate font-semibold'>
-                      {post.seller.full_name || 'Người bán'}{' '}
-                      {/* {post.seller.phone && (
-                        <span className='ml-1 rounded bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700'>
-                          Đã xác minh
-                        </span>
-                      )} */}
-                    </p>
+                    <p className='truncate font-semibold'>{post.seller.full_name || 'Người bán'} </p>
                     {post.seller.phone && <p className='text-sm text-zinc-500'>{post.seller.phone}</p>}
                   </div>
                   <Link
