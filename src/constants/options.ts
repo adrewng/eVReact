@@ -65,19 +65,19 @@ export const CAPACITY_OPTIONS = [
 
 export const VOLTAGE_OPTIONS = [
   // Phụ/Low voltage
-  { value: '12v', label: '12V (phụ/aux)' },
-  { value: '24v', label: '24V (truck/aux)' },
+  { value: '12v', label: '12V' },
+  { value: '24v', label: '24V' },
 
   // Light EV
-  { value: '36v', label: '36V (e-bike)' },
-  { value: '48v', label: '48V (e-bike/scooter)' },
-  { value: '60v', label: '60V (scooter)' },
-  { value: '72v', label: '72V (scooter)' },
-  { value: '96v', label: '96V (moto hiệu năng)' }, // thêm
+  { value: '36v', label: '36V' },
+  { value: '48v', label: '48V' },
+  { value: '60v', label: '60V' },
+  { value: '72v', label: '72V' },
+  { value: '96v', label: '96V' }, // thêm
 
   // EV ô tô – dùng “class” theo dải
-  { value: 'ev400', label: 'EV 400V class (≈ 300–450V)' },
-  { value: 'ev800', label: 'EV 800V class (≈ 650–950V)' },
+  { value: 'ev400', label: '≈ 300–450V' },
+  { value: 'ev800', label: '≈ 650–950V' },
   { value: 'other', label: 'Khác' }
 ]
 

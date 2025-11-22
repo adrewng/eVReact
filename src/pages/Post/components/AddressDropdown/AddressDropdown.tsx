@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 interface Option {
   value: string | number
@@ -28,21 +28,6 @@ export default function AddressDropdown({
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const selectedOption = options.find((option) => option.value === value)
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-      setIsOpen(false)
-    }
-  }
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isOpen])
 
   const handleOptionSelect = (optionValue: string | number) => {
     onChange(String(optionValue))
@@ -117,3 +102,18 @@ export default function AddressDropdown({
     </div>
   )
 }
+
+// const handleClickOutside = (event: MouseEvent) => {
+//   if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+//     setIsOpen(false)
+//   }
+// }
+// // Close dropdown when clicking outside
+// useEffect(() => {
+//   if (isOpen) {
+//     document.addEventListener('mousedown', handleClickOutside)
+//   }
+//   return () => {
+//     document.removeEventListener('mousedown', handleClickOutside)
+//   }
+// }, [isOpen])

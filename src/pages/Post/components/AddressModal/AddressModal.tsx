@@ -222,6 +222,7 @@ export default function AddressModal({ onClose, onConfirm, defaultAddress }: Add
           <Button
             onClick={handleConfirm}
             disabled={!isFormValid || loading}
+            // disabled={loading}
             isLoading={loading}
             className='px-6 py-2 bg-black text-white rounded-lg font-medium hover:bg-zinc-800 disabled:bg-zinc-300 disabled:cursor-not-allowed transition-colors flex items-center space-x-2'
           >

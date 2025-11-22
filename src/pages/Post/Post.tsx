@@ -395,6 +395,11 @@ const PostPage = () => {
                                       {formatNumberToSocialStyle(Number(service.price))} VND
                                     </span>
                                   </div>
+                                  {service.userUsageCount !== undefined && (
+                                    <p className='text-xs text-zinc-500 mb-2'>
+                                      {formatNumberToSocialStyle(service.userUsageCount)} lượt đã sử dụng
+                                    </p>
+                                  )}
                                   <p className='text-sm text-zinc-600 mb-2'>{service.description}</p>
                                   {/* <div className='text-xs text-zinc-500'>
                                       <p className='font-medium'>Tính năng:</p>

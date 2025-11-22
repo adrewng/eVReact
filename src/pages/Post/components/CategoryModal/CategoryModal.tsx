@@ -30,8 +30,8 @@ export default function CategoryModal({
   // Filter categories based on typeSlug
   const filteredCategories =
     categoriesData.filter((category) => {
-      if (!typeSlug) return true // Show all if no typeSlug
-      return category.slug === typeSlug // Show only specific type
+      if (!typeSlug) return true
+      return category.slug === typeSlug
     }) || []
 
   const handleTypeClick = (type: CategoryDetail) => {

@@ -28,7 +28,7 @@ export default function BatteryForm() {
           errorMsg={errors.brand?.message}
         />
         <InputStyle
-          label='Model pin *'
+          label='Tên pin *'
           name='model'
           placeholder='Nhập model pin'
           register={register}
