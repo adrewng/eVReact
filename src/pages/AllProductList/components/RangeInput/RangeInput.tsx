@@ -107,7 +107,7 @@ export default function PriceRangeSlider({
             padding: '4px 8px',
             backgroundColor: 'rgba(0,0,0,0.9)',
             color: '#fff',
-            whiteSpace: 'nowrap' // Giữ text trên cùng 1 dòng
+            whiteSpace: 'nowrap'
           },
           '& .MuiSlider-track, & .MuiSlider-rail': { borderRadius: 999 }
         }}

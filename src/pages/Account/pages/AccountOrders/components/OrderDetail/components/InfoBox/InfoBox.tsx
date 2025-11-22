@@ -2,7 +2,7 @@ import type { JSX } from 'react'
 import { BATTERY_HEALTH_OPTIONS, COLOR_OPTIONS, WARRANTY_OPTIONS } from '~/constants/options'
 import type { Order } from '~/types/order.type'
 import { labelFromOptions } from '~/utils/option'
-import { fmtDate, formatCurrencyVND } from '~/utils/util'
+import { formatCurrencyVND, formatUTCDateString } from '~/utils/util'
 
 export function DetailRow({ label, value }: { label: string; value?: string | number | JSX.Element | null }) {
   return (
@@ -68,7 +68,7 @@ export function ServiceDetail({ order }: { order: Order }) {
         <DetailRow label='Loại' value='Nạp ví' />
         <DetailRow label='Số tiền nạp' value={formatCurrencyVND(Number(order.price) || 0)} />
         <DetailRow label='Tài khoản' value={order.buyer?.full_name ?? '—'} />
-        <DetailRow label='Thời gian' value={fmtDate(order.created_at)} />
+        <DetailRow label='Thời gian' value={formatUTCDateString(order.created_at)} />
       </div>
     )
   }

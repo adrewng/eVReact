@@ -119,7 +119,6 @@ export default function AccountNotification() {
       {/* List */}
       <div className='mt-6 space-y-3'>
         {isLoading ? (
-          // Loading: render 6 skeleton (hoặc theo limit)
           Array.from({ length: Number(queryConfig.limit ?? 6) }).map((_, i) => (
             <div className='flex items-start gap-4 p-5 border border-gray-200 rounded-xl' key={i}>
               <div className='w-10 h-10 rounded-full border border-gray-200 bg-gray-100 animate-pulse' />

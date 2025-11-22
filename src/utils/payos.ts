@@ -5,7 +5,6 @@ export function isPayOSCallback(search: string) {
     sp.get('gateway')?.toLowerCase() === 'payos' ||
     sp.get('src')?.toLowerCase() === 'payos'
 
-  // combo dự phòng nếu BE chưa gắn marker
   const hasOrderCode = !!sp.get('orderCode')
   const status = (sp.get('status') || '').toUpperCase()
   const hasStatusLike = ['PAID', 'CANCELLED', 'PENDING'].includes(status)

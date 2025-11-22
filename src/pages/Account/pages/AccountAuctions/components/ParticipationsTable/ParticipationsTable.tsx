@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import type { Participation, SessionStatus } from '~/types/auction.type'
-import { fmtDate, formatCurrencyVND } from '~/utils/util'
+import { formatCurrencyVND, formatUTCDateString } from '~/utils/util'
 import StatusPill from '../StatusPill'
 
 export default function ParticipationsTable({ rows, emptyText }: { rows: Participation[]; emptyText: string }) {
@@ -35,7 +35,7 @@ export default function ParticipationsTable({ rows, emptyText }: { rows: Partici
                 </td>
                 <td className='px-4 py-3'>
                   <div className='text-sm text-gray-800'>
-                    {fmtDate(s.startAt)} → {fmtDate(s.endAt)}
+                    {formatUTCDateString(s.startAt as string)} → {formatUTCDateString(s.endAt as string)}
                   </div>
                 </td>
                 <td className='px-4 py-3'>

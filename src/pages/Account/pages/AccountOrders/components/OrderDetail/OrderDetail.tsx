@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import { getStepsByType, mapStatusToStepKey, ORDERSTATUS, type OrderStatus } from '~/constants/order'
 import type { Order } from '~/types/order.type'
-import { fmtDate, formatCurrencyVND } from '~/utils/util'
+import { formatCurrencyVND, formatUTCDateString } from '~/utils/util'
 import StepLine from '../StepLine'
 import { ProductDetail, ServiceDetail } from './components/InfoBox/InfoBox'
 
@@ -51,7 +51,7 @@ export default function OrderDetail({
                   Trạng thái:{' '}
                   <span className='font-medium text-gray-800'>{ORDERSTATUS[order.tracking as OrderStatus].label}</span>
                 </div>
-                <div className='mt-1 text-sm text-gray-500'>Tạo ngày {fmtDate(order.created_at)}</div>
+                <div className='mt-1 text-sm text-gray-500'>Tạo ngày {formatUTCDateString(order.created_at)}</div>
               </div>
               <button onClick={onClose} className='rounded-xl border border-gray-200 p-2'>
                 <X className='h-5 w-5' />

@@ -35,11 +35,6 @@ export default function RelatedCard({ item }: { item: RelatedPost }) {
               loading='lazy'
               className='h-full w-full object-cover transition-transform duration-300 group-hover:scale-105'
             />
-            {/* similarity */}
-            {/* <div className='absolute right-2 top-2 flex items-center gap-1 rounded-full bg-black/70 px-2 py-1 text-[11px] font-medium text-white'>
-              <Zap className='h-3.5 w-3.5' />
-              {item.similarity_score}% trùng khớp
-            </div> */}
           </div>
 
           {/* Body */}

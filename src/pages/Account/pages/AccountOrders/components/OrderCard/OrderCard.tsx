@@ -10,7 +10,7 @@ import { getOrderStatusLabel, ORDER_TYPE_LABEL, ORDERSTATUS } from '~/constants/
 import { CategoryType } from '~/types/category.type'
 import type { FeedbackType } from '~/types/feedback.type'
 import type { Order } from '~/types/order.type'
-import { fmtDate, formatCurrencyVND } from '~/utils/util'
+import { formatCurrencyVND } from '~/utils/util'
 import StatusPill from '../StatusPill'
 
 const SHOP_NAME = 'Eviest'
@@ -19,8 +19,8 @@ type TrackingKey = keyof typeof ORDERSTATUS
 
 export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) => void }) {
   const code = makeCode(o.id)
-  const viewingTime = o.viewingAppointment?.time
-  const handoverTime = o.handoverAppointment?.time
+  // const viewingTime = o.viewingAppointment?.time
+  // const handoverTime = o.handoverAppointment?.time
 
   //dành cho đánh giá
   const [showRating, setShowRating] = useState(false)
@@ -103,22 +103,6 @@ export default function OrderCard({ o, onOpen }: { o: Order; onOpen: (o: Order) 
                 <span className='text-gray-500'>Giá mua ngay sản phẩm: </span>
                 <span className='font-medium text-gray-800'>{formatCurrencyVND(o.auction?.buyNowPrice)}</span>
               </div>
-              {o.type === 'auction' && (
-                <div>
-                  <span className='text-gray-500'>Ngày kiểm duyệt xe: </span>
-                  <span className='font-medium'>
-                    {fmtDate(viewingTime)} • {o.viewingAppointment?.address ?? '-'}
-                  </span>
-                </div>
-              )}
-              {handoverTime && o.buyer?.id === o.auction?.winner?.id && (
-                <div>
-                  <span className='text-gray-500'>Ngày giao dịch: </span>
-                  <span className='font-medium'>
-                    {fmtDate(handoverTime)} • {o.handoverAppointment?.address ?? '-'}
-                  </span>
-                </div>
-              )}
             </div>
           )}
 
